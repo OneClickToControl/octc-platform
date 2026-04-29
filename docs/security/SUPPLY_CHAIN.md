@@ -63,7 +63,8 @@ Si la verificación falla, el build se corta. Esto se valida automáticamente de
   sentry-cli sourcemaps upload --release "$SENTRY_RELEASE" <build-dir>
   sentry-cli releases finalize "$SENTRY_RELEASE"
   ```
-- Autenticación de `sentry-cli` mediante OIDC (sin DSN/token en repo).
+- En GitHub Actions suele usarse [`getsentry/action-release`](https://github.com/getsentry/action-release) con **Organization Auth Token** en secrets hasta que la org complete la confianza OIDC documentada en Sentry; el input `finalize` (por defecto `true`) equivale a `sentry-cli releases finalize`.
+- Autenticación vía token de organización u OIDC cuando esté configurado en la org (sin DSN en el repo para subir artefactos).
 - Para Flutter usar `sentry-cli upload-dif` en lugar de sourcemaps.
 
 ## Dependencias

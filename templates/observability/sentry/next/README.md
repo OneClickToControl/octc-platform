@@ -23,7 +23,7 @@ Plantilla de inicialización de Sentry para apps Next.js del portfolio.
 
 1. Copiar archivos a la raíz del proyecto Next.js.
 2. Crear los proyectos en Sentry siguiendo `octc-{producto}-{surface}`.
-3. Añadir `upload-sourcemaps.sh` al pipeline de release.
+3. Añadir `upload-sourcemaps.sh` al pipeline de release, o usar [`getsentry/action-release`](https://github.com/getsentry/action-release) después del build (`set_commits` + sourcemaps bajo `.next`, `release` alineado a `NEXT_PUBLIC_SENTRY_RELEASE` en el deploy; build Next con `SENTRY_UPLOAD_BUILD=true` si se habilitan mapas del cliente solo en CI).
 4. Ajustar sampling solo si hay justificación; nunca a 0 en producción.
 
 ## Verificación
