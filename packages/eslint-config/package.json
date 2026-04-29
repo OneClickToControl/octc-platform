@@ -1,6 +1,6 @@
 {
   "name": "@1c2c/eslint-config",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Shared ESLint flat configs for OneClickToControl LLC repos.",
   "license": "MIT",
   "type": "module",
@@ -34,7 +34,13 @@
     "typescript": ">=5"
   },
   "peerDependenciesMeta": {
-    "@next/eslint-plugin-next": { "optional": true }
+    "@next/eslint-plugin-next": {
+      "optional": true
+    }
   },
-  "keywords": ["eslint-config", "octc", "1click2control"]
+  "keywords": [
+    "eslint-config",
+    "octc",
+    "1click2control"
+  ]
 }
