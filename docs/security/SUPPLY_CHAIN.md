@@ -11,7 +11,7 @@ Cadena de confianza de software para OneClickToControl LLC. Cubre paquetes `@1c2
 ## Publicación de paquetes `@1c2c/*`
 
 - **OIDC Trusted Publishers de npm** activado por paquete: GitHub Actions intercambia un OIDC token efímero por un token de publicación `npm`. **Ningún `NPM_TOKEN` persistido** en GitHub Secrets ni en `.npmrc` del runner.
-- Workflow `.github/workflows/release.yml` declara `permissions: id-token: write` y usa Node 22 + `npm install -g npm@latest` para garantizar npm CLI ≥ 11.5.1 (mínimo OIDC).
+- Workflow `.github/workflows/release.yml` declara `permissions: id-token: write` y usa Node 24 + `npm install -g npm@latest` para garantizar npm CLI ≥ 11.5.1 (mínimo OIDC).
 - Cada `npm publish` corre con `--provenance` (vía `NPM_CONFIG_PROVENANCE=true`), generando attestation SLSA v1 firmada por Sigstore.
 - Provenance verificable por consumidores con `npm audit signatures` o `pnpm audit signatures`.
 - Tags firmados (`tag.gpg.sign=true` o sigstore).
@@ -70,8 +70,9 @@ Si la verificación falla, el build se corta. Esto se valida automáticamente de
 
 ## GitHub Actions
 
-- **Pinning**: usar `actions/checkout@<sha>` por SHA y bumpear con Dependabot.
-- **Permissions**: `permissions: read-all` por defecto, sub-jobs explícitos.
+- **Pinning**: usar `actions/checkout@<sha>` por SHA (40 chars) con comentario `# vX.Y.Z` para legibilidad. Dependabot bumpea automáticamente.
+- **Node runtime**: todas las actions deben soportar Node 24 (Node 20 deprecado por GitHub en Sep 2026, Node 22 LTS aceptable para jobs no críticos).
+- **Permissions**: `permissions: contents: read` por defecto, sub-jobs y workflows que escriben (release, PR-creation) declaran scopes adicionales explícitos.
 - **OIDC**: para npm y Sentry.
 - **Secret scanning** activado en todos los repos.
 
