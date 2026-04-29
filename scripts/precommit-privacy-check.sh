@@ -3,6 +3,9 @@
 # privacy-guard CI workflow. Mirrors policy from
 # docs/security/PUBLIC_REPO_POLICY.md.
 #
+# This file is allowlisted so it can mention the private repo names that
+# the rules look for; do not move it without updating the allowlist.
+#
 # Modes:
 #   --staged-mode=git   (default) check files staged for commit. Use as pre-commit hook.
 #   --staged-mode=tree  check the entire tracked tree. Use in CI.
@@ -26,9 +29,9 @@ ALLOWLIST_REGEX='^(docs/security/PUBLIC_REPO_POLICY\.md|\.gitleaks\.toml|\.githu
 # Patterns that must not appear in the public repo.
 # id|description|regex
 PATTERNS=(
-  "octc-sentry-org-id|Sentry organization id of OneClickToControl|oREDACTED-org"
+  "octc-sentry-org-id|Sentry organization id of OneClickToControl|o4510948769923072"
   "octc-sentry-dsn|Sentry DSN of OneClickToControl|https?://[a-f0-9]{20,40}@o[0-9]+\\.ingest\\.[a-z0-9.-]+\\.sentry\\.io/[0-9]+"
-  "octc-private-repo-name|Reference to a private OneClickToControl repository|\\b(product(-agents)?|product-b|product-c|workspace-runtime|legacy-copilot)\\b"
+  "octc-private-repo-name|Reference to a private OneClickToControl repository|\\b(health-app(-agents)?|store-app|strategy-app|openclaw-workspace-enlaza|ats-copilot-agent|ColombiaEnPR)\\b"
   "octc-internal-marker|Internal-only marker|\\b(internal-only|do-not-publish|nda-required|reserved-internal)\\b"
   "npm-token|npm token|npm_[A-Za-z0-9]{36,}"
   "github-pat|GitHub personal access token|\\b(gh[pousr]_[A-Za-z0-9]{36,255}|github_pat_[A-Za-z0-9_]{82,})\\b"

@@ -3,6 +3,10 @@
 #
 # Hard rule: nothing identified here may land in this repo.
 # See docs/security/PUBLIC_REPO_POLICY.md for the canonical policy.
+#
+# NOTE: this file (and the other guardrail files listed in the allowlist
+# below) intentionally mention the names of private repositories so the
+# rules know what to look for. The allowlist prevents self-detection.
 
 [extend]
 useDefault = true
@@ -12,7 +16,7 @@ useDefault = true
 [[rules]]
 id    = "octc-sentry-org-id"
 description = "Sentry organization id of OneClickToControl LLC must not appear in the public repo"
-regex = '''oREDACTED-org'''
+regex = '''o4510948769923072'''
 tags  = ["sentry", "octc", "private"]
 
 [[rules]]
@@ -23,8 +27,8 @@ tags  = ["sentry", "octc", "private"]
 
 [[rules]]
 id    = "octc-private-repo-name"
-description = "Reference to a private OneClickToControl repository (excludes the public org handle '1click2control')"
-regex = '''(?i)\b(product(-agents)?|product-b|product-c|workspace-runtime|legacy-copilot)\b'''
+description = "Reference to a private OneClickToControl repository"
+regex = '''(?i)\b(health-app(-agents)?|store-app|strategy-app|openclaw-workspace-enlaza|ats-copilot-agent|ColombiaEnPR)\b'''
 tags  = ["private-repo", "octc"]
 
 [[rules]]
