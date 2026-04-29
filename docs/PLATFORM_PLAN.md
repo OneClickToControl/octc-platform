@@ -1,6 +1,6 @@
 # PLATFORM_PLAN
 
-Este archivo es el **espejo canónico vigente** del plan fundacional. La fuente original es [octc-platform_fundacional.plan.md](../../.cursor/plans/octc-platform_fundacional.plan.md) en el workspace; este espejo se versiona en el repo para que sea referenciable desde todos los archivos `docs/` y desde otros repos.
+Este archivo es el **espejo canónico vigente** del plan fundacional. La fuente original es `octc-platform_fundacional.plan.md`, mantenida fuera del repo bajo `~/.cursor/plans/` por el dueño de la plataforma. Este espejo se versiona en el repo para que sea referenciable desde todos los archivos `docs/` y desde otros repos.
 
 ## Cómo se mantiene sincronizado
 

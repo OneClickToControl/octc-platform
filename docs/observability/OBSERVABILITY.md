@@ -59,7 +59,7 @@ Los repos pueden ajustar a la baja por presupuesto pero **nunca a 0** en producc
 
 Detalle en [AGENT_TELEMETRY.md](AGENT_TELEMETRY.md).
 
-## Retención por sensibilidad
+## Retención por sensibilidad {#retencion-por-sensibilidad}
 
 | sensitivity | eventos | replay | profiles |
 |-------------|---------|--------|----------|
