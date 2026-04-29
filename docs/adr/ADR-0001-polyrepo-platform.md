@@ -6,7 +6,7 @@
 
 ## Contexto
 
-OneClickToControl LLC opera múltiples productos (`health-app`, `store-app`, `strategy-app`, `1click2control`) y servicios de soporte (agentes, runtimes). La pregunta: ¿monorepo único o polyrepo con un repo de plataforma compartido?
+OneClickToControl LLC opera múltiples productos privados y servicios de soporte (agentes, runtimes). La pregunta: ¿monorepo único o polyrepo con un repo de plataforma compartido?
 
 Restricciones:
 - Equipos pequeños, alta exigencia de DX.

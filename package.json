@@ -12,7 +12,9 @@
     "lint": "pnpm -r lint",
     "build": "pnpm -r build",
     "test": "pnpm -r test",
-    "verify": "node scripts/verify-structure.mjs"
+    "verify": "node scripts/verify-structure.mjs",
+    "privacy:check": "bash scripts/precommit-privacy-check.sh --staged-mode=tree",
+    "install-hooks": "bash scripts/install-hooks.sh"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.9"

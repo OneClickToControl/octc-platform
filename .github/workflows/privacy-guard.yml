@@ -1,0 +1,63 @@
+name: privacy-guard
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  gitleaks:
+    name: gitleaks-scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@8803ba9b0593e10662392529c2b9f2089faf06af # v2.3.6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_CONFIG: ${{ github.workspace }}/.gitleaks.toml
+          GITLEAKS_ENABLE_COMMENTS: "false"
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: "false"
+          GITLEAKS_ENABLE_SUMMARY: "true"
+
+  denylist-paths:
+    name: denylist-paths
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Block reserved file patterns
+        shell: bash
+        run: |
+          set -euo pipefail
+          BAD=$(git ls-files | grep -E '(^|/)(\.env(\..+)?$|.*\.private\.[^/]+$|INTERNAL_[^/]+$|SECRETS([._-][^/]+)?$|.*\.pem$|.*\.key$|.*\.p12$|.*\.pfx$)' | grep -v -E '^\.env\.example$|^\.env\.sample$' || true)
+          if [ -n "$BAD" ]; then
+            echo "::error::Reserved file pattern committed to the public repo:"
+            echo "$BAD"
+            echo "These paths must live in octc-platform-internal or in a secret store, never here."
+            exit 1
+          fi
+          echo "OK: no reserved file patterns in tree."
+
+  denylist-content:
+    name: denylist-content
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Run privacy regex denylist
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash scripts/precommit-privacy-check.sh --staged-mode=tree

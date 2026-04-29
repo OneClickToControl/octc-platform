@@ -1,43 +1,19 @@
 # PORTFOLIO
 
-Inventario vivo de todos los repositorios de OneClickToControl LLC. Cada repo declara tipo, dueño, sensibilidad de datos, integración con la plataforma (versión `@1c2c/*` y plantilla agente), y referencia a su Agent Capability Provider (ACP) cuando aplique.
+> **Internal — moved to private companion repo.**
 
-## Convenciones de columnas
+The live inventory of OneClickToControl LLC repositories (names, ownership, sensitivity, adoption status of `@1c2c/*` packages and Sentry projects) is maintained in:
 
-| Columna | Descripción |
-|---------|-------------|
-| `repo` | Nombre del repo en GitHub. |
-| `type` | `platform` · `product` · `acp` · `runtime` · `brand` · `legacy`. |
-| `owner` | Persona o rol responsable. |
-| `data_sensitivity` | `none` · `low` · `high`. |
-| `agent_templates_pin` | Versión consumida de `@1c2c/agent-templates` (TBD si aún no adoptado). |
-| `at1c2c_pin` | Versión consumida de `@1c2c/eslint-config` y/o `@1c2c/tsconfig`. |
-| `acp_id` | id del manifest del ACP que provee skills/MCP a este repo. |
-| `acp_tier` | `L0`–`L4` declarado en el manifest. |
-| `sentry_project` | nombre `octc-{producto}-{surface}` o `n/a`. |
-| `notes` | observaciones (excepciones, plan de migración, etc.). |
+- [`OneClickToControl/octc-platform-internal/docs/PORTFOLIO.md`](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/PORTFOLIO.md) (**access-restricted**)
 
-## Repos registrados
+## Why this isn't public
 
-| repo | type | owner | data_sensitivity | agent_templates_pin | at1c2c_pin | acp_id | acp_tier | sentry_project | notes |
-|------|------|-------|------------------|---------------------|------------|--------|----------|-----------------|-------|
-| octc-platform | platform | @1click2control | low | n/a (origen) | n/a (origen) | n/a | n/a | octc-platform-meta | bootstrap Q2 2026; publica `@1c2c/tsconfig@0.1` y `@1c2c/eslint-config@0.1` |
-| 1click2control | brand | @1click2control | low | TBD | TBD | TBD | TBD | TBD | producto plantilla marca |
-| health-app | product | @1click2control | high | TBD | TBD | health-acp | TBD | octc-health-web, octc-health-mobile, octc-health-ml | donante maduro; 3 surfaces vivas en Sentry |
-| health-app-agents | acp | @1click2control | high | TBD | TBD | health-acp | TBD | octc-health-acp | canon skills/MCP histórico; proyecto Sentry creado |
-| store-app | product | @1click2control | low | TBD | TBD | store-acp (futuro) | TBD | octc-store-web | MVP ColombiaEnPR; proyecto Sentry creado |
-| strategy-app | product | @1click2control | low | TBD | TBD | strategy-acp (futuro) | TBD | octc-strategy-ml, octc-strategy-api | python heavy; 2 proyectos Sentry creados |
-| openclaw-workspace-enlaza | runtime | @1click2control | high | TBD | n/a | n/a | n/a | TBD | runtime workspace; pendiente decidir si comparte proyecto Sentry |
-| ats-copilot-agent | legacy | @1click2control | low | TBD | TBD | TBD | TBD | TBD | revisar pertinencia |
+Listing internal product names, their roadmap maturity and the operational notes attached to each one would expose information that does not belong in a public repository. See [docs/security/PUBLIC_REPO_POLICY.md](security/PUBLIC_REPO_POLICY.md).
 
-## Casos de negocio (no inflar el cuerpo del plan)
+## What public consumers should know
 
-Cualquier iniciativa de negocio se refleja como **fila adicional o nota** en este archivo y documentación detallada en el repo del producto. La frontera producto vs plataforma se documenta usando [docs/boundaries/_TEMPLATE_product-vs-platform.md](boundaries/_TEMPLATE_product-vs-platform.md).
-
-## Observabilidad
-
-Mapeo completo de proyectos Sentry vivos: ver [docs/observability/SENTRY_PROJECTS.md](observability/SENTRY_PROJECTS.md).
-
-## Cadencia
-
-Revisión **trimestral** alineada con el SCORECARD ([docs/metrics/PLATFORM_SCORECARD.md](metrics/PLATFORM_SCORECARD.md)).
+- This platform repo emits the `@1c2c/*` packages and the templates and schemas described in the rest of `docs/`. Consumers can adopt them without needing the portfolio inventory.
+- Conformance tiers, ACP pattern and adoption flow are documented at:
+  - [docs/agents/CONFORMANCE.md](agents/CONFORMANCE.md)
+  - [docs/agents/ADOPTION.md](agents/ADOPTION.md)
+  - [docs/adoption/GOLDEN_PATH.md](adoption/GOLDEN_PATH.md)

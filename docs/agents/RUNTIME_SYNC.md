@@ -18,8 +18,8 @@ flowchart LR
   ACP --> SYNC["octc-sync"]
   CLAUDE --> SYNC
   CURSOR --> SYNC
-  SYNC --> health["health-app + health-app-agents"]
-  SYNC --> store["store-app"]
+  SYNC --> productA["product A + product A agents"]
+  SYNC --> productB["product B"]
 ```
 
 ## Reglas

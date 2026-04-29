@@ -8,7 +8,7 @@ body:
     attributes:
       label: Nombre del repo
       description: Nombre kebab-case que aparecerá en GitHub y PORTFOLIO.
-      placeholder: "store-app"
+      placeholder: "my-product"
     validations:
       required: true
   - type: dropdown

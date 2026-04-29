@@ -27,9 +27,21 @@
 
 <!-- Riesgos del cambio y cómo se mitigan. -->
 
-## Checklist
+## Privacy guard (obligatorio — repo público)
 
-- [ ] CI verde (`verify.yml`)
+> Este repo es **público**. Antes de aprobar este PR, confirmá explícitamente:
+
+- [ ] No agrego DSNs ni org_id de Sentry de OneClickToControl.
+- [ ] No menciono nombres de repos privados de la org (ver lista canónica en la policy) salvo en archivos sellados.
+- [ ] No agrego inventarios, hallazgos de auditoría, postmortems con clientes, ni cualquier dato que pertenezca a `octc-platform-internal`.
+- [ ] No commiteo `.env`, `*.pem`, `*.key`, ni patrones `*.private.*` o `INTERNAL_*`.
+- [ ] El CI `privacy-guard` está verde.
+
+Política completa: [docs/security/PUBLIC_REPO_POLICY.md](../docs/security/PUBLIC_REPO_POLICY.md).
+
+## Checklist técnico
+
+- [ ] CI verde (`verify.yml` + `privacy-guard.yml`)
 - [ ] Cambios documentados (CHANGELOG / docs)
 - [ ] Si toca plantillas: marcadores `<!-- octc:base -->` intactos
 - [ ] Si toca paquetes: bump SemVer correcto + Changeset
