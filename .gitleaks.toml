@@ -1,0 +1,71 @@
+# gitleaks configuration for octc-platform (PUBLIC repo)
+# https://github.com/gitleaks/gitleaks
+#
+# Hard rule: nothing identified here may land in this repo.
+# See docs/security/PUBLIC_REPO_POLICY.md for the canonical policy.
+#
+# NOTE: this file (and the other guardrail files listed in the allowlist
+# below) intentionally mention the names of private repositories so the
+# rules know what to look for. The allowlist prevents self-detection.
+
+[extend]
+useDefault = true
+
+# ---------- Custom rules ----------
+
+[[rules]]
+id    = "octc-sentry-org-id"
+description = "Sentry organization id of OneClickToControl LLC must not appear in the public repo"
+regex = '''o4510948769923072'''
+tags  = ["sentry", "octc", "private"]
+
+[[rules]]
+id    = "octc-sentry-dsn"
+description = "Sentry DSN pointing to OneClickToControl ingest"
+regex = '''https?://[a-f0-9]{20,40}@o[0-9]+\.ingest\.[a-z0-9.-]+\.sentry\.io/[0-9]+'''
+tags  = ["sentry", "octc", "private"]
+
+[[rules]]
+id    = "octc-private-repo-name"
+description = "Reference to a private OneClickToControl repository"
+regex = '''(?i)\b(health-app(-agents)?|store-app|strategy-app|openclaw-workspace-enlaza|ats-copilot-agent|ColombiaEnPR)\b'''
+tags  = ["private-repo", "octc"]
+
+[[rules]]
+id    = "octc-internal-marker"
+description = "File or section marked as INTERNAL must not exist here"
+regex = '''(?i)\b(internal-only|do-not-publish|nda-required|reserved-internal)\b'''
+tags  = ["internal-marker", "octc"]
+
+[[rules]]
+id    = "npm-token"
+description = "npm token leaked"
+regex = '''npm_[A-Za-z0-9]{36,}'''
+tags  = ["npm", "secret"]
+
+[[rules]]
+id    = "github-pat"
+description = "GitHub personal access token"
+regex = '''\b(gh[pousr]_[A-Za-z0-9]{36,255}|github_pat_[A-Za-z0-9_]{82,})\b'''
+tags  = ["github", "secret"]
+
+[[rules]]
+id    = "sentry-user-token"
+description = "Sentry user auth token"
+regex = '''sntrys_[A-Za-z0-9_-]{40,}'''
+tags  = ["sentry", "secret"]
+
+# ---------- Allowlist (controlled exceptions) ----------
+
+[allowlist]
+description = "Files where it is OK to mention denylist terms because they describe the policy itself."
+paths = [
+  '''^docs/security/PUBLIC_REPO_POLICY\.md$''',
+  '''^\.gitleaks\.toml$''',
+  '''^\.github/workflows/privacy-guard\.yml$''',
+  '''^scripts/precommit-privacy-check\.sh$''',
+  '''^docs/PORTFOLIO\.md$''',
+  '''^docs/observability/SENTRY_PROJECTS\.md$''',
+  '''^docs/audit/.*\.md$''',
+  '''^pnpm-lock\.yaml$''',
+]

@@ -1,0 +1,90 @@
+name: privacy-guard
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  gitleaks:
+    name: gitleaks-scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      # We invoke the gitleaks binary directly (Apache-2.0) to avoid the
+      # gitleaks-action wrapper that requires a paid org license.
+      - name: Install gitleaks
+        env:
+          GITLEAKS_VERSION: "8.21.2"
+        run: |
+          set -euo pipefail
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" -o /tmp/gitleaks.tgz
+          tar -xzf /tmp/gitleaks.tgz -C /tmp
+          sudo install /tmp/gitleaks /usr/local/bin/gitleaks
+          gitleaks version
+
+      # Scan the current HEAD only. Historical commits are sanitized in a
+      # separate one-shot rewrite before the repo is flipped to public.
+      - name: Run gitleaks (HEAD only)
+        run: |
+          set -euo pipefail
+          gitleaks detect \
+            --source . \
+            --config .gitleaks.toml \
+            --no-git \
+            --redact \
+            --report-format sarif \
+            --report-path gitleaks-report.sarif \
+            --exit-code 1 \
+            --no-banner \
+            --verbose
+
+      - name: Upload SARIF report
+        if: always()
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name: gitleaks-report
+          path: gitleaks-report.sarif
+          if-no-files-found: ignore
+
+  denylist-paths:
+    name: denylist-paths
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Block reserved file patterns
+        shell: bash
+        run: |
+          set -euo pipefail
+          BAD=$(git ls-files | grep -E '(^|/)(\.env(\..+)?$|.*\.private\.[^/]+$|INTERNAL_[^/]+$|SECRETS([._-][^/]+)?$|.*\.pem$|.*\.key$|.*\.p12$|.*\.pfx$)' | grep -v -E '^\.env\.example$|^\.env\.sample$' || true)
+          if [ -n "$BAD" ]; then
+            echo "::error::Reserved file pattern committed to the public repo:"
+            echo "$BAD"
+            echo "These paths must live in octc-platform-internal or in a secret store, never here."
+            exit 1
+          fi
+          echo "OK: no reserved file patterns in tree."
+
+  denylist-content:
+    name: denylist-content
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+
+      - name: Run privacy regex denylist
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash scripts/precommit-privacy-check.sh --staged-mode=tree

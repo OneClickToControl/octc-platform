@@ -1,0 +1,28 @@
+{
+  "name": "@1c2c/tsconfig",
+  "version": "0.0.0",
+  "description": "Shared TypeScript configurations for OneClickToControl LLC repos.",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OneClickToControl/octc-platform.git",
+    "directory": "packages/tsconfig"
+  },
+  "homepage": "https://github.com/OneClickToControl/octc-platform/tree/main/packages/tsconfig#readme",
+  "files": [
+    "base.json",
+    "library.json",
+    "nextjs.json",
+    "README.md"
+  ],
+  "keywords": [
+    "tsconfig",
+    "typescript",
+    "octc",
+    "1click2control"
+  ]
+}
