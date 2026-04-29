@@ -45,6 +45,6 @@
   "scripts": {
     "build": "node ./scripts/sync-from-ssot.mjs",
     "prepack": "npm run build",
-    "test": "node --test \"test/**/*.test.mjs\""
+    "test": "node --test test/*.test.mjs"
   }
 }
