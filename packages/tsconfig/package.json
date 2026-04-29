@@ -1,6 +1,6 @@
 {
   "name": "@1c2c/tsconfig",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Shared TypeScript configurations for OneClickToControl LLC repos.",
   "license": "MIT",
   "publishConfig": {
@@ -19,5 +19,10 @@
     "nextjs.json",
     "README.md"
   ],
-  "keywords": ["tsconfig", "typescript", "octc", "1click2control"]
+  "keywords": [
+    "tsconfig",
+    "typescript",
+    "octc",
+    "1click2control"
+  ]
 }
