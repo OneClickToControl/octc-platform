@@ -1,0 +1,54 @@
+# octc-platform CODEOWNERS
+# Any path not explicitly listed uses the default owner.
+
+# Default
+* @1click2control
+
+# Schemas (manifest ACP, etc.)
+/schemas/                              @1click2control
+/schemas/**                            @1click2control
+
+# Agent templates
+/templates/agents/                     @1click2control
+/templates/agents/**                   @1click2control
+
+# Observability templates
+/templates/observability/              @1click2control
+/templates/observability/**            @1click2control
+
+# Governance templates (PR/Issue)
+/templates/governance/                 @1click2control
+
+# Publishable packages
+/packages/                             @1click2control
+/packages/**                           @1click2control
+
+# Security & supply chain
+/docs/security/                        @1click2control
+/docs/security/**                      @1click2control
+
+# Observability docs
+/docs/observability/                   @1click2control
+
+# Governance, identity, ADRs
+/docs/governance/                      @1click2control
+/docs/adr/                             @1click2control
+
+# CI workflows
+/.github/workflows/                    @1click2control
+
+# --- Privacy guard chain — these files are the policy enforcement ---
+# Any change here must be reviewed by the platform owner.
+/docs/security/PUBLIC_REPO_POLICY.md   @1click2control
+/.gitleaks.toml                        @1click2control
+/.github/workflows/privacy-guard.yml   @1click2control
+/scripts/precommit-privacy-check.sh    @1click2control
+/scripts/install-hooks.sh              @1click2control
+/CODEOWNERS                            @1click2control
+
+# Sealed stubs that map private content to the internal companion repo.
+# Editing them requires owner approval; new content goes to octc-platform-internal.
+/docs/PORTFOLIO.md                     @1click2control
+/docs/observability/SENTRY_PROJECTS.md @1click2control
+/docs/audit/                           @1click2control
+/docs/audit/**                         @1click2control
