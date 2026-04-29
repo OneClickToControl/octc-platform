@@ -1,61 +1,21 @@
-# Sentry projects — inventario canónico
+# Sentry projects — internal inventory
 
-Inventario vivo de proyectos creados en la org única **`oneclicktocontrol`** siguiendo la política de [OBSERVABILITY](OBSERVABILITY.md#topología). Todos creados de forma idempotente por [`scripts/setup-sentry-projects.sh`](../../scripts/setup-sentry-projects.sh).
+> **Internal — moved to private companion repo.**
 
-## Org
+Canonical Sentry organization slug, ingest org id, project DSNs and team mapping live in:
 
-- Slug: `oneclicktocontrol`
-- URL: https://oneclicktocontrol.sentry.io/
-- Organization id (ingest): `oREDACTED-org`
+- [`OneClickToControl/octc-platform-internal/docs/observability/SENTRY_PROJECTS.md`](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/observability/SENTRY_PROJECTS.md) (**access-restricted**)
 
-## Teams
+## Why this isn't public
 
-| team | propósito |
-|------|-----------|
-| `platform` | repo `octc-platform`, scripts CI, errores de meta. |
-| `health` | producto `product` (web, mobile, ml, acp). |
-| `store` | producto `product-b` (region-x). |
-| `strategy` | producto `product-c` (ML + API). |
+DSNs are technically not secrets (Sentry treats them as public ingest identifiers), but exposing the org id and the full list of project ingest URLs broadens the surface for ingestion-cost abuse and discloses our internal product topology. We keep them in the private companion repo.
 
-## Proyectos
+## What public templates do
 
-| proyecto | team | platform | DSN público |
-|----------|------|----------|-------------|
-| `octc-platform-meta` | `platform` | `node` | `https://c6205358b74127129fa8ea8190329945@oREDACTED-org.ingest.us.sentry.io/4511303900397568` |
-| `octc-health-web` | `health` | `javascript-nextjs` | `https://131f0c974882ec5a1eeb432698a36228@oREDACTED-org.ingest.us.sentry.io/4511303900463104` |
-| `octc-health-mobile` | `health` | `flutter` | `https://a75eb992a53dc47cb2a32939b1aa8985@oREDACTED-org.ingest.us.sentry.io/4511303900528640` |
-| `octc-health-ml` | `health` | `python` | `https://f67f8d216feb1a18ef310991d939a31b@oREDACTED-org.ingest.us.sentry.io/4511303900594176` |
-| `octc-health-acp` | `health` | `node` | `https://439ae2e50872edb5a6084bca91c0fc1d@oREDACTED-org.ingest.us.sentry.io/4511303900659713` |
-| `octc-store-web` | `store` | `javascript-nextjs` | `https://29bb121c78fa00985fa156adfcd89740@oREDACTED-org.ingest.us.sentry.io/4511303900790784` |
-| `octc-strategy-ml` | `strategy` | `python` | `https://2cf52070b3586cca50e71da4beece0c4@oREDACTED-org.ingest.us.sentry.io/4511303900856321` |
-| `octc-strategy-api` | `strategy` | `python` | `https://ca89251409c6ae45cfa8e8f6c1eb2a68@oREDACTED-org.ingest.us.sentry.io/4511303900987392` |
+- [`templates/observability/sentry/`](../../templates/observability/sentry/) — initialization templates for Next.js, Flutter and Python that **read DSNs from environment variables** (`SENTRY_DSN`, `NEXT_PUBLIC_SENTRY_DSN`). No DSN is hard-coded here.
+- [OBSERVABILITY.md](OBSERVABILITY.md) — public policy: project naming convention `octc-{product}-{surface}`, sampling, environments, retention by sensitivity, alerts and AI Monitoring posture.
+- [AGENT_TELEMETRY.md](AGENT_TELEMETRY.md) — span and breadcrumb conventions for AI agents, framework-agnostic.
 
-## Notas sobre los DSNs
+## Bootstrap script
 
-Los DSNs públicos **no son secretos** (son identificadores de ingest, similares a `NEXT_PUBLIC_*`). Igualmente, el patrón canónico es leerlos siempre como variable de entorno por consumidor (`SENTRY_DSN` o `NEXT_PUBLIC_SENTRY_DSN`):
-
-- En **GitHub Secrets** o **Vercel/Cloudflare env**: `SENTRY_DSN`, `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_ENVIRONMENT`, `SENTRY_RELEASE`.
-- En CI para `sentry-cli sourcemaps upload`: usar OIDC trust (sin tokens), ver [SUPPLY_CHAIN](../security/SUPPLY_CHAIN.md#source-maps).
-
-## Configuración mínima por proyecto
-
-A configurar manualmente en la UI de Sentry o via API:
-
-- **Alertas mínimas** (ver [OBSERVABILITY](OBSERVABILITY.md#alertas-mínimas-por-proyecto)):
-  - Spike de error rate vs baseline 24h.
-  - Nuevo issue con `level:error` o superior.
-  - Performance regression P95 +25% en endpoints críticos.
-  - Crash-free sessions < 99.5% (web/mobile).
-- **Retención** según [DATA_CLASSIFICATION](../compliance/DATA_CLASSIFICATION.md):
-  - `octc-health-*`: `sensitivity:high` → eventos 30d, replay 7d o off, profiles 7d o off.
-  - resto: defaults.
-- **AI Monitoring**: activar para `octc-health-acp`, `octc-store-web` (cuando integre agentes), `octc-strategy-*`.
-
-## Trusted Publisher / OIDC
-
-- Cuando se haga el primer release de paquetes `@1c2c/*` con sentry-cli releases, configurar GitHub OIDC en https://oneclicktocontrol.sentry.io/settings/auth-tokens/ y https://oneclicktocontrol.sentry.io/settings/auth/github/ para evitar tokens long-lived.
-
-## Cadencia
-
-- Cada nuevo producto/surface registrado en [PORTFOLIO](../PORTFOLIO.md) abre PR para añadir su proyecto aquí y ejecutar el script con la entrada nueva en `SPEC`.
-- Revisión trimestral: validar que cada proyecto recibe eventos las últimas 24h (KPI `sentry_uptime` en [SCORECARD](../metrics/PLATFORM_SCORECARD.md)).
+[`scripts/setup-sentry-projects.sh`](../../scripts/setup-sentry-projects.sh) is published in this public repo because it is a generic, idempotent orchestrator that takes its specification from a local `.env` file (which is git-ignored). It does not embed any organization-specific identifier.

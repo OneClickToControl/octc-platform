@@ -8,7 +8,7 @@
 - Estándares de observabilidad (Sentry org única), supply chain (OIDC + provenance + SBOM), FinOps LLM, identidad y acceso (SSO/2FA), DR/BCP de plataforma.
 - Documentación transversal (PORTFOLIO, ADRs, RFCs, golden path, scorecard).
 
-`octc-platform` **no** contiene código de producto: solo normas, paquetes compartidos y plantillas. Los productos viven en sus propios repos (`product`, `product-b`, `product-c`, `1click2control`, …) y consumen la plataforma por versión.
+`octc-platform` **no** contiene código de producto: solo normas, paquetes compartidos y plantillas. Los productos viven en sus propios repos (privados) y consumen la plataforma por versión.
 
 ## Estructura
 

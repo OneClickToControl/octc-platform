@@ -4,4 +4,4 @@
 
 ### Minor Changes
 
-- 33ae0ee: Initial bootstrap of `@1c2c/tsconfig` and `@1c2c/eslint-config`. Extracted from `product` reference patterns.
+- 33ae0ee: Initial bootstrap of `@1c2c/tsconfig` and `@1c2c/eslint-config`. Extracted from a reference product's TS and ESLint configurations.
