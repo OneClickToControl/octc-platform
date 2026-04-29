@@ -1,0 +1,40 @@
+{
+  "name": "@1c2c/eslint-config",
+  "version": "0.1.0",
+  "description": "Shared ESLint flat configs for OneClickToControl LLC repos.",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./index.js",
+    "./base": "./index.js",
+    "./next": "./next.js",
+    "./library": "./library.js"
+  },
+  "files": [
+    "index.js",
+    "next.js",
+    "library.js",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OneClickToControl/octc-platform.git",
+    "directory": "packages/eslint-config"
+  },
+  "homepage": "https://github.com/OneClickToControl/octc-platform/tree/main/packages/eslint-config#readme",
+  "peerDependencies": {
+    "eslint": ">=9",
+    "@typescript-eslint/eslint-plugin": ">=8",
+    "@typescript-eslint/parser": ">=8",
+    "@next/eslint-plugin-next": ">=15",
+    "typescript": ">=5"
+  },
+  "peerDependenciesMeta": {
+    "@next/eslint-plugin-next": { "optional": true }
+  },
+  "keywords": ["eslint-config", "octc", "1click2control"]
+}
