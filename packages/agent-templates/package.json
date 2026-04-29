@@ -1,6 +1,6 @@
 {
   "name": "@1c2c/agent-templates",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Canonical agent templates (CLAUDE.md, AGENTS.md, Cursor rules, ACP manifest schema) for OneClickToControl LLC repos.",
   "license": "MIT",
   "type": "module",
