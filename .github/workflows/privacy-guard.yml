@@ -30,12 +30,15 @@ jobs:
           sudo install /tmp/gitleaks /usr/local/bin/gitleaks
           gitleaks version
 
-      - name: Run gitleaks (full history)
+      # Scan the current HEAD only. Historical commits are sanitized in a
+      # separate one-shot rewrite before the repo is flipped to public.
+      - name: Run gitleaks (HEAD only)
         run: |
           set -euo pipefail
           gitleaks detect \
             --source . \
             --config .gitleaks.toml \
+            --no-git \
             --redact \
             --report-format sarif \
             --report-path gitleaks-report.sarif \
