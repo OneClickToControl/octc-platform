@@ -1,0 +1,27 @@
+---
+description: Reglas base octc-platform para Cursor. No editar; extender en archivos posteriores.
+alwaysApply: true
+---
+
+# octc-platform — reglas base
+
+- Sigue las reglas de [CLAUDE.md](../../CLAUDE.md). Esta regla es complementaria.
+- Cita siempre archivo:línea cuando referencies código existente.
+- No introduzcas dependencias nuevas sin RFC. Si la tarea lo requiere, propón el RFC y detente.
+- No silencies errores. Repórtalos a Sentry siguiendo `docs/observability/OBSERVABILITY.md`.
+- Para tareas de larga duración, usa heartbeats hacia el orquestador (Paperclip o el adapter declarado).
+
+## PII y datos sensibles
+
+- En repos con `sensitivity:high`, ningún string que pueda ser PII se escribe en logs sin pasar por `beforeSend` con redacción.
+- Tokens, secretos y claves nunca en chat ni en commits.
+
+## FinOps
+
+- Para tareas de exploración, prefiere subagentes `explore` (readonly).
+- Para implementación, sigue test-driven cuando aplique. Reduce iteraciones.
+
+## Plataforma vs producto
+
+- Si la tarea cambia algo bajo `octc-platform/`, exige PR con CODEOWNERS y, si es estructural, ADR.
+- Si es producto, no toques `@1c2c/*` salvo que sea para fijar versión.

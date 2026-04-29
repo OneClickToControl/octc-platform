@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://octc.dev/schemas/octc-agent-provider.manifest.v1.json",
+  "title": "OCTC Agent Capability Provider Manifest v1",
+  "description": "Manifest declarativo que cada Agent Capability Provider (ACP) publica para registrarse en octc-platform. Validado por el workflow verify.yml.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "owning_product",
+    "repositories",
+    "runtimes_supported",
+    "conformance_tier_target",
+    "sensitivity"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{2,48}$",
+      "description": "Identificador único kebab-case, p. ej. health-acp."
+    },
+    "owning_product": {
+      "type": "string",
+      "description": "Repo o producto al que sirve principalmente este ACP. Use 'org' si es transversal."
+    },
+    "repositories": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "description": "Repo GitHub (org/repo) que aloja capacidades de este ACP."
+      }
+    },
+    "runtimes_supported": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "enum": [
+          "cursor",
+          "claude-code",
+          "claude-desktop",
+          "openclaw",
+          "codex",
+          "paperclip",
+          "http",
+          "bash",
+          "ci"
+        ]
+      }
+    },
+    "conformance_tier_target": {
+      "enum": ["L0", "L1", "L2", "L3", "L4"]
+    },
+    "sensitivity": {
+      "enum": ["none", "low", "high"],
+      "description": "Nivel máximo de sensibilidad de datos que el ACP maneja en cualquier flujo."
+    },
+    "tools_allowlist_ref": {
+      "type": "string",
+      "description": "Path o URL a la lista versionada de herramientas/MCP permitidas. Requerido para L2+."
+    },
+    "upstream_sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind"],
+        "properties": {
+          "id": { "type": "string" },
+          "kind": { "enum": ["repo", "registry", "doc", "human"] },
+          "ref": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "downstream_deployments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind"],
+        "properties": {
+          "id": { "type": "string" },
+          "kind": { "enum": ["runtime", "repo", "service", "channel"] },
+          "ref": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "integrations_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "description": "id de una fila en docs/integrations/CATALOG.md."
+      }
+    },
+    "sentry_project": {
+      "type": "string",
+      "description": "Proyecto Sentry asociado. Convención octc-{producto}-{surface}. Requerido para L3+."
+    },
+    "owner": {
+      "type": "string",
+      "description": "Handle del owner principal."
+    },
+    "version": {
+      "type": "string",
+      "description": "Versión semver del manifest (no del repo)."
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "conformance_tier_target": { "const": "L0" } },
+        "required": ["conformance_tier_target"]
+      },
+      "then": {}
+    },
+    {
+      "if": {
+        "properties": {
+          "conformance_tier_target": {
+            "enum": ["L2", "L3", "L4"]
+          }
+        },
+        "required": ["conformance_tier_target"]
+      },
+      "then": {
+        "required": ["tools_allowlist_ref"]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "conformance_tier_target": {
+            "enum": ["L3", "L4"]
+          }
+        },
+        "required": ["conformance_tier_target"]
+      },
+      "then": {
+        "required": ["sentry_project"]
+      }
+    },
+    {
+      "if": {
+        "properties": { "sensitivity": { "const": "high" } },
+        "required": ["sensitivity"]
+      },
+      "then": {
+        "properties": {
+          "conformance_tier_target": {
+            "enum": ["L2", "L3", "L4"]
+          }
+        }
+      }
+    }
+  ]
+}
