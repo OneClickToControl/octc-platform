@@ -30,6 +30,7 @@ jobs:
             docs/PLATFORM_PLAN.md
             docs/observability/OBSERVABILITY.md
             docs/observability/AGENT_TELEMETRY.md
+            docs/observability/SENTRY_PROJECTS.md
             docs/security/SUPPLY_CHAIN.md
             docs/security/AGENT_THREAT_MODEL.md
             docs/finops/LLM_COSTS.md

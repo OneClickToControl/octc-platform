@@ -59,14 +59,14 @@ KPIs vivos de la plataforma. Actualización **trimestral** alineada con la audit
 | at1c2c_adoption_rate | 0% | 60% Q2 | bootstrap |
 | acp_registered_count | 0 | ≥ 2 Q2 | bootstrap |
 | acps_at_or_above_l2 | 0% | high → L2 Q2 | pendiente |
-| sentry_uptime | n/a | ≥ 99% | proyectos en creación |
+| sentry_uptime | n/a | ≥ 99% | 8/8 proyectos creados 2026-04-29; medición empieza con primeros eventos |
 | codeowners_coverage | 100% (este repo) | 100% | OK |
 | last_drill_days | n/a | ≤ 180 | drill pendiente |
 | llm_budget_utilization | n/a | ≤ 90% | sin baseline aún |
 
 ## Owners
 
-- Mantenedor del scorecard: @1click2control.
+- Mantenedor del scorecard: @ferflechas.
 - Cada KPI tiene un owner referenciado en su sección si difiere del general.
 
 ## Próxima revisión
