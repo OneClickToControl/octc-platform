@@ -96,6 +96,24 @@ The release run for each version is linked from the corresponding [GitHub Releas
 
 See [`docs/packages/POLICY.md`](../../docs/packages/POLICY.md) for the full supply-chain policy.
 
+## Bootstrap (first manual publish)
+
+If the package does not exist on npm yet, maintainers may need **one** manual publish before GitHub OIDC / Trusted Publishers can take over.
+
+1. **Git** — Track `main`: `git checkout main && git pull`. If `git pull` complains about a missing remote branch, run `git branch --unset-upstream` then `git branch -u origin/main` (your local branch was probably tied to a deleted feature branch).
+2. **Install** — Run `pnpm install` only from the **monorepo root** (`octc-platform/`). Do not paste inline comments (`# …`) into the shell as part of the command; pnpm may treat `#` as a dependency spec and fail with `ERR_PNPM_SPEC_NOT_SUPPORTED_BY_ANY_RESOLVER`.
+3. **Build & publish path** — From **`packages/agent-templates/`**: `pnpm run build`, then `npm publish --access public`. Do **not** run `npm publish` from the repository root; that targets the private `octc-platform` workspace package.
+4. **Provenance** — `publishConfig.provenance` expects CI (GitHub Actions). On a laptop you will get `EUSAGE` / `provider: null` unless you disable it for that one run:
+
+   ```bash
+   npm publish --access public --no-provenance
+   ```
+
+   (or `NPM_CONFIG_PROVENANCE=false npm publish --access public`, depending on your npm version.)
+5. **Auth** — Set a non-empty token (`export NPM_TOKEN=npm_...`) before `npm config set //registry.npmjs.org/:_authToken "${NPM_TOKEN}"`, or use `npm login`.
+
+After the package exists, add a **Trusted Publisher** for `@1c2c/agent-templates` in npm (same org/repo as your other `@1c2c/*` packages) and prefer releases from CI only.
+
 ## Drift policy
 
 The single source of truth for these files lives in `octc-platform`:
