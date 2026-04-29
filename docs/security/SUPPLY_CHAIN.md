@@ -10,10 +10,32 @@ Cadena de confianza de software para OneClickToControl LLC. Cubre paquetes `@1c2
 
 ## Publicación de paquetes `@1c2c/*`
 
-- Workflow `release.yml` (cada paquete) publica con `npm publish --provenance --access public`.
+- **OIDC Trusted Publishers de npm** activado por paquete: GitHub Actions intercambia un OIDC token efímero por un token de publicación `npm`. **Ningún `NPM_TOKEN` persistido** en GitHub Secrets ni en `.npmrc` del runner.
+- Workflow `.github/workflows/release.yml` declara `permissions: id-token: write` y usa Node 22 + `npm install -g npm@latest` para garantizar npm CLI ≥ 11.5.1 (mínimo OIDC).
+- Cada `npm publish` corre con `--provenance` (vía `NPM_CONFIG_PROVENANCE=true`), generando attestation SLSA v1 firmada por Sigstore.
 - Provenance verificable por consumidores con `npm audit signatures` o `pnpm audit signatures`.
 - Tags firmados (`tag.gpg.sign=true` o sigstore).
 - SBOM generada con `syft` y adjuntada a la GitHub Release.
+
+### Configuración del Trusted Publisher (uno por paquete)
+
+En [https://www.npmjs.com/package/@1c2c/<pkg>/access](https://www.npmjs.com/package/) → "Publishing access" → "Add trusted publisher":
+
+| Campo | Valor |
+|---|---|
+| Publisher | GitHub Actions |
+| Organization or user | `OneClickToControl` |
+| Repository | `octc-platform` |
+| Workflow filename | `release.yml` |
+| Environment name | (vacío) |
+
+> Si en algún momento mueves el job a un environment protegido (recomendado para releases major), añade el nombre del environment en el campo correspondiente y exígelo también en `release.yml` con `environment: <name>`.
+
+### Por qué OIDC y no PAT/granular tokens
+
+- Sin secret persistido → no hay nada que filtrar ni rotar manualmente.
+- El attestation OIDC liga el publish al **commit SHA + workflow + repo + actor** del runner, lo que hace imposible publicar fuera del workflow.
+- npm rechaza intentos de publicación que no traen un OIDC matching → fail-closed por defecto.
 
 ## Provenance consumer-side
 
