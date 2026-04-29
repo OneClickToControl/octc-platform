@@ -45,6 +45,7 @@ Archivos generados por `init`:
 
 ## Mantenimiento
 
+- En **CI** (tras `install` y verificación de firmas), ejecuta `octc-agents verify` o el script `pnpm run octc:agents:verify` / `npm run octc:agents:verify` para fallar el build si el repo tiene *drift* respecto al pin de `@1c2c/agent-templates`.
 - Cada release minor/major del paquete dispara una **issue** automática en cada repo con `agent_templates_pin` desactualizado.
 - El owner del repo tiene **30 días** para actualizar (mayor) o **90 días** (menor) antes de aparecer en alerta del SCORECARD.
 
