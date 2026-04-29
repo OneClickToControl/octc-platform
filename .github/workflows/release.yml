@@ -32,15 +32,21 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
-          node-version: 22
+          node-version: 24
           cache: pnpm
           registry-url: https://registry.npmjs.org
 
-      - name: Upgrade npm CLI for OIDC Trusted Publishers
+      - name: Verify npm CLI supports OIDC Trusted Publishers
         run: |
-          npm install -g npm@latest
-          npm --version
-          node --version
+          NPM_VER=$(npm --version)
+          echo "node $(node --version)"
+          echo "npm  $NPM_VER"
+          MAJOR=$(echo "$NPM_VER" | cut -d. -f1)
+          MINOR=$(echo "$NPM_VER" | cut -d. -f2)
+          if [ "$MAJOR" -lt 11 ] || { [ "$MAJOR" -eq 11 ] && [ "$MINOR" -lt 5 ]; }; then
+            echo "::error::npm $NPM_VER too old for OIDC Trusted Publishers (need >= 11.5.1)"
+            exit 1
+          fi
 
       - name: Install
         run: pnpm install --frozen-lockfile
