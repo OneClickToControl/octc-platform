@@ -1,29 +1,19 @@
 # Audit history
 
-Registro vivo de auditorías de la plataforma. Cada auditoría se archiva en un documento `AUDIT-<YYYY>-<Qx>.md` y se referencia desde aquí.
+> **Internal — moved to private companion repo.**
 
-## Cadencia
+Audit findings, severity, owners and remediation history live in:
 
-- **Trimestral**: revisión completa siguiendo Apéndice C del plan fundacional.
-- **Tras incidente clase A o B**: post-mortem + ajustes documentados.
-- **Tras release major** de un paquete `@1c2c/*` core: revisión del impacto agéntico.
+- [`OneClickToControl/octc-platform-internal/docs/audit/`](https://github.com/OneClickToControl/octc-platform-internal/tree/main/docs/audit) (**access-restricted**)
 
-## Índice
+The public-facing template that any new audit follows is at [`_TEMPLATE.md`](_TEMPLATE.md).
 
-| trimestre | documento | estado | resumen |
-|-----------|-----------|--------|---------|
-| 2026-Q2 | [AUDIT-2026-Q2.md](AUDIT-2026-Q2.md) | abierto | Auditoría inicial post-bootstrap. |
+## Cadence
 
-## Cómo registrar una auditoría
+- One audit per quarter.
+- Findings tracked from `open` → `in_progress` → `closed` with date and commit reference.
+- Closed findings carry forward as historical record; never deleted.
 
-1. Copiar [_TEMPLATE.md](_TEMPLATE.md) (a crear cuando aparezca el segundo audit).
-2. Documentar hallazgos: severidad, recomendación, owner, fecha objetivo.
-3. Cerrar hallazgos con PR y referencia al ADR/RFC correspondiente.
-4. Marcar estado `cerrado` en el índice.
+## Why this isn't public
 
-## Severidades
-
-- **crítica**: bloquea producción o expone PII. Requiere acción inmediata.
-- **alta**: degrada postura de seguridad o calidad agéntica.
-- **media**: mejora estructural recomendada en el trimestre.
-- **baja**: cosmética o documental.
+Open audit findings (e.g. "X budget not declared", "Y drill not executed") describe internal gaps that must be addressed but should not be advertised externally. The template and cadence are public; the data is not.
