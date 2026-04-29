@@ -7,6 +7,7 @@ Cadena de confianza de software para OneClickToControl LLC. Cubre paquetes `@1c2
 - **OIDC en GitHub Actions** para publicar en npm y para subir source maps a Sentry. Ningún token long-lived persistido.
 - Secretos en gestor centralizado (GitHub Encrypted Secrets / Doppler / Vault según repo). Rotación trimestral mínima.
 - SSO + 2FA enforced (ver [IDENTITY_ACCESS.md](../governance/IDENTITY_ACCESS.md)).
+- **Procedimiento exacto de rotación** por sistema en el runbook privado [`octc-platform-internal/docs/runbooks/CRED_ROTATION.md`](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/runbooks/CRED_ROTATION.md) (access-restricted).
 
 ## Publicación de paquetes `@1c2c/*`
 
