@@ -16,7 +16,7 @@ Auditoría inicial post-bootstrap de `octc-platform`. Cubre la creación del rep
 |----|-----------|----------|--------|-------|----------------|--------|
 | H-Q2-001 | media | Falta repo en GitHub (solo local). | Crear repo, push inicial, branch protection. | @1click2control | 2026-04-30 | **cerrado** 2026-04-29 (commit `e0fa286`, branch protection con 4 status checks) |
 | H-Q2-002 | media | Aún no hay paquetes `@1c2c/*` extraídos. | Iniciar `@1c2c/eslint-config` y `@1c2c/tsconfig` desde `product`. | @1click2control | 2026-05-15 | **cerrado** 2026-04-29 (PR `feat/packages-bootstrap-tsconfig-eslint`) |
-| H-Q2-003 | alta | Sentry org única todavía no creada formalmente. | Verificar org `oneclicktocontrol`, crear proyectos canónicos. | @1click2control | 2026-05-10 | abierto |
+| H-Q2-003 | alta | Sentry org única todavía no creada formalmente. | Verificar org `oneclicktocontrol`, crear proyectos canónicos. | @1click2control | 2026-05-10 | **cerrado** 2026-04-29: 4 teams + 8 proyectos creados via `scripts/setup-sentry-projects.sh`. Documentados en [SENTRY_PROJECTS](../observability/SENTRY_PROJECTS.md). |
 | H-Q2-004 | alta | SSO + 2FA enforcement por confirmar en GitHub/Vercel/Supabase/Sentry. | Auditar y forzar. | @1click2control | 2026-05-10 | **parcial** 2026-04-29: 2FA enforced en GitHub org (verificado API). Vercel/Supabase/Sentry/npm pendientes de auditoría. |
 | H-Q2-005 | media | `tools_allowlist_ref` aún no definido para health-acp. | Documentar lista L2 en `product-acp`. | @1click2control | 2026-06-01 | abierto |
 | H-Q2-006 | media | `verify.yml` aún no probado en CI real (repo sin push). | Push y verificar primer run verde. | @1click2control | 2026-04-30 | en progreso (tras fixes lychee) |
