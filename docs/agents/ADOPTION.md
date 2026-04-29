@@ -13,8 +13,35 @@ Cómo cada repo (producto o ACP) adopta y mantiene actualizadas las plantillas `
 ## Adopción
 
 1. El repo declara la versión consumida en su `package.json` y la fija como `agent_templates_pin` en [PORTFOLIO.md](../PORTFOLIO.md).
-2. Las plantillas se aplican con un comando del paquete (ej. `npx @1c2c/agent-templates apply`) que regenera los archivos base, manteniendo los marcadores `<!-- octc:user -->` para extensiones locales.
+2. Las plantillas se aplican con la CLI del paquete (ver Quickstart abajo) que regenera los archivos base, manteniendo los marcadores `<!-- octc:user -->` para extensiones locales.
 3. Las extensiones locales **nunca** alteran el contenido entre marcadores `<!-- octc:base -->` y `<!-- octc:end-base -->`.
+
+## Quickstart vía CLI
+
+La ruta canónica de adopción es la CLI `octc-agents` que provee `@1c2c/agent-templates`.
+
+```bash
+# scaffold inicial en el repo destino
+npx @1c2c/agent-templates init
+
+# verificación de drift en CI o local (exit 1 si hay drift)
+npx @1c2c/agent-templates verify
+
+# sync hacia el canónico, preservando bloques <!-- octc:user --> locales
+npx @1c2c/agent-templates sync
+```
+
+Archivos generados por `init`:
+
+```
+<repo>/CLAUDE.md
+<repo>/AGENTS.md
+<repo>/.cursor/rules/00-octc-base.mdc
+<repo>/.cursor/rules/01-octc-tooling.mdc
+<repo>/.octc/agents/manifest.schema.json
+```
+
+`sync` solo reescribe el bloque entre `<!-- octc:base ... -->` y `<!-- octc:end-base -->`; cualquier contenido bajo `<!-- octc:user -->` se conserva.
 
 ## Mantenimiento
 
