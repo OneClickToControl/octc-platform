@@ -51,6 +51,8 @@ pnpm dlx audit-signatures || npm audit signatures
 
 Si la verificación falla, el build se corta. Esto se valida automáticamente desde `verify.yml` cuando el repo se registra en PORTFOLIO con tier ≥ L1.
 
+**Plantilla reutilizable** para consumidores: [`templates/governance/ci/`](../../templates/governance/ci/README.md) (workflow de referencia con actions pinneadas y paso de firmas).
+
 ## Source maps {#source-maps}
 
 - En cada release (web/python/mobile) se ejecuta:
