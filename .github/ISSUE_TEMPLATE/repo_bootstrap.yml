@@ -1,0 +1,55 @@
+name: Repo bootstrap
+description: Crear o adoptar un repo nuevo bajo el GOLDEN_PATH
+title: "[bootstrap] <repo-name>"
+labels: ["bootstrap", "platform"]
+body:
+  - type: input
+    id: repo
+    attributes:
+      label: Nombre del repo
+      description: Nombre kebab-case que aparecerá en GitHub y PORTFOLIO.
+      placeholder: "store-app"
+    validations:
+      required: true
+  - type: dropdown
+    id: type
+    attributes:
+      label: Tipo
+      options:
+        - product
+        - acp
+        - runtime
+        - brand
+        - legacy
+    validations:
+      required: true
+  - type: input
+    id: owner
+    attributes:
+      label: Owner
+      description: Handle del owner principal.
+    validations:
+      required: true
+  - type: dropdown
+    id: sensitivity
+    attributes:
+      label: Sensibilidad de datos
+      options:
+        - none
+        - low
+        - high
+    validations:
+      required: true
+  - type: checkboxes
+    id: golden-path
+    attributes:
+      label: Golden path
+      description: Marcar al completar cada paso.
+      options:
+        - label: Repo creado en GitHub bajo la org y branch protection activada.
+        - label: PORTFOLIO actualizado con la nueva fila.
+        - label: Adopción de @1c2c/eslint-config + @1c2c/tsconfig + @1c2c/agent-templates.
+        - label: Estructura mínima de docs/ aplicada (DOCUMENTATION_TREE).
+        - label: Manifest ACP creado y registrado (si aplica).
+        - label: Sentry projects creados según OBSERVABILITY (si aplica).
+        - label: verify.yml configurado y verde.

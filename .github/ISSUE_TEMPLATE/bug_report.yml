@@ -1,0 +1,45 @@
+name: Bug
+description: Reportar un bug en octc-platform o en un paquete @1c2c/*
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: input
+    id: scope
+    attributes:
+      label: Ámbito
+      description: Repo y/o paquete afectado.
+      placeholder: "octc-platform | @1c2c/eslint-config | template observability/sentry/next"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Descripción
+      description: Qué hace mal y qué esperabas.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproducción
+      description: Pasos mínimos para reproducir.
+    validations:
+      required: true
+  - type: textarea
+    id: env
+    attributes:
+      label: Entorno
+      description: SO, runtime, versión del paquete o template, runtime de agente si aplica.
+    validations:
+      required: false
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severidad
+      options:
+        - crítica
+        - alta
+        - media
+        - baja
+    validations:
+      required: true
