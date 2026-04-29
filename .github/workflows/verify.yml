@@ -70,6 +70,17 @@ jobs:
             templates/observability/sentry/flutter/README.md
             templates/observability/sentry/python/README.md
             templates/governance/PULL_REQUEST_TEMPLATE.md
+            packages/tsconfig/package.json
+            packages/tsconfig/base.json
+            packages/tsconfig/library.json
+            packages/tsconfig/nextjs.json
+            packages/eslint-config/package.json
+            packages/eslint-config/index.js
+            packages/eslint-config/next.js
+            packages/eslint-config/library.js
+            pnpm-workspace.yaml
+            package.json
+            .changeset/config.json
           )
           missing=0
           for f in "${required[@]}"; do
