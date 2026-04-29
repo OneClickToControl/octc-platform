@@ -12,6 +12,8 @@ importers:
         specifier: ^2.27.9
         version: 2.31.0
 
+  packages/agent-templates: {}
+
   packages/eslint-config:
     dependencies:
       '@next/eslint-plugin-next':

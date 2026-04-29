@@ -1,0 +1,50 @@
+{
+  "name": "@1c2c/agent-templates",
+  "version": "0.0.0",
+  "description": "Canonical agent templates (CLAUDE.md, AGENTS.md, Cursor rules, ACP manifest schema) for OneClickToControl LLC repos.",
+  "license": "MIT",
+  "type": "module",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OneClickToControl/octc-platform.git",
+    "directory": "packages/agent-templates"
+  },
+  "homepage": "https://github.com/OneClickToControl/octc-platform/tree/main/packages/agent-templates#readme",
+  "bin": {
+    "octc-agents": "./bin/octc-agents.mjs"
+  },
+  "exports": {
+    ".": "./index.mjs",
+    "./schema": "./schemas/octc-agent-provider.manifest.v1.json",
+    "./templates": "./templates/index.mjs",
+    "./templates/claude": "./templates/CLAUDE.md",
+    "./templates/agents": "./templates/AGENTS.md",
+    "./templates/cursor/base": "./templates/cursor/00-octc-base.mdc",
+    "./templates/cursor/tooling": "./templates/cursor/01-octc-tooling.mdc"
+  },
+  "files": [
+    "bin/",
+    "index.mjs",
+    "templates/",
+    "schemas/",
+    "README.md"
+  ],
+  "keywords": [
+    "agents",
+    "claude",
+    "cursor",
+    "octc",
+    "1click2control",
+    "acp",
+    "agent-capability-provider"
+  ],
+  "scripts": {
+    "build": "node ./scripts/sync-from-ssot.mjs",
+    "prepack": "npm run build",
+    "test": "node --test test/*.test.mjs"
+  }
+}

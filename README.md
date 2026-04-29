@@ -20,6 +20,14 @@ docs/            # documentación transversal
 .github/         # workflows (verify, release)
 ```
 
+## Workspace packages
+
+| paquete | descripción |
+|---------|-------------|
+| [`@1c2c/tsconfig`](packages/tsconfig) | base TypeScript estricta (`base.json`, `library.json`, `nextjs.json`). |
+| [`@1c2c/eslint-config`](packages/eslint-config) | flat configs ESLint compartidas (`base`, `next`, `library`). |
+| [`@1c2c/agent-templates`](packages/agent-templates) | plantillas canónicas de agentes (CLAUDE, AGENTS, Cursor rules) + ACP manifest schema, con CLI `octc-agents`. |
+
 ## Dónde empezar
 
 - Nuevo en la plataforma: lee [docs/onboarding/PLATFORM_TOUR.md](docs/onboarding/PLATFORM_TOUR.md) (30 min).

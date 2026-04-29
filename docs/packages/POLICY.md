@@ -35,15 +35,40 @@ Todos los repos consumidores deben validar la provenance de cualquier paquete `@
 
 ## Versionado de `@1c2c/agent-templates` (caso especial)
 
-- **Major**: cambios incompatibles en la estructura, eliminación de secciones marcadas `<octc:base>`, o cambios que rompen herramientas que parsean los archivos.
-- **Minor**: secciones nuevas, reglas adicionales no breaking, soporte para nuevos runtimes.
-- **Patch**: correcciones, redacción, ejemplos.
+El paquete cubre dos superficies, ambas con SemVer estricto:
+
+1. **Contenido normativo** — `templates/CLAUDE.md`, `templates/AGENTS.md`, `templates/cursor/*.mdc`, `schemas/octc-agent-provider.manifest.v1.json`.
+2. **API JS / CLI** — `index.mjs`, `templates/index.mjs`, `bin/octc-agents.mjs`.
+
+Reglas de bump:
+
+- **Major**
+  - Cambios incompatibles en la estructura del bloque `<!-- octc:base -->` (secciones eliminadas o renombradas).
+  - Eliminación o rename de exports JS (`templates`, `schemas`, `paths`, `VERSION`).
+  - Cambio breaking en flags o subcomandos de `octc-agents` (`init` / `verify` / `sync`).
+  - Cambio breaking del JSON Schema (campos requeridos nuevos, tipos cambiados).
+- **Minor**
+  - Secciones nuevas en CLAUDE/AGENTS que se añaden sin romper consumidores existentes.
+  - Reglas adicionales no breaking, soporte para nuevos runtimes.
+  - Nuevos exports JS o subcomandos CLI no destructivos.
+  - Campos opcionales nuevos en el JSON Schema.
+- **Patch**
+  - Typos, correcciones de redacción, ejemplos.
+  - Mejoras de output del CLI sin cambiar contratos.
+
+Adopción y SLAs:
+
 - Cada release minor/major dispara una **issue automática** en cada repo con `agent_templates_pin` desactualizado.
-- SLAs:
-  - Major: 30 días para adoptar antes de aparecer en alerta del SCORECARD.
-  - Minor: 90 días.
+- Major: 30 días para adoptar antes de aparecer en alerta del SCORECARD.
+- Minor: 90 días.
 - Una versión major se mantiene con parches durante mínimo 6 meses tras el lanzamiento de la siguiente major (overlap window).
 - La política de adopción detallada vive en [docs/agents/ADOPTION.md](../agents/ADOPTION.md).
+
+Sincronización con el SSOT:
+
+- El SSOT de los archivos normativos vive en `templates/agents/` y `schemas/` de `octc-platform`.
+- `packages/agent-templates/` los espeja vía `scripts/sync-from-ssot.mjs` (`prepack`).
+- El job `agent-templates-drift` en `verify.yml` bloquea PRs donde el espejo y el SSOT divergen.
 
 ## Tests obligatorios por paquete
 
