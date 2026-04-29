@@ -15,7 +15,7 @@
   },
   "homepage": "https://github.com/OneClickToControl/octc-platform/tree/main/packages/agent-templates#readme",
   "bin": {
-    "octc-agents": "./bin/octc-agents.mjs"
+    "octc-agents": "bin/octc-agents.mjs"
   },
   "exports": {
     ".": "./index.mjs",

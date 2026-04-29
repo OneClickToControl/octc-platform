@@ -30,6 +30,8 @@ En [https://www.npmjs.com/package/@1c2c/<pkg>/access](https://www.npmjs.com/pack
 | Workflow filename | `release.yml` |
 | Environment name | (vacío) |
 
+> **Antes del primer `npm publish` de un paquete nuevo bajo `@1c2c/*`:** hay que añadir el Trusted Publisher **en ese paquete concreto** en la UI de npm. Los paquetes ya existentes (`@1c2c/tsconfig`, `@1c2c/eslint-config`, …) no heredan la config: si falta, el registry responde `E404 Not Found` en el `PUT` (es en la práctica un *permission denied* de OIDC). Después de registrar el publisher, vuelve a ejecutar `release.yml` (por ejemplo **Run workflow** en Actions o un commit vacío en `main`).
+
 > Si en algún momento mueves el job a un environment protegido (recomendado para releases major), añade el nombre del environment en el campo correspondiente y exígelo también en `release.yml` con `environment: <name>`.
 
 ### Por qué OIDC y no PAT/granular tokens
