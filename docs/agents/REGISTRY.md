@@ -14,7 +14,7 @@ Inventario vivo de todos los **Agent Capability Providers (ACP)** de OneClickToC
 
 | id | owning_product | runtimes | tier_target | tier_actual | sensitivity | tools_allowlist_ref | sentry_project | owner | notas |
 |----|----------------|----------|-------------|-------------|-------------|---------------------|----------------|-------|-------|
-| _(vacío al bootstrap; los ACPs se irán registrando)_ |  |  |  |  |  |  |  |  |  |
+| health-acp | Línea de producto atención (repos bajo org; no listados aquí) | cursor, claude-code, openclaw, http, bash | L2 | L2 | high | `docs/agents/TOOLS_ALLOWLIST_L2.md` (ruta en repo del ACP) | *(L3+; ver docs internos de observabilidad)* | @1click2control | Manifest versionado en el repo del ACP (`agents/health-acp/manifest.json`). |
 
 ## Cómo registrar un ACP nuevo
 
