@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Verify required top-level docs and templates exist
         shell: bash
@@ -79,6 +79,10 @@ jobs:
             packages/eslint-config/index.js
             packages/eslint-config/next.js
             packages/eslint-config/library.js
+            packages/agent-templates/package.json
+            packages/agent-templates/index.mjs
+            packages/agent-templates/bin/octc-agents.mjs
+            packages/agent-templates/scripts/sync-from-ssot.mjs
             pnpm-workspace.yaml
             package.json
             .changeset/config.json
@@ -100,12 +104,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Setup Node
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
-          node-version: 22
+          node-version: 20
 
       - name: Validate schema is valid JSON Schema 2020-12
         run: |
@@ -116,10 +120,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Lychee — broken relative links
-        uses: lycheeverse/lychee-action@8646ba30535128ac92d33dfc9133794bfdd9b411 # v2.8.0
+        uses: lycheeverse/lychee-action@1d97d84f0bc547f7b25f4c2170d87d810dc2fb2c # v2
         with:
           args: --no-progress --offline --include-fragments --max-concurrency 8 'docs/**/*.md' '*.md' 'templates/**/*.md'
           fail: true
@@ -129,7 +133,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: CLAUDE.md must contain octc:base markers
         run: |
@@ -139,3 +143,41 @@ jobs:
             grep -q "<!-- octc:end-base -->" "$f" || { echo "::error file=$f::missing octc:end-base marker"; exit 1; }
             grep -q "<!-- octc:user -->" "$f" || { echo "::error file=$f::missing octc:user marker"; exit 1; }
           done
+
+  agent-templates-drift:
+    name: agent-templates-drift
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@a3252b78c470c02df07e9d59298aecedc3ccdd6d # v3
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Re-sync agent-templates from SSOT
+        run: pnpm --filter @1c2c/agent-templates run build
+
+      - name: Run agent-templates tests
+        run: pnpm --filter @1c2c/agent-templates run test
+
+      - name: Fail if mirrored files diverge from the SSOT
+        run: |
+          set -euo pipefail
+          if ! git diff --exit-code -- \
+            packages/agent-templates/templates \
+            packages/agent-templates/schemas; then
+            echo "::error::packages/agent-templates is out of sync with the SSOT in templates/agents/ and schemas/."
+            echo "Run: pnpm --filter @1c2c/agent-templates run build && commit the result."
+            exit 1
+          fi
