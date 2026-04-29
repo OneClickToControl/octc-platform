@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
-# Privacy denylist scanner — used both by pre-commit hook and by the
-# privacy-guard CI workflow. Mirrors policy from
-# docs/security/PUBLIC_REPO_POLICY.md.
-#
-# This file is allowlisted so it can mention the private repo names that
-# the rules look for; do not move it without updating the allowlist.
+# Privacy denylist scanner — TEMPLATE from octc-platform.
+# Copy to scripts/precommit-privacy-check.sh and set ALLOWLIST_REGEX + PATTERNS
+# to match your public-repo policy paths and org-specific denylist.
+# See templates/governance/privacy-guard/README.md
 #
 # Modes:
 #   --staged-mode=git   (default) check files staged for commit. Use as pre-commit hook.
@@ -24,7 +22,7 @@ cd "$ROOT"
 
 # Files we are explicitly allowed to mention denylist terms in,
 # because they ARE the policy definition or a sealed stub.
-ALLOWLIST_REGEX='^(docs/security/PUBLIC_REPO_POLICY\.md|\.gitleaks\.toml|\.github/workflows/privacy-guard\.yml|scripts/precommit-privacy-check\.sh|docs/PORTFOLIO\.md|docs/observability/SENTRY_PROJECTS\.md|docs/audit/.*\.md|pnpm-lock\.yaml|templates/governance/privacy-guard/.*)$'
+ALLOWLIST_REGEX='^(docs/security/PUBLIC_REPO_POLICY\.md|\.gitleaks\.toml|\.github/workflows/privacy-guard\.yml|scripts/precommit-privacy-check\.sh|docs/PORTFOLIO\.md|docs/observability/SENTRY_PROJECTS\.md|docs/audit/.*\.md|pnpm-lock\.yaml)$'
 
 # Patterns that must not appear in the public repo.
 # id|description|regex

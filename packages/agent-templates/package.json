@@ -45,6 +45,9 @@
   "scripts": {
     "build": "node ./scripts/sync-from-ssot.mjs",
     "prepack": "npm run build",
-    "test": "node --test test/*.test.mjs"
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.4"
   }
 }

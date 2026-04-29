@@ -24,5 +24,11 @@
     "typescript",
     "octc",
     "1click2control"
-  ]
+  ],
+  "scripts": {
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.4"
+  }
 }

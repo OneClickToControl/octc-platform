@@ -17,6 +17,7 @@
     "install-hooks": "bash scripts/install-hooks.sh"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.27.9"
+    "@changesets/cli": "^2.27.9",
+    "vitest": "^3.2.4"
   }
 }

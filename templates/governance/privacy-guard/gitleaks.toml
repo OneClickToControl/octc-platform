@@ -1,12 +1,7 @@
-# gitleaks configuration for octc-platform (PUBLIC repo)
-# https://github.com/gitleaks/gitleaks
-#
-# Hard rule: nothing identified here may land in this repo.
-# See docs/security/PUBLIC_REPO_POLICY.md for the canonical policy.
-#
-# NOTE: this file (and the other guardrail files listed in the allowlist
-# below) intentionally mention the names of private repositories so the
-# rules know what to look for. The allowlist prevents self-detection.
+# gitleaks configuration — TEMPLATE (octc-platform)
+# Copy to repo root as `.gitleaks.toml` when adopting the privacy-guard stack.
+# Customize rules and [allowlist].paths for your policy files.
+# Upstream reference: https://github.com/OneClickToControl/octc-platform
 
 [extend]
 useDefault = true
@@ -68,5 +63,4 @@ paths = [
   '''^docs/observability/SENTRY_PROJECTS\.md$''',
   '''^docs/audit/.*\.md$''',
   '''^pnpm-lock\.yaml$''',
-  '''^templates/governance/privacy-guard/''',
 ]

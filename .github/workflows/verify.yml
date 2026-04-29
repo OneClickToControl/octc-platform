@@ -71,6 +71,10 @@ jobs:
             templates/observability/sentry/flutter/README.md
             templates/observability/sentry/python/README.md
             templates/governance/PULL_REQUEST_TEMPLATE.md
+            templates/governance/privacy-guard/README.md
+            templates/governance/privacy-guard/gitleaks.toml
+            templates/governance/privacy-guard/precommit-privacy-check.sh
+            templates/governance/privacy-guard/privacy-guard.yml
             packages/tsconfig/package.json
             packages/tsconfig/base.json
             packages/tsconfig/library.json
@@ -166,8 +170,8 @@ jobs:
       - name: Re-sync agent-templates from SSOT
         run: pnpm --filter @1c2c/agent-templates run build
 
-      - name: Run agent-templates tests
-        run: pnpm --filter @1c2c/agent-templates run test
+      - name: Run all @1c2c package tests
+        run: pnpm test
 
       - name: Fail if mirrored files diverge from the SSOT
         run: |

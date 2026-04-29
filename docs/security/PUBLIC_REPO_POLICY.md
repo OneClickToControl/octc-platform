@@ -8,7 +8,7 @@
 
 - Paquetes compartibles `@1c2c/*` (`packages/*`).
 - Schemas (`schemas/*`).
-- Plantillas neutras (`templates/agents/`, `templates/observability/sentry/`, `templates/governance/`).
+- Plantillas neutras (`templates/agents/`, `templates/observability/sentry/`, `templates/governance/`, `templates/governance/privacy-guard/` para adoptar el stack anti-fugas al publicar un repo).
 - Políticas, ADRs, RFCs, runbooks **genéricos** (no atados a clientes ni proyectos puntuales).
 - Workflows CI, configuración de releases, lockfiles.
 - Onboarding, contributing, code of conduct.
