@@ -29,7 +29,7 @@ No sustituye ADRs ni PORTFOLIO: **los define y los enlaza**.
 
 ### Formato máquina-legible (opcional, roadmap CLI)
 
-Para `octc verify monorepo` (futuro): `.octc/monorepo.yaml` y/o frontmatter en `docs/architecture.md`; debe reflejar la misma tabla que la documentación en prosa. Dirección fijada en [ADR-0003](../adr/ADR-0003-monorepo-cli-machine-ssot.md) (estado **proposed** hasta cierre de PR).
+Para `octc verify monorepo` (futuro): `.octc/monorepo.yaml` y/o frontmatter en `docs/architecture.md`; debe reflejar la misma tabla que la documentación en prosa. Dirección fijada en [ADR-0003](../adr/ADR-0003-monorepo-cli-machine-ssot.md) (**accepted**).
 
 ## Trazabilidad (cadena mínima)
 
