@@ -12,7 +12,7 @@ Cómo se propagan capacidades agénticas desde un ACP hasta los runtimes de ejec
 
 ```mermaid
 flowchart LR
-  ACP["health-acp manifest.json"] --> SKILLS["agents/* skills + MCP"]
+  ACP["<acp-id> manifest.json"] --> SKILLS["agents/* skills + MCP"]
   TPL["at1c2c/agent-templates"] --> CLAUDE["CLAUDE.md base"]
   TPL --> CURSOR[".cursor/rules base"]
   ACP --> SYNC["octc-sync"]

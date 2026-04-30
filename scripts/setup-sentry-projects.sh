@@ -1,23 +1,33 @@
 #!/usr/bin/env bash
-# octc-platform — bootstrap canónico de proyectos Sentry para la org única.
+# octc-platform — bootstrap idempotente de proyectos Sentry para la org única.
 # Compatible con bash 3.2 (macOS por defecto).
 # Carga variables desde ./.env si existe (no se commitea, está en .gitignore).
-# Idempotente: si un team o proyecto ya existe, salta su creación y solo lee DSNs.
+#
+# La lista team|proyecto|plataforma NO va en el repo público: usa un spec local
+# (ver PUBLIC_REPO_POLICY.md §Referencias a repos privados).
 #
 # Uso:
+#   cp scripts/sentry-org-projects.spec.example scripts/sentry-org-projects.spec
+#   # editar sentry-org-projects.spec con filas reales (documentación interna)
 #   bash scripts/setup-sentry-projects.sh
 #
-# Variables requeridas (en el shell o en ./.env):
+# Variables reseadas (en el shell o en ./.env):
 #   SENTRY_AUTH_TOKEN    User Auth Token sntryu_...
 #   SENTRY_ORG           ej. oneclicktocontrol
+#
+# Opcional:
+#   SENTRY_PROJECT_SPEC  ruta absoluta a un spec alternativo
 
 set -eu
 
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+SPEC_FILE="${SENTRY_PROJECT_SPEC:-$ROOT/scripts/sentry-org-projects.spec}"
+
 # Cargar .env si existe (no falla si no está)
-if [ -f .env ]; then
+if [ -f "$ROOT/.env" ]; then
   set -a
   # shellcheck disable=SC1091
-  . ./.env
+  . "$ROOT/.env"
   set +a
 fi
 
@@ -30,21 +40,22 @@ if [ -z "${SENTRY_ORG:-}" ]; then
   exit 1
 fi
 
+if [ ! -f "$SPEC_FILE" ]; then
+  echo "ERROR: No existe $SPEC_FILE" >&2
+  echo "  cp scripts/sentry-org-projects.spec.example scripts/sentry-org-projects.spec" >&2
+  echo "  y completa las filas según runbook interno (octc-platform-internal)." >&2
+  exit 1
+fi
+
 API="https://sentry.io/api/0"
 AUTH_HEADER="Authorization: Bearer ${SENTRY_AUTH_TOKEN}"
 JSON_HEADER="Content-Type: application/json"
 
-# team_slug|project_slug|platform
-SPEC="
-platform|octc-platform-meta|node
-health|octc-health-web|javascript-nextjs
-health|octc-health-mobile|flutter
-health|octc-health-ml|python
-health|octc-health-acp|node
-store|octc-store-web|javascript-nextjs
-strategy|octc-strategy-ml|python
-strategy|octc-strategy-api|python
-"
+SPEC=$(grep -v '^[[:space:]]*#' "$SPEC_FILE" | grep -v '^[[:space:]]*$' || true)
+if [ -z "$SPEC" ]; then
+  echo "ERROR: $SPEC_FILE no contiene filas válidas (team|slug|platform)" >&2
+  exit 1
+fi
 
 create_team() {
   team=$1
@@ -88,6 +99,7 @@ unique_teams() {
 }
 
 echo "==> Sentry org: ${SENTRY_ORG}"
+echo "==> Spec file: ${SPEC_FILE}"
 echo
 echo "==> Teams"
 unique_teams | while read -r team; do
@@ -104,7 +116,7 @@ echo "$SPEC" | while IFS='|' read -r team slug platform; do
 done
 
 echo
-echo "==> DSNs (NO commitees: pega el resumen al asistente y se documentan en SENTRY_PROJECTS)"
+echo "==> DSNs (NO commitees: documentar resumen solo en repo interno)"
 echo "----------------------------------------------------------------------------------------"
 echo "$SPEC" | while IFS='|' read -r team slug platform; do
   [ -z "$team" ] && continue

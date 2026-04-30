@@ -28,7 +28,8 @@
 ## Referencias a repos privados (regla específica)
 
 - **No enumerar slugs ni nombres de repositorios privados de la organización** en documentación de este repo (README, ADRs, ejemplos de adopción, tablas de ejemplo).
-- Los **patrones técnicos** que detectan esos identificadores viven **solo** en la cadena de privacy guard: `.gitleaks.toml`, `scripts/precommit-privacy-check.sh` y la plantilla equivalente bajo `templates/governance/privacy-guard/`. Esos archivos deben **mantenerse alineados** entre sí.
+- **Scripts Sentry** (`setup-sentry-projects.sh`, `setup-sentry-alerts.sh`): la tabla `team|proyecto|plataforma` vive en `scripts/sentry-org-projects.spec` (**gitignored**), generada o copiada desde runbooks internos; en el repo público solo existe [`scripts/sentry-org-projects.spec.example`](../../scripts/sentry-org-projects.spec.example) sin slugs de producto.
+- Los **patrones técnicos** que detectan identificadores en historia/docs viven **solo** en la cadena de privacy guard: `.gitleaks.toml`, `scripts/precommit-privacy-check.sh` y la plantilla equivalente bajo `templates/governance/privacy-guard/`. Esos archivos deben **mantenerse alineados** entre sí.
 - Cada vez que exista un **nuevo repositorio privado** cuyo nombre no deba aparecer en público, actualiza esos tres artefactos **antes** de mencionar el proyecto en cualquier otro sitio.
 - Usa referencias genéricas en prosa (`<product-repo-privado>`, `<acp-id>`, etc.) cuando necesites ilustrar sin nombrar.
 - La historia git ya publicada no se reescribe por defecto; las **nuevas** referencias indebidas deben ser bloqueadas por CI.

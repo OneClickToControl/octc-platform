@@ -1,38 +1,49 @@
 #!/usr/bin/env bash
 # Idempotently create the minimum-required issue alerts for every
-# canonical octc-* Sentry project. Reads SENTRY_AUTH_TOKEN and SENTRY_ORG
+# Sentry project listed in the local spec file (same format as
+# setup-sentry-projects.sh). Reads SENTRY_AUTH_TOKEN and SENTRY_ORG
 # from a local .env file (kept out of git).
 #
 # Alerts created (one rule per project):
-#   1. "octc-baseline: new high-severity issue" — fires when a new issue
-#      with level >= error appears.
-#   2. "octc-baseline: error-rate spike vs 1h baseline" — fires when a
-#      project's hourly event count exceeds 200% of its 24h average.
+#   1. "octc-baseline: new high-severity issue"
+#   2. "octc-baseline: error-rate spike vs 1h baseline"
 #
-# Existing rules with the same name are left untouched so the script can
-# be re-run safely.
+# Spec: copy scripts/sentry-org-projects.spec.example → sentry-org-projects.spec
+# and list team|project_slug|platform — see PUBLIC_REPO_POLICY.md.
 
 set -euo pipefail
 
 ROOT="$(git rev-parse --show-toplevel)"
+SPEC_FILE="${SENTRY_PROJECT_SPEC:-$ROOT/scripts/sentry-org-projects.spec}"
+
 [ -f "$ROOT/.env" ] && set -a && . "$ROOT/.env" && set +a
 
 : "${SENTRY_AUTH_TOKEN:?SENTRY_AUTH_TOKEN must be set (in .env or environment)}"
 : "${SENTRY_ORG:?SENTRY_ORG must be set (in .env or environment)}"
 
+if [ ! -f "$SPEC_FILE" ]; then
+  echo "ERROR: No existe $SPEC_FILE — copia desde sentry-org-projects.spec.example" >&2
+  exit 1
+fi
+
+PROJECTS=()
+_spec_tmp=$(mktemp)
+grep -v '^[[:space:]]*#' "$SPEC_FILE" | grep -v '^[[:space:]]*$' > "$_spec_tmp" || true
+while IFS='|' read -r team slug _platform; do
+  [ -z "${team:-}" ] && continue
+  case "$team" in \#*) continue ;; esac
+  [ -z "$slug" ] && continue
+  PROJECTS+=("$slug")
+done < "$_spec_tmp"
+rm -f "$_spec_tmp"
+
+if [ ${#PROJECTS[@]} -eq 0 ]; then
+  echo "ERROR: $SPEC_FILE no produjo ningún project_slug" >&2
+  exit 1
+fi
+
 API="https://sentry.io/api/0"
 HDR=(-H "Authorization: Bearer $SENTRY_AUTH_TOKEN" -H "Content-Type: application/json")
-
-PROJECTS=(
-  octc-platform-meta
-  octc-health-web
-  octc-health-mobile
-  octc-health-ml
-  octc-health-acp
-  octc-store-web
-  octc-strategy-ml
-  octc-strategy-api
-)
 
 new_issue_rule() {
   local project="$1"
@@ -89,6 +100,7 @@ ensure_rule() {
 }
 
 echo "==> Sentry org: $SENTRY_ORG"
+echo "==> Spec file: $SPEC_FILE"
 echo "==> Creating baseline alerts on ${#PROJECTS[@]} projects"
 echo
 for proj in "${PROJECTS[@]}"; do

@@ -1,0 +1,5 @@
+# Copy to sentry-org-projects.spec (gitignored) and add rows.
+# Format per line: team_slug|project_slug|sentry_platform
+# See octc-platform-internal runbooks for the canonical org list.
+#
+platform|octc-platform-meta|node

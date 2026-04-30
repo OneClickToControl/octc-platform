@@ -10,7 +10,8 @@ Disaster Recovery y Business Continuity Plan **para la plataforma**. Este docume
 | Configuración Sentry org | @1click2control | crítica | export JSON mensual | 24h | 30d |
 | Secretos OIDC y vault | @1click2control | crítica | gestor de secretos | 4h | 24h |
 | `@1c2c/*` publicados en npm | @1click2control | alta | npmjs.com | 24h | 0 (inmutable) |
-| PORTFOLIO + REGISTRY + ADRs | @1click2control | alta | repo `octc-platform` | 1h | 0 (git) |
+| REGISTRY + ADRs (política pública) | @1click2control | alta | repo `octc-platform` | 1h | 0 (git) |
+| PORTFOLIO (inventario repos privados) | @1click2control | alta | repo `octc-platform-internal` | 1h | 0 (git) |
 | Dominios DNS | @1click2control | alta | registrador externo | 12h | 24h |
 
 ## Niveles de incidente
@@ -25,7 +26,8 @@ Disaster Recovery y Business Continuity Plan **para la plataforma**. Este docume
 
 - **Repos**: clonado mirror semanal a almacenamiento externo (S3/Cloudflare R2 cifrado).
 - **Sentry**: export semanal de configuración por proyecto (alerts, members, retention) vía API.
-- **PORTFOLIO/REGISTRY snapshots**: tag mensual `snapshots/<YYYY>-<MM>` en `octc-platform`.
+- **REGISTRY (política) + ADRs**: tag mensual `snapshots/<YYYY>-<MM>` en `octc-platform`.
+- **PORTFOLIO (inventario)**: mismo esquema de snapshot en `octc-platform-internal` (no en este repo público).
 - **Secretos**: backup cifrado mensual + rotación trimestral.
 - **Package mirror**: snapshot semanal de `@1c2c/*` en almacenamiento de respaldo (vía `npm pack`).
 

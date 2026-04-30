@@ -5,11 +5,9 @@ Política transversal de observabilidad para OneClickToControl LLC. Sentry es la
 ## Topología
 
 - **Una org Sentry**: `oneclicktocontrol`.
-- **Un proyecto por (producto, surface)**, p. ej.:
-  - `octc-health-web`, `octc-health-mobile`, `octc-health-ml`, `octc-health-acp`.
-  - `octc-store-web`, `octc-store-acp` (cuando exista).
-  - `octc-strategy-ml`, `octc-strategy-api`.
-  - `octc-platform-meta` para errores de scripts y CI de la plataforma.
+- **Un proyecto por (producto, surface)** siguiendo el slug kebab-case `octc-{producto}-{surface}`.
+- **Listado canónico** de equipos y proyectos (nombres reales) en documentación **restringida** — ver inventario enlazado desde [SENTRY_PROJECTS.md](SENTRY_PROJECTS.md).
+- Ejemplos genéricos de la convención (no inventario): `octc-example-web`, `octc-example-mobile`, `octc-example-api`, `octc-platform-meta` (CI/scripts de esta plataforma).
 - **Equipos** alineados a productos para routing de alertas.
 
 ### Convenciones de naming

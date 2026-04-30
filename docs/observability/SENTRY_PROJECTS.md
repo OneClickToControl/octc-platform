@@ -18,4 +18,4 @@ DSNs are technically not secrets (Sentry treats them as public ingest identifier
 
 ## Bootstrap script
 
-[`scripts/setup-sentry-projects.sh`](../../scripts/setup-sentry-projects.sh) is published in this public repo because it is a generic, idempotent orchestrator that takes its specification from a local `.env` file (which is git-ignored). It does not embed any organization-specific identifier.
+[`scripts/setup-sentry-projects.sh`](../../scripts/setup-sentry-projects.sh) y [`scripts/setup-sentry-alerts.sh`](../../scripts/setup-sentry-alerts.sh) son orquestadores idempotentes; la lista `team|proyecto|plataforma` vive en **`scripts/sentry-org-projects.spec`** (gitignored). Copia desde [`scripts/sentry-org-projects.spec.example`](../../scripts/sentry-org-projects.spec.example) y completa las filas según el runbook interno — **no** commitear slugs de productos en el repo público (ver [PUBLIC_REPO_POLICY.md](../security/PUBLIC_REPO_POLICY.md)).
