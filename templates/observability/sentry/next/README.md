@@ -16,7 +16,7 @@ Plantilla de inicialización de Sentry para apps Next.js del portfolio.
 | `NEXT_PUBLIC_SENTRY_DSN` | Cliente |
 | `SENTRY_DSN` | Server/Edge/CI |
 | `NEXT_PUBLIC_SENTRY_ENVIRONMENT` / `SENTRY_ENVIRONMENT` | `production`, `staging`, `preview`, `development` |
-| `NEXT_PUBLIC_SENTRY_RELEASE` / `SENTRY_RELEASE` | **Mismo string** que el `release` usado al subir source maps en CI: `{SENTRY_PROJECT}@` + SHA Git del deploy. En Vercel: literal `{SENTRY_PROJECT}@$VERCEL_GIT_COMMIT_SHA` (ver [OBSERVABILITY.md](../../../docs/observability/OBSERVABILITY.md#releases-y-source-maps)). |
+| `NEXT_PUBLIC_SENTRY_RELEASE` / `SENTRY_RELEASE` | **Mismo string** que el `release` usado al subir source maps en CI: `{SENTRY_PROJECT}@` + SHA Git del deploy. En Vercel: literal `{SENTRY_PROJECT}@$VERCEL_GIT_COMMIT_SHA` (ver [OBSERVABILITY.md](../../../../docs/observability/OBSERVABILITY.md#releases-y-source-maps)). |
 | `SENTRY_ORG`, `SENTRY_PROJECT` | Solo en CI para sourcemaps |
 
 ## Uso
