@@ -25,6 +25,10 @@ Referencia para `.github/workflows/verify.yml` (o `ci.yml`) en repos que consume
 4. Si no usas pnpm, elimina `pnpm/action-setup` y usa solo `setup-node` + `npm ci` + `npm audit signatures`.
 5. Activa el workflow como **required** en branch protection para `main` (o `trunk`).
 
+## Pinning de actions
+
+Las referencias `uses:` deben ir por **SHA de commit** con comentario de tag (p. ej. `actions/checkout@11bd7… # v4.2.2`), no solo `@v4`; alinea con [SUPPLY_CHAIN](https://github.com/OneClickToControl/octc-platform/blob/main/docs/security/SUPPLY_CHAIN.md) y P2-6.
+
 ## Actualización
 
 La versión canónica evoluciona en **OneClickToControl/octc-platform**. Tras mejoras aquí, diff contra tu copia y vuelve a pinneear SHAs si cambian los jobs.
