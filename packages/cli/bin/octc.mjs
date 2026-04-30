@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// @1c2c/cli — umbrella CLI (MVP: delegate agent template sync to octc-agents).
+// @1c2c/cli — umbrella CLI: agent templates + monorepo verify (ADR-0003).
 
 import { spawnSync } from "node:child_process";
 import { createRequire } from "node:module";
@@ -29,14 +29,16 @@ function usage() {
     "Usage:",
     "  octc sync agents [--target <dir>]     update agent templates (delegates to octc-agents sync)",
     "  octc agents init|verify|sync [...]   shorthand for octc-agents <cmd>",
+    "  octc verify monorepo [--cwd <dir>] lint .octc/monorepo.yaml vs filesystem (ADR-0003)",
     "",
     "Examples:",
     "  npx @1c2c/cli sync agents",
-    "  npx @1c2c/cli sync agents --target ./my-repo",
-    "",
-    "Future: octc sync governance … (governance templates from octc-platform).",
+    "  npx @1c2c/cli verify monorepo",
+    "  npx @1c2c/cli verify monorepo --cwd ./my-repo",
     "",
     "See @1c2c/agent-templates for semantics of init / verify / sync.",
+    "",
+    "Monorepo: https://github.com/OneClickToControl/octc-platform/blob/main/docs/adr/ADR-0003-monorepo-cli-machine-ssot.md",
   ].join("\n");
 }
 
@@ -56,7 +58,7 @@ function forwardAgents(agentArgs) {
   process.exit(proc.status === null ? 1 : proc.status);
 }
 
-function main() {
+async function main() {
   const argv = process.argv.slice(2);
 
   if (argv.length === 0 || argv[0] === "-h" || argv[0] === "--help") {
@@ -72,6 +74,10 @@ function main() {
   if (argv[0] === "agents") {
     const sub = argv[1];
     if (sub === "init" || sub === "verify" || sub === "sync") {
+      if (sub === "verify" && argv[2] === "monorepo") {
+        const { runVerifyMonorepo } = await import("../lib/verify-monorepo.mjs");
+        process.exit(runVerifyMonorepo({ argv: argv.slice(3) }));
+      }
       forwardAgents(argv.slice(1));
       return;
     }
@@ -81,10 +87,18 @@ function main() {
     process.exit(2);
   }
 
+  if (argv[0] === "verify" && argv[1] === "monorepo") {
+    const { runVerifyMonorepo } = await import("../lib/verify-monorepo.mjs");
+    process.exit(runVerifyMonorepo({ argv: argv.slice(2) }));
+  }
+
   console.error(`octc: unknown command "${argv[0]}"`);
   console.error("");
   console.error(usage());
   process.exit(2);
 }
 
-main();
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

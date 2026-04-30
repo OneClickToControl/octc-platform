@@ -1,0 +1,17 @@
+# ADR-0003 v0 — SSOT máquina-legible del monorepo.
+# Copiar a .octc/monorepo.yaml en la raíz del repo.
+schema_version: 0
+
+active_surfaces:
+  - web
+
+# Opcional: globs por superficie (relativos al root del repo).
+# paths:
+#   web:
+#     - "apps/web/**"
+#   data:
+#     - "supabase/**"
+
+# Opcional: debe coincidir con active_surfaces unido por comas (mismo orden).
+# portfolio:
+#   repo_surfaces_csv: "web"

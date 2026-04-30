@@ -25,4 +25,9 @@ describe("@1c2c/cli", () => {
     const out = run("agents verify --help");
     expect(out).toMatch(/octc-agents/);
   });
+
+  it("verify monorepo --help", () => {
+    const out = run("verify monorepo --help");
+    expect(out).toMatch(/monorepo\.yaml/);
+  });
 });

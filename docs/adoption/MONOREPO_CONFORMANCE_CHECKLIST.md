@@ -44,7 +44,7 @@ Repite el bloque por cada etiqueta en `active_surfaces`.
 Marcar lo que aplica al repo; N/A documentado.
 
 - [ ] Workflow **solo documentación** (enlaces MD, estilo) si el CI principal omite `*.md`.
-- [ ] **octc-agents** (u homólogo): verify en CI cuando el repo usa plantillas OCTC.
+- [ ] **`octc verify monorepo`** en CI cuando exista `.octc/monorepo.yaml` ([ADR-0003](../adr/ADR-0003-monorepo-cli-machine-ssot.md); `@1c2c/cli` ≥ 0.2.0).
 - [ ] Scripts indexados (`scripts/README.md`) para db, supabase, gobernanza, i18n, seguridad.
 - [ ] Paquetes compartidos (`packages/*`) con README de contrato.
 - [ ] `assets/` o política de marca explícita si hay multi-superficie con identidad compartida.
