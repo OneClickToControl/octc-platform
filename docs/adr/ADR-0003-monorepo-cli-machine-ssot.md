@@ -1,6 +1,6 @@
 # ADR-0003: SSOT máquina-legible del monorepo y CLI (`verify` / `add surface`)
 
-- **Estado**: proposed
+- **Estado**: accepted
 - **Fecha**: 2026-05-01
 - **Tags**: platform, cli, monorepo, governance
 
@@ -31,7 +31,7 @@ Fase 1–2 del plan de adopción cerraron el **contrato narrativo**; esta ADR fi
 
 4. **Seguridad y política pública:** el contenido de `.octc/monorepo.yaml` en repos **públicos** debe cumplir [`PUBLIC_REPO_POLICY.md`](../security/PUBLIC_REPO_POLICY.md). Inventarios con nombres de clientes o PII solo en repos privados o campos omitidos.
 
-5. **Estado de esta ADR:** **proposed** hasta cerrar debate en PR; tras consenso CODEOWNERS, pasar a **accepted** y actualizar [`INDEX.md`](INDEX.md).
+5. **Estado de esta ADR:** **accepted** (vigente); actualizar [`INDEX.md`](INDEX.md) si cambia el estado.
 
 ## Consecuencias
 
