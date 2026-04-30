@@ -89,6 +89,8 @@ jobs:
             packages/agent-templates/index.mjs
             packages/agent-templates/bin/octc-agents.mjs
             packages/agent-templates/scripts/sync-from-ssot.mjs
+            packages/cli/package.json
+            packages/cli/bin/octc.mjs
             pnpm-workspace.yaml
             package.json
             .changeset/config.json

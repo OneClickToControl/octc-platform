@@ -18,9 +18,25 @@ Cómo cada repo (producto o ACP) adopta y mantiene actualizadas las plantillas `
 
 ## Quickstart vía CLI
 
-La ruta canónica de adopción es la CLI `octc-agents` que provee `@1c2c/agent-templates`.
+### Entrada unificada (recomendado): `@1c2c/cli`
+
+El paquete **`@1c2c/cli`** expone el binario `octc` y delega en `octc-agents` para mantener una sola herramienta de cara a futuros subcomandos (`octc sync governance`, ACP→runtime, etc. — ver [RUNTIME_SYNC](RUNTIME_SYNC.md)).
 
 ```bash
+pnpm add -D @1c2c/cli @1c2c/agent-templates
+
+# Sincronizar plantillas (equivale a octc-agents sync)
+npx @1c2c/cli sync agents
+
+# Atajos equivalentes a octc-agents
+npx @1c2c/cli agents init
+npx @1c2c/cli agents verify
+npx @1c2c/cli agents sync
+```
+
+### Solo `octc-agents` (`@1c2c/agent-templates`)
+
+La ruta histórica sigue siendo válida:
 # scaffold inicial en el repo destino
 npx @1c2c/agent-templates init
 

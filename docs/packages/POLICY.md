@@ -89,5 +89,14 @@ Sincronización con el SSOT:
 | `@1c2c/eslint-config` | ESLint compartido. |
 | `@1c2c/tsconfig` | base TS estricta. |
 | `@1c2c/agent-templates` | plantillas CLAUDE/AGENTS/cursor rules. |
+| `@1c2c/cli` | CLI `octc` (sync agentes hoy; governance y ACP en roadmap). |
 | `@1c2c/sentry-config` (opcional) | configs Sentry empaquetadas. |
-| `@1c2c/cli` (futuro) | `octc-sync` y otros utilitarios. |
+
+## Versionado de `@1c2c/cli`
+
+- **Dependencia:** declara rango semver de `@1c2c/agent-templates` en `dependencies` (hoy `^0.1.0`).
+- **Major:** cambios breaking en flags o subcomandos de `octc` (p. ej. renombrar `sync agents`), o eliminación de rutas soportadas.
+- **Minor:** nuevos subcomandos no breaking (p. ej. `octc sync governance`), nuevas flags opcionales.
+- **Patch:** ayudas, mensajes, delegación interna sin cambiar contrato.
+
+Registro de versiones: Changesets igual que el resto de `@1c2c/*`.

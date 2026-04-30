@@ -1,0 +1,41 @@
+{
+  "name": "@1c2c/cli",
+  "version": "0.0.0",
+  "description": "Unified OCTC CLI: octc sync agents and future platform utilities.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "octc": "bin/octc.mjs"
+  },
+  "files": [
+    "bin/",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "test": "vitest run"
+  },
+  "keywords": [
+    "octc",
+    "1click2control",
+    "cli",
+    "agent-templates",
+    "sync"
+  ],
+  "dependencies": {
+    "@1c2c/agent-templates": "^0.1.0"
+  },
+  "devDependencies": {
+    "vitest": "^3.2.4"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OneClickToControl/octc-platform.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/OneClickToControl/octc-platform/tree/main/packages/cli#readme"
+}

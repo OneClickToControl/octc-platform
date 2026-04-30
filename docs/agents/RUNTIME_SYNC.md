@@ -30,5 +30,5 @@ flowchart LR
 
 ## Pendientes
 
-- Implementar `octc-sync` como `@1c2c/cli` (Q3 2026).
-- Documentar adapters específicos por runtime en `docs/agents/ORCHESTRATION.md`.
+- Extender `octc sync` con plantillas de governance y pipeline ACP→runtime (ver adapters en `docs/agents/ORCHESTRATION.md`).
+- **`@1c2c/cli`:** publicado como MVP — `octc sync agents` y `octc agents …` delegan en `octc-agents`.

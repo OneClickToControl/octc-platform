@@ -21,6 +21,16 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4
 
+  packages/cli:
+    dependencies:
+      '@1c2c/agent-templates':
+        specifier: ^0.1.0
+        version: 0.1.0
+    devDependencies:
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4
+
   packages/eslint-config:
     dependencies:
       '@next/eslint-plugin-next':
@@ -50,6 +60,10 @@ importers:
         version: 3.2.4
 
 packages:
+
+  '@1c2c/agent-templates@0.1.0':
+    resolution: {integrity: sha512-j/dvWEctv2+9tBUMGTbXHQCNx9+cus44Q/NpXbwcS7w1Kbw3lQgxRV5Js449zq8N8kShsamjMF6AhVe/14jMEA==}
+    hasBin: true
 
   '@babel/runtime@7.29.2':
     resolution: {integrity: sha512-JiDShH45zKHWyGe4ZNVRrCjBz8Nh9TMmZG1kh4QTK8hCBTWBi8Da+i7s1fJw7/lYpM4ccepSNfqzZ/QvABBi5g==}
@@ -1252,11 +1266,18 @@ packages:
     resolution: {integrity: sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==}
     engines: {node: '>=0.10.0'}
 
+  y@0.3.2:
+    resolution: {integrity: sha512-OJQTQuD3iqJqXzYKs2AgZqQrfPuTOjIFm3jvIc+2SxP6QSB5Ab9Ja9A5mWEDngjaJiEgsHbp2Q2RR/U2pTpTEw==}
+
   yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
 snapshots:
+
+  '@1c2c/agent-templates@0.1.0':
+    dependencies:
+      y: 0.3.2
 
   '@babel/runtime@7.29.2': {}
 
@@ -2434,5 +2455,7 @@ snapshots:
       stackback: 0.0.2
 
   word-wrap@1.2.5: {}
+
+  y@0.3.2: {}
 
   yocto-queue@0.1.0: {}

@@ -30,6 +30,8 @@ npx @1c2c/agent-templates init
 
 The package exposes a binary `octc-agents`.
 
+Para la **CLI unificada** `octc` (MVP: `octc sync agents`), usa el paquete [`@1c2c/cli`](../cli) — delega en este binario.
+
 ```bash
 # scaffold the canonical files in the current repo
 npx @1c2c/agent-templates init

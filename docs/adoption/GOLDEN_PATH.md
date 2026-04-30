@@ -7,7 +7,7 @@ Camino estándar para crear o adoptar un repo nuevo en la plataforma.
 1. Abrir issue en `octc-platform` con plantilla `repo-bootstrap`.
 2. Crear repo en GitHub bajo la org. Activar branch protection y SSO.
 3. Registrar el repo en **PORTFOLIO** del companion privado [`octc-platform-internal`](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/PORTFOLIO.md) (PR a ese repo; ver [PORTFOLIO en este repo](../PORTFOLIO.md) como puntero).
-4. Adoptar `@1c2c/eslint-config`, `@1c2c/tsconfig`, `@1c2c/agent-templates`.
+4. Adoptar `@1c2c/eslint-config`, `@1c2c/tsconfig`, `@1c2c/agent-templates` y, para la CLI unificada, **`@1c2c/cli`** (`npx @1c2c/cli sync agents` delega en `octc-agents`).
 5. Copiar la estructura mínima de [DOCUMENTATION_TREE.md](DOCUMENTATION_TREE.md).
 6. Si el repo expone capacidades a agentes: declarar manifest en `agents/<acp>/manifest.json`, registrar en [REGISTRY](../agents/REGISTRY.md), apuntar a tier objetivo.
 7. Configurar Sentry: crear proyectos en la org única siguiendo `octc-{producto}-{surface}` y subir source maps en CI ([SUPPLY_CHAIN.md](../security/SUPPLY_CHAIN.md)).
