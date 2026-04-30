@@ -8,11 +8,11 @@ Política de orquestación multi-agente para octc-platform.
 - **Trazabilidad obligatoria.** Cualquier orquestador debe emitir spans/breadcrumbs hacia el proyecto Sentry adecuado (ver [AGENT_TELEMETRY.md](../observability/AGENT_TELEMETRY.md)) y respetar el `tools_allowlist_ref` del ACP.
 - **Presupuesto por agente.** Cada agente que ejecuta un orquestador declara presupuesto LLM (ver [LLM_COSTS.md](../finops/LLM_COSTS.md)).
 
-## Paperclip (evaluación)
+## Paperclip (declarativo + evaluación)
 
-- **Casos de uso:** roles, tareas y heartbeats de agentes con UI ligera para humanos.
-- **Frontera:** Paperclip nunca contiene `CLAUDE.md` ni `.cursor/rules`. Solo configuración por agente y misión.
-- **Estado:** evaluación en Q3 2026; a falta de adoptar, esta sección queda como placeholder.
+- **Repo declarativo:** [`octc-paperclip`](https://github.com/OneClickToControl/octc-paperclip) — empresas, políticas, plantillas DE/OP, validación CI (**sin runtime obligatorio** en el estado actual).
+- **Perfil producto (health):** el ACP del dominio health mantiene el perfil de runtime *Paperclip* en su documentación de agentes (`docs/runtime-profiles/` en ese repo; slug en inventario **PORTFOLIO** org interno).
+- **Decisión de hito** (binario, CLI, solo YAML): backlog org **P3-7** / RFC interno; hasta entonces esta sección documenta **límites** (Paperclip no es SSOT de plantillas Cursor/CLAUDE).
 
 ## Reglas para cualquier orquestador
 
