@@ -16,6 +16,7 @@ Referencia para `.github/workflows/verify.yml` (o `ci.yml`) en repos que consume
 4. **`pnpm dlx audit-signatures \|\| npm audit signatures`** después del install — corta el build si falla la verificación de firmas/provenance.
 5. `lint` → `test --if-present` → `build` — sustituye por `turbo run …` o equivalente según el monorepo.
 6. Bloque **comentado** para `pnpm exec octc-agents verify` cuando exista adopción de `@1c2c/agent-templates` (ver [ADOPTION.md](../../../docs/agents/ADOPTION.md)).
+7. Bloque **comentado** para `pnpm exec octc verify monorepo` si el repo define `.octc/monorepo.yaml` ([ADR-0003](../../../docs/adr/ADR-0003-monorepo-cli-machine-ssot.md), plantilla en [`templates/monorepo/`](../../monorepo/README.md)).
 
 ## Pasos de adopción
 

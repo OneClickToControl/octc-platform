@@ -21,14 +21,20 @@ npx @1c2c/cli --help
 npx @1c2c/cli sync agents
 npx @1c2c/cli sync agents --target ./some-repo
 
+# Monorepo (ADR-0003): valida .octc/monorepo.yaml vs el árbol de archivos
+npx @1c2c/cli verify monorepo
+npx @1c2c/cli verify monorepo --cwd ./some-repo
+
 # Shorthand
 npx @1c2c/cli agents verify
 npx @1c2c/cli agents init --force
 ```
 
+Plantilla YAML: en el repo publicado [`templates/monorepo/monorepo.yaml.example`](https://github.com/OneClickToControl/octc-platform/blob/main/templates/monorepo/monorepo.yaml.example); copia a `.octc/monorepo.yaml` en tu producto.
+
 ## Why this package?
 
-- Single command (`octc`) for adopters; future subcommands will cover governance templates, ACP→runtime sync, etc. (see [RUNTIME_SYNC](../../docs/agents/RUNTIME_SYNC.md)).
+- Single command (`octc`) for adopters; **`octc verify monorepo`** comprueba el manifiesto [ADR-0003](../../docs/adr/ADR-0003-monorepo-cli-machine-ssot.md); siguen roadmap `octc sync governance`, ACP→runtime, etc. (see [RUNTIME_SYNC](../../docs/agents/RUNTIME_SYNC.md)).
 - `@1c2c/agent-templates` remains the **implementation** for agent file sync; this package pins it as a dependency.
 
 ## Provenance

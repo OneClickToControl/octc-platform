@@ -50,4 +50,4 @@ Fase 1–2 del plan de adopción cerraron el **contrato narrativo**; esta ADR fi
 - [REFERENCE_PRODUCT_MONOREPO.md](../adoption/REFERENCE_PRODUCT_MONOREPO.md) — vocabulario y matriz CI.
 - [MONOREPO_CONFORMANCE_CHECKLIST.md](../adoption/MONOREPO_CONFORMANCE_CHECKLIST.md).
 - Plan local Cursor (patrón monorepo referencia OCTC) — Fase 4; runbook internal [REFERENCE_MONOREPO_SYNC](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/runbooks/REFERENCE_MONOREPO_SYNC.md) (repo privado; enlace solo para miembros org).
-- Próximo paso de implementación: RFC breve en PR con ejemplo de `monorepo.yaml` en `octc-platform` (`examples/` o `templates/`) y issue en paquete `packages/cli`.
+- Próximo paso de implementación: ~~RFC breve~~ **`octc verify monorepo`** en `@1c2c/cli@0.2.0`; plantilla [`templates/monorepo/`](../../templates/monorepo/README.md). Roadmap: `octc add surface`, bridge internal con auth.

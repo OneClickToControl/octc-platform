@@ -55,6 +55,6 @@ jobs:
         run: pnpm run build
         # Monorepo: pnpm exec turbo run build
 
-      # Si el repo usa @1c2c/agent-templates / @1c2c/cli, descomenta:
-      # - name: octc agents verify
-      #   run: pnpm exec octc agents verify
+      # ADR-0003: si existe .octc/monorepo.yaml, validar coherencia con el filesystem (requiere @1c2c/cli >= 0.2.0):
+      # - name: octc verify monorepo
+      #   run: pnpm exec octc verify monorepo
