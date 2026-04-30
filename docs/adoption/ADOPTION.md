@@ -19,3 +19,7 @@ Cómo se mide y promueve la adopción de octc-platform en los repos de la org.
 ## Métricas
 
 Se reportan en [PLATFORM_SCORECARD.md](../metrics/PLATFORM_SCORECARD.md).
+
+## Monorepos de producto
+
+Repos con varias superficies (web, mobile, datos Supabase, ML, etc.) deben seguir el patrón [REFERENCE_PRODUCT_MONOREPO.md](REFERENCE_PRODUCT_MONOREPO.md), declarar `active_surfaces` en `docs/architecture.md` y usar [MONOREPO_CONFORMANCE_CHECKLIST.md](MONOREPO_CONFORMANCE_CHECKLIST.md) en cambios estructurales. El camino de bootstrap sigue en [GOLDEN_PATH.md](GOLDEN_PATH.md).

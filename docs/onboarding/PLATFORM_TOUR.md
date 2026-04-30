@@ -58,6 +58,12 @@ Lectura mínima:
 - Canales: `#ops`, `#ops-incidents`, `#ops-agents`, `#ops-finops`.
 - Lectura: [DR_BCP](../ops/DR_BCP.md), [PLATFORM_RUNBOOK](../ops/PLATFORM_RUNBOOK.md), [CHANNELS](../comms/CHANNELS.md).
 
+## 8. Monorepos de producto (cuando apliquen)
+
+- Superficies (`landing`, `web`, `data`, `mobile`, `ml`, `api`, `chat`) declaradas en `docs/architecture.md` y espejadas en PORTFOLIO (`repo_surfaces`).
+- Patrón de referencia (CI por `paths`, docs-only, scripts, paquetes compartidos): [REFERENCE_PRODUCT_MONOREPO](../adoption/REFERENCE_PRODUCT_MONOREPO.md), [REPO_ARCHETYPES](../adoption/REPO_ARCHETYPES.md), [checklist](../adoption/MONOREPO_CONFORMANCE_CHECKLIST.md).
+- Camino de adopción: [GOLDEN_PATH](../adoption/GOLDEN_PATH.md).
+
 ## Tu primera contribución
 
 Sigue [CONTRIBUTING](../../CONTRIBUTING.md) y abre un issue tagueado `good-first-issue` o pide al owner una entrada concreta.
