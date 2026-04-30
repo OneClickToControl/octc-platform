@@ -4,9 +4,9 @@
 # Hard rule: nothing identified here may land in this repo.
 # See docs/security/PUBLIC_REPO_POLICY.md for the canonical policy.
 #
-# NOTE: this file (and the other guardrail files listed in the allowlist
-# below) intentionally mention the names of private repositories so the
-# rules know what to look for. The allowlist prevents self-detection.
+# NOTE: this file (and the other guardrail paths in [allowlist]) intentionally
+# contain private-repo slug patterns so scanners know what to block. Prose in
+# PUBLIC_REPO_POLICY.md does not list those slugs; keep these artifacts aligned.
 
 [extend]
 useDefault = true
@@ -28,7 +28,7 @@ tags  = ["sentry", "octc", "private"]
 [[rules]]
 id    = "octc-private-repo-name"
 description = "Reference to a private OneClickToControl repository"
-regex = '''(?i)\b(health-app(-agents)?|store-app|strategy-app|openclaw-workspace-enlaza|ats-copilot-agent|ColombiaEnPR)\b'''
+regex = '''(?i)\b(health-app(-agents)?|health-agents|health-workspace|store-app|strategy-app|openclaw-workspace-enlaza|ats-copilot-agent|ColombiaEnPR)\b'''
 tags  = ["private-repo", "octc"]
 
 [[rules]]
@@ -60,7 +60,6 @@ tags  = ["sentry", "secret"]
 [allowlist]
 description = "Files where it is OK to mention denylist terms because they describe the policy itself."
 paths = [
-  '''^docs/security/PUBLIC_REPO_POLICY\.md$''',
   '''^\.gitleaks\.toml$''',
   '''^\.github/workflows/privacy-guard\.yml$''',
   '''^scripts/precommit-privacy-check\.sh$''',

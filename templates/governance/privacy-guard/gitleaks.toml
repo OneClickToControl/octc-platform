@@ -23,7 +23,7 @@ tags  = ["sentry", "octc", "private"]
 [[rules]]
 id    = "octc-private-repo-name"
 description = "Reference to a private OneClickToControl repository"
-regex = '''(?i)\b(health-app(-agents)?|store-app|strategy-app|openclaw-workspace-enlaza|ats-copilot-agent|ColombiaEnPR)\b'''
+regex = '''(?i)\b(health-app(-agents)?|health-agents|health-workspace|store-app|strategy-app|openclaw-workspace-enlaza|ats-copilot-agent|ColombiaEnPR)\b'''
 tags  = ["private-repo", "octc"]
 
 [[rules]]
@@ -55,7 +55,6 @@ tags  = ["sentry", "secret"]
 [allowlist]
 description = "Files where it is OK to mention denylist terms because they describe the policy itself."
 paths = [
-  '''^docs/security/PUBLIC_REPO_POLICY\.md$''',
   '''^\.gitleaks\.toml$''',
   '''^\.github/workflows/privacy-guard\.yml$''',
   '''^scripts/precommit-privacy-check\.sh$''',

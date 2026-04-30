@@ -22,14 +22,14 @@ cd "$ROOT"
 
 # Files we are explicitly allowed to mention denylist terms in,
 # because they ARE the policy definition or a sealed stub.
-ALLOWLIST_REGEX='^(docs/security/PUBLIC_REPO_POLICY\.md|\.gitleaks\.toml|\.github/workflows/privacy-guard\.yml|scripts/precommit-privacy-check\.sh|docs/PORTFOLIO\.md|docs/observability/SENTRY_PROJECTS\.md|docs/audit/.*\.md|pnpm-lock\.yaml)$'
+ALLOWLIST_REGEX='^(\.gitleaks\.toml|\.github/workflows/privacy-guard\.yml|scripts/precommit-privacy-check\.sh|docs/PORTFOLIO\.md|docs/observability/SENTRY_PROJECTS\.md|docs/audit/.*\.md|pnpm-lock\.yaml)$'
 
 # Patterns that must not appear in the public repo.
 # id|description|regex
 PATTERNS=(
   "octc-sentry-org-id|Sentry organization id of OneClickToControl|o4510948769923072"
   "octc-sentry-dsn|Sentry DSN of OneClickToControl|https?://[a-f0-9]{20,40}@o[0-9]+\\.ingest\\.[a-z0-9.-]+\\.sentry\\.io/[0-9]+"
-  "octc-private-repo-name|Reference to a private OneClickToControl repository|\\b(health-app(-agents)?|store-app|strategy-app|openclaw-workspace-enlaza|ats-copilot-agent|ColombiaEnPR)\\b"
+  "octc-private-repo-name|Reference to a private OneClickToControl repository|\\b(health-app(-agents)?|health-agents|health-workspace|store-app|strategy-app|openclaw-workspace-enlaza|ats-copilot-agent|ColombiaEnPR)\\b"
   "octc-internal-marker|Internal-only marker|\\b(internal-only|do-not-publish|nda-required|reserved-internal)\\b"
   "npm-token|npm token|npm_[A-Za-z0-9]{36,}"
   "github-pat|GitHub personal access token|\\b(gh[pousr]_[A-Za-z0-9]{36,255}|github_pat_[A-Za-z0-9_]{82,})\\b"
