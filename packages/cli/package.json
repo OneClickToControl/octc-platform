@@ -1,6 +1,6 @@
 {
   "name": "@1c2c/cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Unified OCTC CLI: octc sync agents and future platform utilities.",
   "license": "MIT",
   "type": "module",
