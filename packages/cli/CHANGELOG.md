@@ -1,5 +1,13 @@
 # @1c2c/cli
 
+## 0.3.0
+
+### Minor Changes
+
+- d1d317c: - **`octc add surface <surface>`** — plantilla **`data`**: `supabase/README.md` + `docs/db/README.md`; otras superficies: `docs/ops/octc-surface-<surface>-bootstrap.md`. Flags: `--cwd`, `--dry-run`, `--force`.
+  - **`octc sync governance`** — copia `templates/governance/doc-contract` y/o `ci` desde el paquete al repo destino. Flags: `--only all|doc-contract|ci`, `--cwd`, `--dry-run`.
+  - **`octc portfolio suggest`** — lee `.octc/monorepo.yaml` y emite fragmentos para PORTFOLIO interno. Flags: `--cwd`, `--repo`, `--cli-pin`; env `OCTC_PORTFOLIO_*`. Documentación: PORTFOLIO_BRIDGE.
+
 ## 0.2.0
 
 ### Minor Changes
