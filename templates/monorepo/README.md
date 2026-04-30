@@ -8,7 +8,7 @@ pnpm exec octc verify monorepo
 npx @1c2c/cli@latest verify monorepo
 ```
 
-Documentación: [REFERENCE_PRODUCT_MONOREPO](../../../docs/adoption/REFERENCE_PRODUCT_MONOREPO.md) · [ADR-0003](../../../docs/adr/ADR-0003-monorepo-cli-machine-ssot.md).
+Documentación: [REFERENCE_PRODUCT_MONOREPO](../../docs/adoption/REFERENCE_PRODUCT_MONOREPO.md) · [ADR-0003](../../docs/adr/ADR-0003-monorepo-cli-machine-ssot.md).
 
 ## Campos
 
