@@ -55,6 +55,6 @@ jobs:
         run: pnpm run build
         # Monorepo: pnpm exec turbo run build
 
-      # Si el repo usa @1c2c/agent-templates, descomenta:
-      # - name: octc-agents verify
-      #   run: pnpm exec octc-agents verify
+      # Si el repo usa @1c2c/agent-templates / @1c2c/cli, descomenta:
+      # - name: octc agents verify
+      #   run: pnpm exec octc agents verify
