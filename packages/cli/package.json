@@ -1,6 +1,6 @@
 {
   "name": "@1c2c/cli",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Unified OCTC CLI: octc sync agents, octc verify monorepo (ADR-0003), future platform utilities.",
   "license": "MIT",
   "type": "module",

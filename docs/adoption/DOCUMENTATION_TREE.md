@@ -61,7 +61,7 @@ assets/
   brand/           # logos y tokens exportables a clientes
 ```
 
-La correspondencia **superficie ↔ carpetas** vive en `docs/architecture.md` (tabla SSOT). El patrón completo: [REFERENCE_PRODUCT_MONOREPO.md](REFERENCE_PRODUCT_MONOREPO.md) y [MONOREPO_CONFORMANCE_CHECKLIST.md](MONOREPO_CONFORMANCE_CHECKLIST.md).
+La correspondencia **superficie ↔ carpetas** vive en `docs/architecture.md` (tabla SSOT). El patrón completo: [REFERENCE_PRODUCT_MONOREPO.md](REFERENCE_PRODUCT_MONOREPO.md) y [MONOREPO_CONFORMANCE_CHECKLIST.md](MONOREPO_CONFORMANCE_CHECKLIST.md). Repos **ACP / agent-heavy** pueden adoptar la plantilla opcional [doc-contract](../../templates/governance/doc-contract/README.md) (también `pnpm exec octc sync governance --only doc-contract` con `@1c2c/cli` ≥ 0.3.0).
 
 ## Reglas
 

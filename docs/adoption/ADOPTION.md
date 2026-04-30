@@ -22,4 +22,4 @@ Se reportan en [PLATFORM_SCORECARD.md](../metrics/PLATFORM_SCORECARD.md).
 
 ## Monorepos de producto
 
-Repos con varias superficies (web, mobile, datos Supabase, ML, etc.) deben seguir el patrón [REFERENCE_PRODUCT_MONOREPO.md](REFERENCE_PRODUCT_MONOREPO.md), declarar `active_surfaces` en `docs/architecture.md` y usar [MONOREPO_CONFORMANCE_CHECKLIST.md](MONOREPO_CONFORMANCE_CHECKLIST.md) en cambios estructurales. El camino de bootstrap sigue en [GOLDEN_PATH.md](GOLDEN_PATH.md).
+Repos con varias superficies (web, mobile, datos Supabase, ML, etc.) deben seguir el patrón [REFERENCE_PRODUCT_MONOREPO.md](REFERENCE_PRODUCT_MONOREPO.md), declarar `active_surfaces` en `docs/architecture.md` y usar [MONOREPO_CONFORMANCE_CHECKLIST.md](MONOREPO_CONFORMANCE_CHECKLIST.md) en cambios estructurales. Manifiesto máquina-legible y CLI: [ADR-0003](../adr/ADR-0003-monorepo-cli-machine-ssot.md); parity con inventario **PORTFOLIO** interno (sin token): [PORTFOLIO_BRIDGE.md](PORTFOLIO_BRIDGE.md). El camino de bootstrap sigue en [GOLDEN_PATH.md](GOLDEN_PATH.md).

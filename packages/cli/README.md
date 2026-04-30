@@ -21,9 +21,14 @@ npx @1c2c/cli --help
 npx @1c2c/cli sync agents
 npx @1c2c/cli sync agents --target ./some-repo
 
-# Monorepo (ADR-0003): valida .octc/monorepo.yaml vs el árbol de archivos
+# Monorepo / governance (ADR-0003, ≥ 0.2)
 npx @1c2c/cli verify monorepo
 npx @1c2c/cli verify monorepo --cwd ./some-repo
+
+# Stubs y plantillas empaquetadas (≥ 0.3)
+npx @1c2c/cli add surface data
+npx @1c2c/cli sync governance --only doc-contract
+npx @1c2c/cli portfolio suggest --repo my-product
 
 # Shorthand
 npx @1c2c/cli agents verify
@@ -34,7 +39,7 @@ Plantilla YAML: en el repo publicado [`templates/monorepo/monorepo.yaml.example`
 
 ## Why this package?
 
-- Single command (`octc`) for adopters; **`octc verify monorepo`** comprueba el manifiesto [ADR-0003](../../docs/adr/ADR-0003-monorepo-cli-machine-ssot.md); siguen roadmap `octc sync governance`, ACP→runtime, etc. (see [RUNTIME_SYNC](../../docs/agents/RUNTIME_SYNC.md)).
+- **`octc verify monorepo`**, **`octc add surface`**, **`octc sync governance`**, **`octc portfolio suggest`** — ver [ADR-0003](../../docs/adr/ADR-0003-monorepo-cli-machine-ssot.md) y [PORTFOLIO_BRIDGE](../../docs/adoption/PORTFOLIO_BRIDGE.md). Roadmap: automatizar PR a internal solo con credenciales org.
 - `@1c2c/agent-templates` remains the **implementation** for agent file sync; this package pins it as a dependency.
 
 ## Provenance

@@ -27,14 +27,19 @@ function usage() {
     "octc — OneClickToControl platform CLI",
     "",
     "Usage:",
-    "  octc sync agents [--target <dir>]     update agent templates (delegates to octc-agents sync)",
-    "  octc agents init|verify|sync [...]   shorthand for octc-agents <cmd>",
-    "  octc verify monorepo [--cwd <dir>] lint .octc/monorepo.yaml vs filesystem (ADR-0003)",
+    "  octc sync agents [--target <dir>]      agent templates (delegates to octc-agents)",
+    "  octc sync governance [--only <all|doc-contract|ci>] [--cwd <dir>] [--dry-run]",
+    "  octc agents init|verify|sync [...]     shorthand for octc-agents <cmd>",
+    "  octc verify monorepo [--cwd <dir>]     lint .octc/monorepo.yaml vs filesystem",
+    "  octc add surface <surface> [--cwd <dir>] [--dry-run] [--force]",
+    "  octc portfolio suggest [--cwd <dir>] [--repo <name>] [--cli-pin <x.y.z>]",
     "",
     "Examples:",
     "  npx @1c2c/cli sync agents",
     "  npx @1c2c/cli verify monorepo",
-    "  npx @1c2c/cli verify monorepo --cwd ./my-repo",
+    "  npx @1c2c/cli add surface data",
+    "  npx @1c2c/cli sync governance --only doc-contract",
+    "  npx @1c2c/cli portfolio suggest --repo my-product",
     "",
     "See @1c2c/agent-templates for semantics of init / verify / sync.",
     "",
@@ -71,11 +76,30 @@ async function main() {
     return;
   }
 
+  if (argv[0] === "sync" && argv[1] === "governance") {
+    const { runSyncGovernance } = await import("../lib/sync-governance.mjs");
+    process.exit(runSyncGovernance({ argv: argv.slice(2) }));
+  }
+
+  if (argv[0] === "add" && argv[1] === "surface") {
+    const { runAddSurface } = await import("../lib/add-surface.mjs");
+    process.exit(runAddSurface({ argv: argv.slice(2) }));
+  }
+
+  if (argv[0] === "portfolio" && argv[1] === "suggest") {
+    const { runPortfolioSuggest } = await import(
+      "../lib/portfolio-suggest.mjs"
+    );
+    process.exit(runPortfolioSuggest({ argv: argv.slice(2) }));
+  }
+
   if (argv[0] === "agents") {
     const sub = argv[1];
     if (sub === "init" || sub === "verify" || sub === "sync") {
       if (sub === "verify" && argv[2] === "monorepo") {
-        const { runVerifyMonorepo } = await import("../lib/verify-monorepo.mjs");
+        const { runVerifyMonorepo } = await import(
+          "../lib/verify-monorepo.mjs",
+        );
         process.exit(runVerifyMonorepo({ argv: argv.slice(3) }));
       }
       forwardAgents(argv.slice(1));

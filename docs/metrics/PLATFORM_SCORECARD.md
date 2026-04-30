@@ -51,6 +51,11 @@ KPIs vivos de la plataforma. Actualización **trimestral** alineada con la audit
 - **time_to_first_pr_days** = mediana días entre alta y primer PR mergeado para nuevos contribuidores.
 - **bootstrap_time_hours** = tiempo total para bootstrap de repo nuevo siguiendo el GOLDEN_PATH.
 
+### Monorepo y PORTFOLIO interno
+
+- **monorepo_verify_adoption_rate** = % repos producto con `.octc/monorepo.yaml` y paso CI `octc verify monorepo` en la rama principal.
+- **portfolio_surfaces_drift_open** = nº hallazgos o deuda documentada al contrastar `repo_surfaces` (internal) con `docs/architecture.md` / manifiesto (ítem **P2-11** en backlog companion; ver [PORTFOLIO_BRIDGE](../adoption/PORTFOLIO_BRIDGE.md)).
+
 ## Tablero del trimestre vigente (2026-Q2)
 
 | KPI | valor | objetivo | tendencia |
