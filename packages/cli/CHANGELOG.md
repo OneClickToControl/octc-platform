@@ -8,4 +8,4 @@
 
 ## 0.0.0
 
-- Pre-release placeholder; versions are managed by [Changesets](../../.changeset/README.md).
+- Initial publish: `octc sync agents` and `octc agents <init|verify|sync>` delegating to `@1c2c/agent-templates` (`octc-agents`).

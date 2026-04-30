@@ -40,3 +40,15 @@ pnpm dlx audit-signatures || npm audit signatures
 ```
 
 Policy: [docs/packages/POLICY.md](../../docs/packages/POLICY.md).
+
+## First publish (maintainers)
+
+The package must exist on npm before `npx @1c2c/cli` works for consumers. If it is not created yet:
+
+1. Ensure `packages/cli/package.json` version is correct (e.g. `0.1.0`).
+2. From repo root, with `NPM_TOKEN` in `./.env` (classic or granular token with publish rights to `@1c2c`), run:
+   ```bash
+   bash scripts/publish-cli-manual.sh
+   ```
+   The script uses a **temporary `.npmrc` with only the token** so a previous `npm login` in your user profile does not trigger the **browser / device** flow. If publish still asks for OTP: `bash scripts/publish-cli-manual.sh --otp=XXXXXX`. For CI, prefer a **granular automation** token that can publish without OTP (if org policy allows).
+3. First publish uses `--no-provenance` (token on laptop). After the package exists, configure **Trusted Publisher** for `@1c2c/cli` on npm and prefer `release.yml` for subsequent releases (provenance + OIDC), per [SUPPLY_CHAIN](../../docs/security/SUPPLY_CHAIN.md).
