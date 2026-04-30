@@ -16,7 +16,7 @@ Política transversal de observabilidad para OneClickToControl LLC. Sentry es la
 
 - Slug: kebab-case `octc-{producto}-{surface}`.
 - DSNs guardados en gestor de secretos del repo (no en código).
-- Releases con formato `<package-or-app>@<semver>` (alineado con tags).
+- **Identificador de `release` en SDK y en subida de source maps:** ver [Releases y source maps](#releases-y-source-maps) (web desplegada desde Git ≠ semver de paquete npm).
 
 ## Environments
 
@@ -45,8 +45,21 @@ Los repos pueden ajustar a la baja por presupuesto pero **nunca a 0** en producc
 ## Releases y source maps
 
 - Cada release dispara `sentry-cli releases new` + `set-commits` + `finalize`.
-- Source maps subidos vía OIDC (sin tokens long-lived). Ver [SUPPLY_CHAIN.md](../security/SUPPLY_CHAIN.md#source-maps).
+- Source maps subidos vía token de org en CI u OIDC cuando esté configurado. Ver [SUPPLY_CHAIN.md](../security/SUPPLY_CHAIN.md#source-maps).
 - Release health activo en producción y staging.
+
+### Identificador de `release` (apps web desplegadas desde Git)
+
+Para **Next.js / web** donde el despliegue está ligado a un commit de Git (Vercel, etc.):
+
+| Regla | Detalle |
+|-------|---------|
+| **Prefijo** | Debe ser el **slug del proyecto Sentry** (`octc-{producto}-{surface}`), el mismo valor que `SENTRY_PROJECT` en CI. **No** usar nombres alternos del repo, versiones de tienda móvil u otros identificadores que no coincidan con ese proyecto. |
+| **Sufijo** | **SHA Git completo** del commit desplegado (40 caracteres hex en GitHub). |
+| **Fórmula** | `{SENTRY_PROJECT}@{COMMIT_SHA}` (SHA completo del commit desplegado). |
+| **Paridad CI ↔ runtime** | El string que pasa `getsentry/action-release` / `sentry-cli` en el job que sube mapas debe ser **idéntico** a `NEXT_PUBLIC_SENTRY_RELEASE` y `SENTRY_RELEASE` en el entorno del deploy. En plataformas como Vercel suele configurarse como `{SENTRY_PROJECT}@$VERCEL_GIT_COMMIT_SHA` (valor literal de variable con sustitución del SHA del deploy). |
+
+**Paquetes npm `@1c2c/*`:** el `release` puede seguir el tag SemVer del paquete; la fórmula `{proyecto}@{sha}` aplica a **binarios/web** desplegados desde el repo, no al versionado del árbol npm del paquete de librería.
 
 ## Alertas mínimas por proyecto
 
