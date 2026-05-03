@@ -88,12 +88,19 @@ El job **OCTC workspace verify** evoluciona en fases; la implementación canóni
 **Fase 3 — Contrato explícito y reuso**
 
 - **Hecho:** workflow reusable [`octc-workspace-verify-callable.yml`](../../.github/workflows/octc-workspace-verify-callable.yml) (`workflow_call`) para que los `*-workspace` invoquen `@OneClickToControl/octc-platform/.github/workflows/octc-workspace-verify-callable.yml@<pin>` (SHA recomendado) y una sola fuente de verdad de reglas.
-- **Pendiente:** introducir **opt-in** `.octc/workspace-guardrails.yaml` (o bloque en PORTFOLIO) con excepciones versionadas (p. ej. “allow root package.json with only X scripts”) en lugar de bifurcar la plantilla por producto.
+- **Pendiente (solo roadmap; no hay implementación):** **opt-in** `.octc/workspace-guardrails.yaml` (o bloque equivalente en PORTFOLIO) con excepciones versionadas. El callable **hoy no lee** ese archivo: **no existe parser ni efecto en CI**. Pretender una “excepción local” sin tocar el estándar público **no** es válido.
 - **Pendiente:** comprobaciones **opcionales** vía flags: presencia de `octc sync agents` sin monorepo, alineación con pin de `@1c2c/agent-templates` cuando PORTFOLIO exija pin.
+
+**Excepciones y bordes del carril (hoy)**
+
+- Cualquier relajación o cambio de reglas del verify **debe** ir por **PR en `octc-platform`** contra [`octc-workspace-verify-callable.yml`](../../.github/workflows/octc-workspace-verify-callable.yml) (y alinear pins en los `*-workspace`), **o** por decisión explícita documentada (p. ej. ADR + fila PORTFOLIO en el companion interno) que deje constancia de **por qué** ese repo no sigue el default — no basta un YAML local no reconocido por la automatización.
+- Hasta que exista un formato ejecutable acordado, la “fase 3” declarativa es **documentación de intención**; una posible evolución (no normativa) podría declarar campos tipo `allowed_root_files`, `skip_markdown_check`, o `reason` + `version` de política — eso exigiría diseño + implementación en el callable y migración coordinada.
+
 
 **Fase 4 — Plataforma y escala**
 
-- **Generador** (`octc init workspace` o script internal) que materialice `*-workspace` desde plantilla + registre fila PORTFOLIO.
+- **Materializar `*-workspace`:** en el companion privado, script [`materialize-workspace-from-template.sh`](https://github.com/OneClickToControl/octc-platform-internal/blob/main/scripts/materialize-workspace-from-template.sh) + runbook [NEW_WORKSPACE_REPO](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/runbooks/NEW_WORKSPACE_REPO.md) (sustituye parcialmente la idea de “generador” hasta que exista `octc init workspace` en la CLI).
+- **Generador** (`octc init workspace` en `@1c2c/cli`) que además registre fila PORTFOLIO — pendiente.
 - **Post-check** en PR (comentario o etiqueta) cuando el verify detectaría violación en diff (preview).
 - Integración con **estructura strategy-***: mismo carril verify, checklist de adopción en runbook único multi-producto.
 - Telemetría opcional (sin PII): contador de fallos por regla para priorizar nuevos patrones.

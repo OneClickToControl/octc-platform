@@ -1,5 +1,6 @@
 # Reusable: read ACP manifest → repository_dispatch → octc-platform-internal (octc_acp_sync).
 # Call from *-agents with secrets: inherit (OCTC_ACP_DISPATCH_TOKEN or OCTC_PORTFOLIO_DISPATCH_TOKEN).
+# Pin: ./scripts/print-acp-dispatch-callable-pin.sh (octc-platform) after changing this workflow.
 name: OCTC ACP dispatch (callable)
 
 on:
