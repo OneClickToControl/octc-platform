@@ -26,15 +26,42 @@ El árbol de referencia, el workflow **`octc-workspace-verify`** (prohíbe monor
 
 [ADOPTION.md](../agents/ADOPTION.md) describe la adopción estándar de `@1c2c/agent-templates` en repos que **sí** fijan pin y CI `octc-agents verify`. Los `*-workspace` **no** están obligados a ese flujo; si mezclan las dos cosas, documenta en PORTFOLIO si hay pin o excepción.
 
-## `octc-workspace-verify` (plantilla interna): alcance v1
+## `octc-workspace-verify`: alcance **v2** (plantilla `octc-platform-internal`)
 
-En `octc-platform-internal`, el workflow **OCTC workspace verify** comprueba:
+El workflow **OCTC workspace verify** evoluciona en fases; la plantilla internal incorpora:
 
-- que existe `/.octc/monorepo.yaml` → fallo;
-- que no hay `octc-portfolio-dispatch.yml` ni, en otros YAML bajo `.github/workflows/`, llamadas a `octc-portfolio-dispatch-callable`, ni `octc:verify:monorepo` / `octc verify monorepo` (el job ignora el propio `octc-workspace-verify.yml` al escanear);
-- que existen los markdown raíz exigidos por la plantilla.
+**v1 (base)**
 
-**No** detecta por sí solo: dependencias npm que arrastren el contrato app, u otros nombres de workflow copiados desde `*-app`. Ampliar patrones cuando aparezca un caso real.
+- Si existe `/.octc/monorepo.yaml` → fallo CI.
+- Prohibir patrones de *-app* en YAML bajo `.github/` (`octc-portfolio-dispatch-callable`, `octc:verify:monorepo`, `octc verify monorepo`), excluyendo el propio `octc-workspace-verify.yml` (en v2 el escaneo pasa a **todo** `.github/**`).
+
+**v2 (fase actual)**
+
+- Raíz: prohibir `pnpm-workspace.yaml` y `turbo.json` (señal fuerte de monorepo *-app*).
+- Prohibir workflows con nombre fijo típico de producto: `.github/workflows/octc-agents.yml`, `octc-portfolio-dispatch.yml`.
+- Prohibir `.octc/agents/manifest.schema.json` en un workspace “puro” (copia típica desde *-agents* / *-app*).
+- Prohibir árbol `agents/**/manifest.json` (manifests ACP solo en *-agents*).
+- Si existe `package.json` en raíz, no debe contener referencias literales a `octc:verify:monorepo` ni `octc verify monorepo` (workspaces que adopten solo `octc sync agents` siguen siendo posibles sin esas cadenas).
+
+**Qué sigue fuera del alcance de v2**
+
+- No inspecciona lockfiles, dependencias transitivas ni `package.json` sin esas cadenas pero con scripts de *-app* genéricos.
+- No valida contenido de `notes/` ni copia humana de snippets en markdown.
+
+## Evolución propuesta (fases 3 y 4)
+
+**Fase 3 — Contrato explícito y reuso**
+
+- Publicar en `octc-platform` un workflow **reusable** (`workflow_call`) que encapsule los pasos de verify, para que los `*-workspace` lo invoquen con `@OneClickToControl/octc-platform/...@pin` y una sola fuente de verdad de reglas (menos drift que copiar YAML).
+- Introducir **opt-in** `.octc/workspace-guardrails.yaml` (o bloque en PORTFOLIO) con excepciones versionadas (p. ej. “allow root package.json with only X scripts”) en lugar de bifurcar la plantilla por producto.
+- Añadir comprobaciones **opcionales** vía flags: presencia de `octc sync agents` sin monorepo, alineación con pin de `@1c2c/agent-templates` cuando PORTFOLIO exija pin.
+
+**Fase 4 — Plataforma y escala**
+
+- **Generador** (`octc init workspace` o script internal) que materialice `*-workspace` desde plantilla + registre fila PORTFOLIO.
+- **Post-check** en PR (comentario o etiqueta) cuando el verify detectaría violación en diff (preview).
+- Integración con **estructura strategy-***: mismo carril verify, checklist de adopción en runbook único multi-producto.
+- Telemetría opcional (sin PII): contador de fallos por regla para priorizar nuevos patrones.
 
 ## Enlaces
 
