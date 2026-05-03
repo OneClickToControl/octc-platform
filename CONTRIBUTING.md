@@ -25,7 +25,7 @@ Gracias por contribuir a `octc-platform`. Este repo es la SSOT de la plataforma;
 - Usa la plantilla en [templates/governance/PULL_REQUEST_TEMPLATE.md](templates/governance/PULL_REQUEST_TEMPLATE.md). Se aplica automáticamente cuando se copia a `.github/PULL_REQUEST_TEMPLATE.md` (paso de mantenimiento).
 - Marca todos los checkboxes aplicables.
 - Vincula RFC/ADR si los hay.
-- Espera CI verde (`verify.yml`).
+- Espera CI verde (sobre todo `verify.yml` + `privacy-guard.yml`; revisa `.github/workflows/` si añades workflows nuevos).
 
 ## Revisión
 
