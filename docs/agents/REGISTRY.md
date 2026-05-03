@@ -9,6 +9,7 @@ Inventario de **Agent Capability Providers (ACP)** de OneClickToControl LLC. Cad
 - `sensitivity:high` requiere mínimo `L2`.
 - `tools_allowlist_ref` es obligatorio para `L2+` y debe estar versionado.
 - `sentry_project` obligatorio para `L3+`.
+- En documentación **interna**, la tabla `REGISTRY.md` incluye **`manifest_version`**: debe coincidir con el campo `version` (semver) del manifest en el repo `*-agents`.
 
 ## Inventario de la organización
 
@@ -18,7 +19,7 @@ Inventario de **Agent Capability Providers (ACP)** de OneClickToControl LLC. Cad
 |------|----------------------|-----|
 | Manifest en cada repo **`*-agents`** | `agents/<acp-id>/manifest.json` | **SSOT normativa** del ACP (JSON Schema público). |
 | Registry **automatizado** | `docs/agents/registry/<acp-id>.json` | **SSOT operativo / máquina**: snapshot generado por `octc_acp_sync` (PRs automáticos). No sustituye al manifest; lo refleja + metadata de sync. |
-| REGISTRY **humano** | [`docs/agents/REGISTRY.md`](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/agents/REGISTRY.md) | Tabla resumida para la org; se mantiene en hitos o cuando cambian tiers/punteros notables. |
+| REGISTRY **humano** | [`docs/agents/REGISTRY.md`](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/agents/REGISTRY.md) | Tabla resumida para la org (incluye columna **`manifest_version`**, semver del campo `version` del manifest); se actualiza en hitos o cuando cambian tiers, semver o punteros notables. |
 
 **Este archivo** (`octc-platform`) conserva **solo política, convenciones y ejemplos**; no duplica filas productivas ni JSON de catálogo.
 
@@ -26,9 +27,9 @@ Runbook operativo (smoke, merge de PRs del registry): [`ACP_REGISTRY_OPERATIONS.
 
 ## Fila ilustrativa (sintaxis únicamente)
 
-| id | owning_product | runtimes | tier_target | tier_actual | sensitivity | tools_allowlist_ref | sentry_project | owner | notas |
-|----|----------------|----------|-------------|-------------|-------------|---------------------|----------------|-------|-------|
-| example-product-acp | *(ejemplo; no es un ACP real)* | cursor, http | L0 | L0 | low | `docs/agents/TOOLS_ALLOWLIST_L2.md` (ruta en repo del ACP) | n/a | @1click2control | Manifest en `agents/example-product-acp/manifest.json` en el repo del ACP. Sustituir por IDs reales solo en documentación interna. |
+| id | owning_product | runtimes | tier_target | tier_actual | sensitivity | tools_allowlist_ref | sentry_project | owner | manifest_version | notas |
+|----|----------------|----------|-------------|-------------|-------------|---------------------|----------------|-------|------------------|-------|
+| example-product-acp | *(ejemplo; no es un ACP real)* | cursor, http | L0 | L0 | low | `docs/agents/TOOLS_ALLOWLIST_L2.md` (ruta en repo del ACP) | n/a | @1click2control | **0.1.0** | Manifest en `agents/example-product-acp/manifest.json` en el repo del ACP. En internal, alinear `manifest_version` con ese campo. |
 
 ## Cómo registrar un ACP nuevo
 
