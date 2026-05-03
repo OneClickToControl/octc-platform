@@ -20,20 +20,34 @@ Articulación con el monorepo legible por máquina: [ADR-0003](../adr/ADR-0003-m
 
 ## Plantilla y runbook (organización)
 
-El árbol de referencia, el workflow **`octc-workspace-verify`** (prohíbe monorepo de app y patrones CI de portfolio/verify monorepo) y el runbook de alta viven en el repo **privado** **`octc-platform-internal`** (`templates/workspace-repo/`, `docs/runbooks/NEW_WORKSPACE_REPO.md`). Este documento público describe el **contrato**; los miembros de OneClickToControl siguen el runbook interno para bootstrap.
+El **contrato** de límites vive en este repo mediante el workflow reusable [**`octc-workspace-verify-callable.yml`**](../../.github/workflows/octc-workspace-verify-callable.yml). El árbol de plantilla (`README`, markdown raíz, **wrapper** `octc-workspace-verify.yml` en `.github/workflows/`) y el runbook de alta siguen en el repo **privado** [`octc-platform-internal`](https://github.com/OneClickToControl/octc-platform-internal) (`templates/workspace-repo/`, `docs/runbooks/NEW_WORKSPACE_REPO.md`). Los miembros de OneClickToControl siguen el runbook interno para bootstrap.
+
+### Consumir el callable (recomendado)
+
+En el repo `*-workspace`, el workflow `octc-workspace-verify.yml` debe delegar en el callable con **pin por commit SHA** del repo público (misma disciplina que los callables ACP / portfolio dispatch):
+
+```yaml
+jobs:
+  verify:
+    permissions:
+      contents: read
+    uses: OneClickToControl/octc-platform/.github/workflows/octc-workspace-verify-callable.yml@<SHA_OCTC_PLATFORM>
+```
+
+Sustituye `<SHA_OCTC_PLATFORM>` por el commit de `octc-platform` que incorpora la versión de reglas que quieres fijar. Subir solo `@main` es válido en prototipo; en repos bajo control org se prefiere SHA para evitar drift sorpresa.
 
 ## Relación con adopción de plantillas
 
 [ADOPTION.md](../agents/ADOPTION.md) describe la adopción estándar de `@1c2c/agent-templates` en repos que **sí** fijan pin y CI `octc-agents verify`. Los `*-workspace` **no** están obligados a ese flujo; si mezclan las dos cosas, documenta en PORTFOLIO si hay pin o excepción.
 
-## `octc-workspace-verify`: alcance **v2** (plantilla `octc-platform-internal`)
+## `octc-workspace-verify`: alcance **v2** (implementación: callable en `octc-platform`)
 
-El workflow **OCTC workspace verify** evoluciona en fases; la plantilla internal incorpora:
+El job **OCTC workspace verify** evoluciona en fases; la implementación canónica está en [`.github/workflows/octc-workspace-verify-callable.yml`](../../.github/workflows/octc-workspace-verify-callable.yml).
 
 **v1 (base)**
 
 - Si existe `/.octc/monorepo.yaml` → fallo CI.
-- Prohibir patrones de *-app* en YAML bajo `.github/` (`octc-portfolio-dispatch-callable`, `octc:verify:monorepo`, `octc verify monorepo`), excluyendo **`octc-workspace-verify.yml`** para no autoflagar el job de verify.
+- Prohibir patrones de *-app* en YAML bajo `.github/` (`octc-portfolio-dispatch-callable`, `octc:verify:monorepo`, `octc verify monorepo`), excluyendo el archivo local **`octc-workspace-verify.yml`** para no autoflagar el wrapper de verify.
 
 **v2 (fase actual)**
 
@@ -53,9 +67,9 @@ El workflow **OCTC workspace verify** evoluciona en fases; la plantilla internal
 
 **Fase 3 — Contrato explícito y reuso**
 
-- Publicar en `octc-platform` un workflow **reusable** (`workflow_call`) que encapsule los pasos de verify, para que los `*-workspace` lo invoquen con `@OneClickToControl/octc-platform/...@pin` y una sola fuente de verdad de reglas (menos drift que copiar YAML).
-- Introducir **opt-in** `.octc/workspace-guardrails.yaml` (o bloque en PORTFOLIO) con excepciones versionadas (p. ej. “allow root package.json with only X scripts”) en lugar de bifurcar la plantilla por producto.
-- Añadir comprobaciones **opcionales** vía flags: presencia de `octc sync agents` sin monorepo, alineación con pin de `@1c2c/agent-templates` cuando PORTFOLIO exija pin.
+- **Hecho:** workflow reusable [`octc-workspace-verify-callable.yml`](../../.github/workflows/octc-workspace-verify-callable.yml) (`workflow_call`) para que los `*-workspace` invoquen `@OneClickToControl/octc-platform/.github/workflows/octc-workspace-verify-callable.yml@<pin>` (SHA recomendado) y una sola fuente de verdad de reglas.
+- **Pendiente:** introducir **opt-in** `.octc/workspace-guardrails.yaml` (o bloque en PORTFOLIO) con excepciones versionadas (p. ej. “allow root package.json with only X scripts”) en lugar de bifurcar la plantilla por producto.
+- **Pendiente:** comprobaciones **opcionales** vía flags: presencia de `octc sync agents` sin monorepo, alineación con pin de `@1c2c/agent-templates` cuando PORTFOLIO exija pin.
 
 **Fase 4 — Plataforma y escala**
 

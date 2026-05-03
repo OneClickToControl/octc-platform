@@ -1,0 +1,86 @@
+# Reusable: *-workspace guardrails (no monorepo / no *-app CI patterns).
+# Call from *-workspace repos: jobs.verify uses this file @ pin (commit SHA recommended).
+# Contract: docs/adoption/WORKSPACE_LANE.md
+name: OCTC workspace verify (callable)
+
+on:
+  workflow_call: {}
+
+jobs:
+  verify:
+    name: Workspace OCTC boundaries
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4.2.2
+        with:
+          fetch-depth: 1
+
+      - name: Forbid product monorepo contract in workspace repo
+        run: |
+          set -euo pipefail
+          if [ -f .octc/monorepo.yaml ]; then
+            echo "::error::This repo must not contain .octc/monorepo.yaml (OCTC product monorepo contract is *-app only)."
+            exit 1
+          fi
+          echo "OK: no .octc/monorepo.yaml"
+
+      - name: "Phase 2: Forbid app-lane root files, ACP manifests, app CI workflow names"
+        run: |
+          set -euo pipefail
+          for f in pnpm-workspace.yaml turbo.json; do
+            if [ -f "$f" ]; then
+              echo "::error::Root $f is a *-app monorepo signal; not allowed in *-workspace."
+              exit 1
+            fi
+          done
+          if [ -f .github/workflows/octc-agents.yml ]; then
+            echo "::error::octc-agents.yml belongs in *-app or *-agents with full OCTC agents CI, not a bare *-workspace."
+            exit 1
+          fi
+          if [ -f .github/workflows/octc-portfolio-dispatch.yml ]; then
+            echo "::error::octc-portfolio-dispatch.yml belongs in *-app only, not *-workspace."
+            exit 1
+          fi
+          if [ -f .octc/agents/manifest.schema.json ]; then
+            echo "::error::.octc/agents/manifest.schema.json belongs in *-agents / *-app with agents pin, not a typical *-workspace."
+            exit 1
+          fi
+          if [ -d agents ] && [ -n "$(find agents -name manifest.json -print 2>/dev/null)" ]; then
+            echo "::error::ACP manifests under agents/**/manifest.json belong in *-agents only."
+            find agents -name manifest.json -print
+            exit 1
+          fi
+          if [ -f package.json ] && grep -qE '"octc:verify:monorepo"|octc verify monorepo' package.json; then
+            echo "::error::package.json must not reference monorepo verify (*-app only)."
+            exit 1
+          fi
+          echo "OK: phase 2 filesystem boundaries"
+
+      - name: "Forbid *-app patterns in all .github YAML (workflows, actions, composite)"
+        run: |
+          set -euo pipefail
+          PAT='octc-portfolio-dispatch-callable|octc:verify:monorepo|octc verify monorepo'
+          if [ -d .github ]; then
+            while IFS= read -r -d '' f; do
+              [ "$(basename "$f")" = "octc-workspace-verify.yml" ] && continue
+              if grep -qE "$PAT" "$f"; then
+                echo "::error::Found *-app-only OCTC pattern in $f"
+                grep -nE "$PAT" "$f" || true
+                exit 1
+              fi
+            done < <(find .github -type f \( -name '*.yml' -o -name '*.yaml' \) -print0)
+          fi
+          echo "OK: no app-lane patterns under .github/"
+
+      - name: Root markdown presence (template sanity)
+        run: |
+          set -euo pipefail
+          for f in README.md AGENTS.md CLAUDE.md IDENTITY.md MEMORY.md SOUL.md USER.md TOOLS.md HEARTBEAT.md; do
+            if [ ! -f "$f" ]; then
+              echo "::error::Missing required file: $f"
+              exit 1
+            fi
+          done
+          echo "OK: core markdown files present"
