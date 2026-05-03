@@ -1,6 +1,6 @@
 # @1c2c/cli
 
-Unified **OCTC** command-line entry point. **MVP:** `octc sync agents` delegates to [`octc-agents`](../agent-templates) from `@1c2c/agent-templates` (same `init` / `verify` / `sync` semantics).
+Unified **OCTC** command-line entry point (**`@1c2c/cli` · v0.3+**). Agent flows delegate to [`octc-agents`](../agent-templates); monorepo / superficies / gobernanza / sugerencias de PORTFOLIO viven en el mismo binario (`octc verify monorepo`, `octc add|sync surface`, `octc sync governance`, `octc portfolio suggest` — ver [ADR-0003](../../docs/adr/ADR-0003-monorepo-cli-machine-ssot.md)).
 
 ## Install
 

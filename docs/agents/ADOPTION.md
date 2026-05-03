@@ -22,7 +22,7 @@ Los repos **`*-workspace`** (memoria, identidad, notas) **no** están obligados 
 
 ### Entrada unificada (recomendado): `@1c2c/cli`
 
-El paquete **`@1c2c/cli`** expone el binario `octc` y delega en `octc-agents` para mantener una sola herramienta de cara a futuros subcomandos (`octc sync governance`, ACP→runtime, etc. — ver [RUNTIME_SYNC](RUNTIME_SYNC.md)).
+El paquete **`@1c2c/cli`** expone el binario `octc` y delega en `octc-agents` para agentes; además incluye comandos de monorepo (`octc verify monorepo`, `octc sync surface`, …) según [ADR-0003](../adr/ADR-0003-monorepo-cli-machine-ssot.md). Visión **ACP→runtime** en [RUNTIME_SYNC](RUNTIME_SYNC.md).
 
 ```bash
 pnpm add -D @1c2c/cli @1c2c/agent-templates
@@ -39,6 +39,8 @@ npx @1c2c/cli agents sync
 ### Solo `octc-agents` (`@1c2c/agent-templates`)
 
 La ruta histórica sigue siendo válida:
+
+```bash
 # scaffold inicial en el repo destino
 npx @1c2c/agent-templates init
 
