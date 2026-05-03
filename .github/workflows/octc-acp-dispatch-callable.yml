@@ -36,6 +36,7 @@ jobs:
           python3 << 'PY'
           import json
           import os
+          import urllib.error
           import urllib.request
 
           token = (os.environ.get("OCTC_ACP_DISPATCH_TOKEN") or "").strip() or (
@@ -60,24 +61,10 @@ jobs:
           if not acp_id:
               raise SystemExit("manifest.id is required")
 
-          def norm_list(x):
-              return x if isinstance(x, list) else []
-
+          # GitHub API: client_payload allows at most 10 top-level keys.
+          # Keep a compact shape: repository + commit + full manifest (SSOT).
           payload = {
               "repository": repo_short,
-              "acp_id": acp_id,
-              "owning_product": manifest.get("owning_product"),
-              "repositories": norm_list(manifest.get("repositories")),
-              "runtimes_supported": norm_list(manifest.get("runtimes_supported")),
-              "conformance_tier_target": manifest.get("conformance_tier_target"),
-              "sensitivity": manifest.get("sensitivity"),
-              "tools_allowlist_ref": manifest.get("tools_allowlist_ref", "") or "",
-              "upstream_sources": norm_list(manifest.get("upstream_sources")),
-              "downstream_deployments": norm_list(manifest.get("downstream_deployments")),
-              "integrations_refs": norm_list(manifest.get("integrations_refs")),
-              "sentry_project": manifest.get("sentry_project", "") or "",
-              "owner": manifest.get("owner", "") or "",
-              "version": manifest.get("version", "") or "",
               "commit": os.environ.get("GITHUB_SHA", "") or "",
               "manifest": manifest,
           }
@@ -96,6 +83,12 @@ jobs:
               },
               method="POST",
           )
-          urllib.request.urlopen(req, timeout=60)
-          print("dispatch OK →", url, {k: payload[k] for k in payload if k != "manifest"})
+          try:
+              urllib.request.urlopen(req, timeout=60)
+          except urllib.error.HTTPError as e:
+              detail = e.read().decode("utf-8", errors="replace")
+              raise SystemExit(
+                  f"repository_dispatch failed HTTP {e.code}: {detail}"
+              ) from e
+          print("dispatch OK →", url, {"repository": repo_short, "acp_id": acp_id})
           PY
