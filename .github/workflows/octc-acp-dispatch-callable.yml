@@ -1,0 +1,101 @@
+# Reusable: read ACP manifest → repository_dispatch → octc-platform-internal (octc_acp_sync).
+# Call from *-agents with secrets: inherit (OCTC_ACP_DISPATCH_TOKEN or OCTC_PORTFOLIO_DISPATCH_TOKEN).
+name: OCTC ACP dispatch (callable)
+
+on:
+  workflow_call:
+    inputs:
+      internal_repo:
+        description: "Destination repo (no org prefix)"
+        type: string
+        required: false
+        default: octc-platform-internal
+      manifest_path:
+        description: "Path to manifest JSON in caller repo"
+        type: string
+        required: true
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4.2.2
+
+      - name: repository_dispatch (octc_acp_sync)
+        env:
+          OCTC_ACP_DISPATCH_TOKEN: ${{ secrets.OCTC_ACP_DISPATCH_TOKEN }}
+          OCTC_PORTFOLIO_DISPATCH_TOKEN: ${{ secrets.OCTC_PORTFOLIO_DISPATCH_TOKEN }}
+          OWNER: ${{ github.repository_owner }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          INTERNAL_REPO: ${{ inputs.internal_repo }}
+          MANIFEST_PATH: ${{ inputs.manifest_path }}
+        run: |
+          python3 << 'PY'
+          import json
+          import os
+          import urllib.request
+
+          token = (os.environ.get("OCTC_ACP_DISPATCH_TOKEN") or "").strip() or (
+              os.environ.get("OCTC_PORTFOLIO_DISPATCH_TOKEN") or ""
+          ).strip()
+          if not token:
+              raise SystemExit(
+                  "Missing secret: set OCTC_ACP_DISPATCH_TOKEN (preferred) or "
+                  "OCTC_PORTFOLIO_DISPATCH_TOKEN with permission to POST "
+                  "../dispatches on the internal repo."
+              )
+
+          owner = os.environ["OWNER"]
+          internal = os.environ["INTERNAL_REPO"]
+          repo_short = os.environ["GITHUB_REPOSITORY"].split("/")[-1]
+          path = os.environ["MANIFEST_PATH"]
+
+          with open(path, encoding="utf-8") as f:
+              manifest = json.load(f)
+
+          acp_id = manifest.get("id")
+          if not acp_id:
+              raise SystemExit("manifest.id is required")
+
+          def norm_list(x):
+              return x if isinstance(x, list) else []
+
+          payload = {
+              "repository": repo_short,
+              "acp_id": acp_id,
+              "owning_product": manifest.get("owning_product"),
+              "repositories": norm_list(manifest.get("repositories")),
+              "runtimes_supported": norm_list(manifest.get("runtimes_supported")),
+              "conformance_tier_target": manifest.get("conformance_tier_target"),
+              "sensitivity": manifest.get("sensitivity"),
+              "tools_allowlist_ref": manifest.get("tools_allowlist_ref", "") or "",
+              "upstream_sources": norm_list(manifest.get("upstream_sources")),
+              "downstream_deployments": norm_list(manifest.get("downstream_deployments")),
+              "integrations_refs": norm_list(manifest.get("integrations_refs")),
+              "sentry_project": manifest.get("sentry_project", "") or "",
+              "owner": manifest.get("owner", "") or "",
+              "version": manifest.get("version", "") or "",
+              "commit": os.environ.get("GITHUB_SHA", "") or "",
+              "manifest": manifest,
+          }
+
+          body = json.dumps(
+              {"event_type": "octc_acp_sync", "client_payload": payload}
+          ).encode("utf-8")
+          url = f"https://api.github.com/repos/{owner}/{internal}/dispatches"
+          req = urllib.request.Request(
+              url,
+              data=body,
+              headers={
+                  "Accept": "application/vnd.github+json",
+                  "Authorization": f"Bearer {token}",
+                  "X-GitHub-Api-Version": "2022-11-28",
+              },
+              method="POST",
+          )
+          urllib.request.urlopen(req, timeout=60)
+          print("dispatch OK →", url, {k: payload[k] for k in payload if k != "manifest"})
+          PY
