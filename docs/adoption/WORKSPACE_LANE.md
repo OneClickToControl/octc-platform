@@ -33,11 +33,11 @@ El workflow **OCTC workspace verify** evoluciona en fases; la plantilla internal
 **v1 (base)**
 
 - Si existe `/.octc/monorepo.yaml` → fallo CI.
-- Prohibir patrones de *-app* en YAML bajo `.github/` (`octc-portfolio-dispatch-callable`, `octc:verify:monorepo`, `octc verify monorepo`), saltando **`octc-workspace-verify.yml`** para no autoflagear el workflow de verify.
+- Prohibir patrones de *-app* en YAML bajo `.github/` (`octc-portfolio-dispatch-callable`, `octc:verify:monorepo`, `octc verify monorepo`), excluyendo **`octc-workspace-verify.yml`** para no autoflagar el job de verify.
 
 **v2 (fase actual)**
 
-- Mantiene el escaneo recursivo de **todos** los `*.yml|*.yaml` bajo `.github/` con la misma exclusión **`octc-workspace-verify.yml`**.
+- Escaneo recursivo de **todos** los `*.yml` y `*.yaml` bajo `.github/` con la misma exclusión **`octc-workspace-verify.yml`**.
 - Raíz: prohibir `pnpm-workspace.yaml` y `turbo.json` (señal fuerte de monorepo *-app*).
 - Prohibir workflows con nombre fijo típico de producto: `.github/workflows/octc-agents.yml`, `octc-portfolio-dispatch.yml`.
 - Prohibir `.octc/agents/manifest.schema.json` en un workspace “puro” (copia típica desde *-agents* / *-app*).
