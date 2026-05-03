@@ -25,10 +25,12 @@ Fase 1–2 del plan de adopción cerraron el **contrato narrativo**; esta ADR fi
 2. **Hasta que `verify` exista**, la tabla en `docs/architecture.md` sigue siendo obligatoria para humanos; cuando un repo active `.octc/monorepo.yaml`, **debe** coincidir en orden y membresía con `active_surfaces` declarado en prosa (misma regla que PORTFOLIO `repo_surfaces`).
 
 3. **Comandos `@1c2c/cli` (estado publicado):**
-   - `octc verify monorepo` — lectura de `.octc/monorepo.yaml`; validación de rutas y reglas documentadas (lint de coherencia).
-   - `octc add surface <surface>` — materializa stubs mínimos empaquetados (p. ej. `data` → `supabase/README.md`, `docs/db/README.md`); otras superficies: guía en `docs/ops/`.
+   - `octc verify monorepo` — lectura de `.octc/monorepo.yaml`; validación de rutas y reglas documentadas (lint de coherencia); reglas adicionales sobre `packages/**` cuando existen workspaces compartidos (≥ 0.3.0).
+   - `octc add surface <surface>` — materializa stubs desde `templates/surfaces/<surface>/` en el paquete (todas las superficies canónicas; ≥ 0.3.0).
+   - `octc sync surface <surface>|--all` — reaplica las mismas plantillas (≥ 0.3.0); flags `--dry-run`, `--force`, `--cwd`.
    - `octc sync governance` — copia `doc-contract` y/o plantilla CI consumidor desde artefactos empaquetados en el paquete.
    - `octc portfolio suggest` — imprime fragmentos para actualizar PORTFOLIO interno **sin** token (pegar en PR manual); ver [`PORTFOLIO_BRIDGE.md`](../adoption/PORTFOLIO_BRIDGE.md).
+   - **Alcance:** comandos de superficie + `verify` monorepo respecto al vocabulario canónico están pensados para repos **`*-app`**. Repos **`*-agents`** / **`*-workspace`** pueden usar otras piezas del CLI (p. ej. `sync agents`) sin que la matriz `.octc/monorepo.yaml` sustituya su gobierno.
    - **Escritura automática** en `octc-platform-internal` (abrir PR sin humano) — **sigue exigiendo** autenticación org (PAT/App); no forma parte del paquete npm público como flujo “solo install”.
 
 4. **Seguridad y política pública:** el contenido de `.octc/monorepo.yaml` en repos **públicos** debe cumplir [`PUBLIC_REPO_POLICY.md`](../security/PUBLIC_REPO_POLICY.md). Inventarios con nombres de clientes o PII solo en repos privados o campos omitidos.
@@ -52,4 +54,4 @@ Fase 1–2 del plan de adopción cerraron el **contrato narrativo**; esta ADR fi
 - [REFERENCE_PRODUCT_MONOREPO.md](../adoption/REFERENCE_PRODUCT_MONOREPO.md) — vocabulario y matriz CI.
 - [MONOREPO_CONFORMANCE_CHECKLIST.md](../adoption/MONOREPO_CONFORMANCE_CHECKLIST.md).
 - Plan local Cursor (patrón monorepo referencia OCTC) — Fase 4; runbook internal [REFERENCE_MONOREPO_SYNC](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/runbooks/REFERENCE_MONOREPO_SYNC.md) (repo privado; enlace solo para miembros org).
-- Próximo paso de implementación: **`@1c2c/cli@0.3.0`** — `add surface`, `sync governance`, `portfolio suggest` (ver CHANGELOG del paquete). Automatización PR → internal solo con credenciales org ([`PORTFOLIO_BRIDGE`](../adoption/PORTFOLIO_BRIDGE.md)).
+- Próximo paso de implementación publicado: **`@1c2c/cli@0.3.0`** — `add surface` y **`sync surface`** para todas las superficies canónicas, `verify` con reglas `packages/**`, `sync governance`, `portfolio suggest` (ver CHANGELOG del paquete). Automatización PR → internal: [PORTFOLIO_BRIDGE](../adoption/PORTFOLIO_BRIDGE.md) y runbook [PORTFOLIO_DISPATCH_SETUP](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/runbooks/PORTFOLIO_DISPATCH_SETUP.md) (repo privado).

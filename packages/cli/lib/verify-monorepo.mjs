@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
 import fg from "fast-glob";
 import YAML from "yaml";
@@ -128,7 +128,7 @@ function validateSchema(doc) {
     }
   }
 
-  return { errors, warnings, config: errors.length ? null : doc };
+  return { errors, warnings, config: errors.length === 0 ? doc : null };
 }
 
 function normalizeCsv(s) {
@@ -155,6 +155,30 @@ function anyGlobMatches(root, patterns) {
     if (hits.length > 0) return true;
   }
   return false;
+}
+
+/**
+ * Directorio packages/ presente con al menos una entrada (workspaces típicos).
+ * @param {string} root
+ */
+function hasNonEmptyPackagesDir(root) {
+  const p = join(root, "packages");
+  if (!existsSync(p) || !isDir(p)) return false;
+  try {
+    return readdirSync(p).length > 0;
+  } catch {
+    return false;
+  }
+}
+
+function globListCoversPackages(globs) {
+  if (!globs || globs.length === 0) return false;
+  return globs.some(
+    (g) =>
+      g.includes("packages/**") ||
+      g.includes("packages/*") ||
+      g.startsWith("packages/"),
+  );
 }
 
 function verifyPaths(root, config) {
@@ -202,6 +226,23 @@ function verifyPaths(root, config) {
       errors.push(
         `verify: portfolio.repo_surfaces_csv "${fromPortfolio}" no coincide con active_surfaces (${fromYaml})`,
       );
+    }
+  }
+
+  if (hasNonEmptyPackagesDir(root)) {
+    const consumers = surfaces.filter((s) => s !== "data");
+    if (consumers.length > 0) {
+      for (const surface of consumers) {
+        const globs =
+          Array.isArray(customPaths[surface]) && customPaths[surface].length > 0
+            ? customPaths[surface]
+            : DEFAULT_PATH_GLOBS[surface];
+        if (!globListCoversPackages(globs)) {
+          errors.push(
+            `verify: existe packages/ con workspaces; añade un glob "packages/**" (u homólogo) a paths.${surface} para que CI/contratos alineen con paquetes compartidos`,
+          );
+        }
+      }
     }
   }
 

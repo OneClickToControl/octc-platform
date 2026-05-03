@@ -4,9 +4,15 @@
 
 ### Minor Changes
 
-- d1d317c: - **`octc add surface <surface>`** — plantilla **`data`**: `supabase/README.md` + `docs/db/README.md`; otras superficies: `docs/ops/octc-surface-<surface>-bootstrap.md`. Flags: `--cwd`, `--dry-run`, `--force`.
-  - **`octc sync governance`** — copia `templates/governance/doc-contract` y/o `ci` desde el paquete al repo destino. Flags: `--only all|doc-contract|ci`, `--cwd`, `--dry-run`.
-  - **`octc portfolio suggest`** — lee `.octc/monorepo.yaml` y emite fragmentos para PORTFOLIO interno. Flags: `--cwd`, `--repo`, `--cli-pin`; env `OCTC_PORTFOLIO_*`. Documentación: PORTFOLIO_BRIDGE.
+- **`octc sync surface <surface>|--all`**: reaplica plantillas versionadas del paquete (`templates/surfaces/<surface>/`, manifiesto `.octc-manifest.txt` cuando existe). Flags: `--cwd`, `--dry-run`, `--force`.
+- **`octc add surface`**: todas las superficies canónicas usan plantilla empaquetada (`landing`, `web`, `mobile`, `ml`, `api`, `chat`, `data`).
+- **`octc verify monorepo`**: si existe `packages/` no vacío y hay superficies consumidoras (`≠ data`), cada una debe incluir un glob que cubra `packages/**` en `paths.<surface>` (o equivalente).
+- Límite explícito en plantillas/docs: matriz de superficies `octc add|sync surface` aplica a repos **`*-app`**; repos **`*-agents`** / **`*-workspace`** quedan fuera de este contrato hasta plan dedicado.
+
+### Migración
+
+- Monorepos con `packages/` y `active_surfaces` sin `data` solos: añadir p. ej. `packages/**` a cada `paths.<superficie>` consumidora.
+- Ejemplo actualizado: `templates/monorepo/monorepo.yaml.example`.
 
 ## 0.2.0
 

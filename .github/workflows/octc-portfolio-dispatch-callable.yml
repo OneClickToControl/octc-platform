@@ -1,0 +1,86 @@
+# Workflow reutilizable: envía repository_dispatch a octc-platform-internal.
+# Llamar desde cada *-app con secrets: inherit (p. ej. secret org OCTC_PORTFOLIO_DISPATCH_TOKEN).
+name: OCTC portfolio dispatch (callable)
+
+on:
+  workflow_call:
+    inputs:
+      internal_repo:
+        description: "Repo receptor del dispatch (sin prefijo de org)"
+        type: string
+        required: false
+        default: octc-platform-internal
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PyYAML
+        run: pip install pyyaml --quiet
+
+      - name: repository_dispatch
+        env:
+          TOKEN: ${{ secrets.OCTC_PORTFOLIO_DISPATCH_TOKEN }}
+          OWNER: ${{ github.repository_owner }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          INTERNAL_REPO: ${{ inputs.internal_repo }}
+        run: |
+          python3 << 'PY'
+          import json, os, re, urllib.request
+          import yaml
+
+          owner = os.environ["OWNER"]
+          internal = os.environ["INTERNAL_REPO"]
+          repo_short = os.environ["GITHUB_REPOSITORY"].split("/")[-1]
+          token = os.environ["TOKEN"]
+          if not token:
+              raise SystemExit(
+                  "Falta secret OCTC_PORTFOLIO_DISPATCH_TOKEN "
+                  "(org o repo); debe poder POST .../dispatches en "
+                  + internal
+              )
+
+          with open(".octc/monorepo.yaml") as f:
+              doc = yaml.safe_load(f)
+          surfaces = (doc.get("portfolio") or {}).get("repo_surfaces_csv")
+          if not surfaces:
+              surfaces = ",".join(doc.get("active_surfaces") or [])
+
+          with open("package.json") as f:
+              pkg = json.load(f)
+          ver = (pkg.get("devDependencies") or {}).get("@1c2c/cli", "")
+          m = re.search(r"([\d.]+)", ver)
+          pin = m.group(1) if m else ver
+
+          payload = {
+              "repository": repo_short,
+              "repo_surfaces_csv": surfaces,
+              "octc_cli_pin": pin,
+              "commit": os.environ.get("GITHUB_SHA", ""),
+          }
+          body = json.dumps(
+              {"event_type": "octc_portfolio_sync", "client_payload": payload}
+          ).encode("utf-8")
+          url = f"https://api.github.com/repos/{owner}/{internal}/dispatches"
+          req = urllib.request.Request(
+              url,
+              data=body,
+              headers={
+                  "Accept": "application/vnd.github+json",
+                  "Authorization": f"Bearer {token}",
+                  "X-GitHub-Api-Version": "2022-11-28",
+              },
+              method="POST",
+          )
+          urllib.request.urlopen(req, timeout=60)
+          print("dispatch OK →", url, payload)
+          PY

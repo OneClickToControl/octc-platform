@@ -21,7 +21,32 @@ describe("octc platform commands (0.3)", () => {
     const out = run("--help");
     expect(out).toMatch(/sync governance/);
     expect(out).toMatch(/add surface/);
+    expect(out).toMatch(/sync surface/);
     expect(out).toMatch(/portfolio suggest/);
+  });
+
+  it("add surface web crea bootstrap ops", () => {
+    const root = mkdtempSync(join(tmpdir(), "octc-add-web-"));
+    run("add surface web", root);
+    expect(
+      existsSync(join(root, "docs", "ops", "octc-surface-web-bootstrap.md")),
+    ).toBe(true);
+  });
+
+  it("sync surface web --dry-run no escribe", () => {
+    const root = mkdtempSync(join(tmpdir(), "octc-sync-web-dry-"));
+    run("sync surface web --dry-run", root);
+    expect(
+      existsSync(join(root, "docs", "ops", "octc-surface-web-bootstrap.md")),
+    ).toBe(false);
+  });
+
+  it("sync surface web escribe igual que add", () => {
+    const root = mkdtempSync(join(tmpdir(), "octc-sync-web-"));
+    run("sync surface web", root);
+    expect(
+      existsSync(join(root, "docs", "ops", "octc-surface-web-bootstrap.md")),
+    ).toBe(true);
   });
 
   it("add surface data crea stubs", () => {

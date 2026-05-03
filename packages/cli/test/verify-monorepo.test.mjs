@@ -27,6 +27,36 @@ describe("verifyMonorepoFromConfig", () => {
     expect(r.errors.some((e) => e.includes("desconocida"))).toBe(true);
   });
 
+  it("falla si existe packages/ y falta glob packages en paths (consumidor)", () => {
+    const root = mkdtempSync(join(tmpdir(), "octc-pkg-"));
+    mkdirSync(join(root, "packages", "shared-types"), { recursive: true });
+    writeFileSync(join(root, "packages", "shared-types", "package.json"), "{}");
+    mkdirSync(join(root, "apps", "web"), { recursive: true });
+    writeFileSync(join(root, "apps", "web", "x.txt"), "");
+    const r = verifyMonorepoFromConfig(root, {
+      schema_version: 0,
+      active_surfaces: ["web"],
+    });
+    expect(r.ok).toBe(false);
+    expect(r.errors.some((e) => e.includes("packages/**"))).toBe(true);
+  });
+
+  it("ok si packages/ existe y paths incluyen packages/**", () => {
+    const root = mkdtempSync(join(tmpdir(), "octc-pkg2-"));
+    mkdirSync(join(root, "packages", "x"), { recursive: true });
+    writeFileSync(join(root, "packages", "x", "package.json"), "{}");
+    mkdirSync(join(root, "apps", "web"), { recursive: true });
+    writeFileSync(join(root, "apps", "web", "x.txt"), "");
+    const r = verifyMonorepoFromConfig(root, {
+      schema_version: 0,
+      active_surfaces: ["web"],
+      paths: {
+        web: ["apps/web/**", "packages/**"],
+      },
+    });
+    expect(r.ok).toBe(true);
+  });
+
   it("falla si portfolio.repo_surfaces_csv no coincide", () => {
     const root = mkdtempSync(join(tmpdir(), "octc-verify-"));
     mkdirSync(join(root, "apps", "web"), { recursive: true });

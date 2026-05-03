@@ -26,7 +26,9 @@ npx @1c2c/cli verify monorepo
 npx @1c2c/cli verify monorepo --cwd ./some-repo
 
 # Stubs y plantillas empaquetadas (≥ 0.3)
-npx @1c2c/cli add surface data
+npx @1c2c/cli add surface web
+npx @1c2c/cli sync surface web --dry-run
+npx @1c2c/cli sync surface --all --force
 npx @1c2c/cli sync governance --only doc-contract
 npx @1c2c/cli portfolio suggest --repo my-product
 
@@ -39,7 +41,7 @@ Plantilla YAML: en el repo publicado [`templates/monorepo/monorepo.yaml.example`
 
 ## Why this package?
 
-- **`octc verify monorepo`**, **`octc add surface`**, **`octc sync governance`**, **`octc portfolio suggest`** — ver [ADR-0003](../../docs/adr/ADR-0003-monorepo-cli-machine-ssot.md) y [PORTFOLIO_BRIDGE](../../docs/adoption/PORTFOLIO_BRIDGE.md). Roadmap: automatizar PR a internal solo con credenciales org.
+- **`octc verify monorepo`**, **`octc add surface`**, **`octc sync surface`**, **`octc sync governance`**, **`octc portfolio suggest`** — ver [ADR-0003](../../docs/adr/ADR-0003-monorepo-cli-machine-ssot.md) y [PORTFOLIO_BRIDGE](../../docs/adoption/PORTFOLIO_BRIDGE.md). Matriz de superficies pensada para repos **`*-app`** ([REFERENCE_PRODUCT_MONOREPO](../../docs/adoption/REFERENCE_PRODUCT_MONOREPO.md)). Roadmap: automatizar PR a internal solo con credenciales org.
 - `@1c2c/agent-templates` remains the **implementation** for agent file sync; this package pins it as a dependency.
 
 ## Provenance

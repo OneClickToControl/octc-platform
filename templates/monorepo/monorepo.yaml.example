@@ -1,17 +1,20 @@
-# ADR-0003 v0 — SSOT máquina-legible del monorepo.
+# ADR-0003 v0 — SSOT máquina-legible del monorepo (*-app).
 # Copiar a .octc/monorepo.yaml en la raíz del repo. Ver templates/monorepo/README.md
 schema_version: 0
 
 active_surfaces:
   - web
 
-# Opcional: globs por superficie (relativos al root del repo).
-# paths:
-#   web:
-#     - "apps/web/**"
-#   data:
-#     - "supabase/**"
+# Globs por superficie (relativos al root). Recomendado si tienes packages/* compartidos:
+# añade "packages/**" a cada superficie consumidora para alinear CI y octc verify (≥ 0.3.0).
+paths:
+  web:
+    - "apps/web/**"
+#   - "packages/**"
+# data:
+#   - "supabase/**"
+#   - "packages/**"
 
-# Opcional: debe coincidir con active_surfaces unido por comas (mismo orden).
+# Debe coincidir con active_surfaces unido por comas (mismo orden) si se declara.
 # portfolio:
 #   repo_surfaces_csv: "web"

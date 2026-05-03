@@ -32,6 +32,7 @@ function usage() {
     "  octc agents init|verify|sync [...]     shorthand for octc-agents <cmd>",
     "  octc verify monorepo [--cwd <dir>]     lint .octc/monorepo.yaml vs filesystem",
     "  octc add surface <surface> [--cwd <dir>] [--dry-run] [--force]",
+    "  octc sync surface <surface>|--all [--cwd <dir>] [--dry-run] [--force]",
     "  octc portfolio suggest [--cwd <dir>] [--repo <name>] [--cli-pin <x.y.z>]",
     "",
     "Examples:",
@@ -39,6 +40,7 @@ function usage() {
     "  npx @1c2c/cli verify monorepo",
     "  npx @1c2c/cli add surface data",
     "  npx @1c2c/cli sync governance --only doc-contract",
+    "  npx @1c2c/cli sync surface web --dry-run",
     "  npx @1c2c/cli portfolio suggest --repo my-product",
     "",
     "See @1c2c/agent-templates for semantics of init / verify / sync.",
@@ -84,6 +86,11 @@ async function main() {
   if (argv[0] === "add" && argv[1] === "surface") {
     const { runAddSurface } = await import("../lib/add-surface.mjs");
     process.exit(runAddSurface({ argv: argv.slice(2) }));
+  }
+
+  if (argv[0] === "sync" && argv[1] === "surface") {
+    const { runSyncSurface } = await import("../lib/sync-surface.mjs");
+    process.exit(runSyncSurface({ argv: argv.slice(2) }));
   }
 
   if (argv[0] === "portfolio" && argv[1] === "suggest") {

@@ -1,7 +1,9 @@
-import { cpSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { dirname } from "node:path";
 import { ALLOWED_SURFACES } from "./constants.mjs";
+import { copyTemplateToRepo } from "./surface-template.mjs";
 
 const PKG_ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -38,14 +40,6 @@ function parseCommon(argv) {
   return { cwd, dryRun, force, positional, error: null };
 }
 
-const GENERIC_BOOTSTRAP = (surface) => `# Bootstrap — superficie \`${surface}\`
-
-Generado por \`octc add surface ${surface}\`. Completar según [REFERENCE_PRODUCT_MONOREPO](https://github.com/OneClickToControl/octc-platform/blob/main/docs/adoption/REFERENCE_PRODUCT_MONOREPO.md) y \`docs/architecture.md\`.
-
-- Actualizar **\`active_surfaces\`**, **\`.octc/monorepo.yaml\`** (si aplica) y **PORTFOLIO** (\`repo_surfaces\`) en el mismo PR estructural.
-- Añadir jobs CI \`paths:\` y observabilidad **octc-{producto}-${surface}** cuando corresponda.
-`;
-
 /**
  * @param {{ argv?: string[] }} [opts]
  * @returns {number}
@@ -63,9 +57,9 @@ export function runAddSurface(opts = {}) {
 Superficies: ${[...ALLOWED_SURFACES].sort().join(", ")}
 
   --dry-run   no escribe archivos
-  --force     sobrescribe stubs existentes (data: re-copiar plantilla)
+  --force     sobrescribe stubs existentes
 
-Plantillas versionadas en el paquete; no crea proyectos cloud ni RLS (ver ADR-0003).
+Plantillas en el paquete (ADR-0003). Ver también: octc sync surface.
 `);
     return 2;
   }
@@ -75,48 +69,32 @@ Plantillas versionadas en el paquete; no crea proyectos cloud ni RLS (ver ADR-00
   }
 
   const { cwd, dryRun, force } = parsed;
-
-  if (surface === "data") {
-    const src = join(PKG_ROOT, "templates/surfaces/data");
-    if (!existsSync(src)) {
-      console.error(`octc add surface: falta plantilla empaquetada ${src}`);
-      return 2;
-    }
-    const markers = [
-      join(cwd, "supabase", "README.md"),
-      join(cwd, "docs", "db", "README.md"),
-    ];
-    const blocked = markers.filter((p) => existsSync(p));
-    if (blocked.length && !force) {
-      console.error(
-        "octc add surface data: ya existen stubs; usa --force para sobrescribir:\n  " +
-          blocked.join("\n  "),
-      );
-      return 2;
-    }
-    if (dryRun) {
-      console.log(`[dry-run] copiaría plantilla data: ${src} -> ${cwd}`);
-      return 0;
-    }
-    cpSync(src, cwd, { recursive: true });
-    console.log("octc add surface data: OK (supabase/README.md, docs/db/README.md)");
-    return 0;
+  const templateRoot = join(PKG_ROOT, "templates", "surfaces", surface);
+  if (!existsSync(templateRoot)) {
+    console.error(`octc add surface: falta plantilla ${templateRoot}`);
+    return 2;
   }
 
-  const docDir = join(cwd, "docs", "ops");
-  const dest = join(docDir, `octc-surface-${surface}-bootstrap.md`);
-  if (existsSync(dest) && !force) {
-    console.error(
-      `octc add surface: ya existe ${dest}; usa --force para sobrescribir`,
-    );
+  const { error, copied } = copyTemplateToRepo({
+    templateRoot,
+    cwd,
+    dryRun,
+    force,
+  });
+
+  if (error) {
+    console.error(`octc add surface: ${error}`);
     return 2;
   }
   if (dryRun) {
-    console.log(`[dry-run] crearía ${dest}`);
+    console.log(
+      `[dry-run] copiaría ${copied.length} archivo(s) para superficie ${surface}`,
+    );
+    for (const r of copied) console.log(`  ${r}`);
     return 0;
   }
-  mkdirSync(docDir, { recursive: true });
-  writeFileSync(dest, GENERIC_BOOTSTRAP(surface), "utf8");
-  console.log(`octc add surface: OK (${dest})`);
+  console.log(
+    `octc add surface ${surface}: OK (${copied.length} archivo(s): ${copied.join(", ")})`,
+  );
   return 0;
 }

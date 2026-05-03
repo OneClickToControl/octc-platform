@@ -13,6 +13,10 @@ No sustituye ADRs ni PORTFOLIO: **los define y los enlaza**.
 
 ## Superficies canónicas (`active_surfaces`)
 
+**Alcance OCTC (CLI `octc verify` / `octc add|sync surface`):** estas definiciones y plantillas versionadas en **`@1c2c/cli`** aplican a repositorios de **aplicación de producto** con convención **`*-app`** (monorepo que entrega web, datos, mobile, etc.). Repos **`*-agents`** (ACP, skills, plantillas de agente) y **`*-workspace`** (runtime/notas u orquestación paralela) tienen **gobierno aparte**: no incluyas aquí rutas, jobs o entregables destinados a esos repos sin un plan explícito, para no mezclar el SSOT del app producto.
+
+**Fuente máquina-legible del vocabulario y globs por defecto:** [`packages/cli/lib/constants.mjs`](https://github.com/OneClickToControl/octc-platform/blob/main/packages/cli/lib/constants.mjs) (`ALLOWED_SURFACES`, `DEFAULT_PATH_GLOBS`). La tabla siguiente debe mantenerse alineada con ese archivo y con **`.octc/monorepo.yaml`** en cada `*-app`.
+
 | Superficie | Rol | Directorios típicos | Notas |
 |------------|-----|---------------------|--------|
 | `landing` | Sitio público / idea / waitlist | Rutas o app segmentada en `apps/web`, o `apps/landing` | Primera superficie de despliegue frecuente junto con `docs/`. |
@@ -27,9 +31,23 @@ No sustituye ADRs ni PORTFOLIO: **los define y los enlaza**.
 
 **`docs/`** no es superficie de despliegue: es **capa transversal** (precede y alimenta decisiones).
 
+### Matriz maquinable (paridad con `@1c2c/cli`)
+
+| Superficie | Rol (resumen) | Globs por defecto en CLI si omites `paths` |
+|------------|---------------|---------------------------------------------|
+| `landing` | Sitio público / waitlist | `apps/landing/**`, `apps/web/**` |
+| `web` | App de producto | `apps/web/**` |
+| `mobile` | Cliente móvil | `apps/mobile/**` |
+| `ml` | Inferencia servida | `apps/ml-service/**`, `services/ml/**` |
+| `api` | Frontera fuera de `supabase/` | `apps/api/**`, `apps/chat_api/**`, `services/api/**` |
+| `chat` | UI/backend conversacional | `apps/chat-web/**`, `apps/chat/**` |
+| `data` | Supabase | *(exige directorio `supabase/`; no usa globs default en `verify`)* |
+
+Si el repo tiene **`packages/`** con workspaces compartidos y declaras superficies consumidoras (`≠ data`), **`octc verify monorepo`** exige un glob que cubra `packages/**` en **`paths.<superficie>`** para cada consumidor (ver CHANGELOG `@1c2c/cli`).
+
 ### Formato máquina-legible (opcional, roadmap CLI)
 
-Para **`octc verify monorepo`** (`@1c2c/cli` ≥ 0.2.0): crear `.octc/monorepo.yaml` desde la plantilla [`templates/monorepo/monorepo.yaml.example`](https://github.com/OneClickToControl/octc-platform/blob/main/templates/monorepo/monorepo.yaml.example); debe reflejar la misma tabla que la documentación en prosa. Dirección y esquema: [ADR-0003](../adr/ADR-0003-monorepo-cli-machine-ssot.md) (**accepted**).
+Para **`octc verify monorepo`** (`@1c2c/cli` ≥ 0.2.0); **`octc add surface`** y **`octc sync surface`** desde **0.3.0**: crear `.octc/monorepo.yaml` desde la plantilla [`templates/monorepo/monorepo.yaml.example`](https://github.com/OneClickToControl/octc-platform/blob/main/templates/monorepo/monorepo.yaml.example); debe reflejar la misma tabla que la documentación en prosa. Dirección y esquema: [ADR-0003](../adr/ADR-0003-monorepo-cli-machine-ssot.md) (**accepted**).
 
 ## Trazabilidad (cadena mínima)
 
