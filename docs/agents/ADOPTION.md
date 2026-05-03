@@ -2,6 +2,8 @@
 
 Cómo cada repo (producto o ACP) adopta y mantiene actualizadas las plantillas `CLAUDE.md`, `.cursor/rules/`, `AGENTS.md` provistas por `@1c2c/agent-templates`.
 
+Los repos **`*-workspace`** (memoria, identidad, notas) **no** están obligados a este flujo de pin/CI; el carril y los límites del CLI están en **[WORKSPACE_LANE.md](../adoption/WORKSPACE_LANE.md)**.
+
 ## Versionado de `@1c2c/agent-templates`
 
 - Sigue **SemVer estricto** (ver [POLICY.md](../packages/POLICY.md#versionado-de-1c2cagent-templates-caso-especial)).
