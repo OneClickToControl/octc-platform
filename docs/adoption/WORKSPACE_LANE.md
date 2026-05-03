@@ -36,6 +36,24 @@ jobs:
 
 Sustituye `<SHA_OCTC_PLATFORM>` por el commit de `octc-platform` que incorpora la versión de reglas que quieres fijar. Subir solo `@main` es válido en prototipo; en repos bajo control org se prefiere SHA para evitar drift sorpresa.
 
+**Obtener el pin recomendado (CLI):** con [`gh`](https://cli.github.com/) autenticado, desde un clone de `octc-platform`:
+
+```bash
+./scripts/print-workspace-verify-callable-pin.sh
+```
+
+El script devuelve el último commit de la rama indicada (`main` por defecto) que **tocó** `octc-workspace-verify-callable.yml` — suele ser el pin más ajustado tras un cambio de reglas.
+
+## Markdown en la raíz: invariante del CI vs convención de plantilla
+
+El callable **v2** exige que existan, en la **raíz del repo**, estos nombres exactos:
+
+`README.md`, `AGENTS.md`, `CLAUDE.md`, `IDENTITY.md`, `MEMORY.md`, `SOUL.md`, `USER.md`, `TOOLS.md`, `HEARTBEAT.md`
+
+- **Invariante OCTC (hoy):** la **presencia** de esos archivos y nombres; el verify **no** dicta longitud ni estructura interna. Cambiar la lista (añadir/quitar nombres) es un cambio de **plataforma**: PR en este repo al callable + migración coordinada de los `*-workspace` afectados.
+- **Convención de plantilla** (`octc-platform-internal` / `templates/workspace-repo/`): el **contenido inicial** de cada archivo es **ejemplo** para bootstrap; cada familia de producto puede adaptar el texto dentro de cada archivo siempre que no rompa otras reglas v2 (p. ej. no convertir el repo en carril `*-app`).
+- Si un producto necesita **omitir** alguno de esos nombres o sustituirlos por otros, no basta con decisión local: hay que proponer evolución del estándar (p. ej. opt-in [fase 3](#evolución-propuesta-fases-3-y-4) con `.octc/workspace-guardrails.yaml`) para no fracturar el carril `*-workspace` sin criterio común.
+
 ## Relación con adopción de plantillas
 
 [ADOPTION.md](../agents/ADOPTION.md) describe la adopción estándar de `@1c2c/agent-templates` en repos que **sí** fijan pin y CI `octc-agents verify`. Los `*-workspace` **no** están obligados a ese flujo; si mezclan las dos cosas, documenta en PORTFOLIO si hay pin o excepción.
