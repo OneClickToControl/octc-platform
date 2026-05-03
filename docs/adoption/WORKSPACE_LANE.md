@@ -44,6 +44,8 @@ Sustituye `<SHA_OCTC_PLATFORM>` por el commit de `octc-platform` que incorpora l
 
 El script devuelve el último commit de la rama indicada (`main` por defecto) que **tocó** `octc-workspace-verify-callable.yml` — suele ser el pin más ajustado tras un cambio de reglas.
 
+<a id="octc-workspace-root-markdown"></a>
+
 ## Markdown en la raíz: invariante del CI vs convención de plantilla
 
 El callable **v2** exige que existan, en la **raíz del repo**, estos nombres exactos:
