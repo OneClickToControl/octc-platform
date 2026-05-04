@@ -37,6 +37,6 @@ OCTC operates **multiple product families** (`*-app`, `*-agents`, `*-workspace`)
 
 ## Related
 
-- [ADR-0003 — monorepo / surfaces](adr/ADR-0003-monorepo-cli-machine-ssot.md)
-- [WORKSPACE_LANE — product workspace lane](adoption/WORKSPACE_LANE.md)
-- [PRODUCT_FAMILY_INTERNAL — companion bootstrap scope](adoption/PRODUCT_FAMILY_INTERNAL.md)
+- [ADR-0003 — monorepo / surfaces](../adr/ADR-0003-monorepo-cli-machine-ssot.md)
+- [WORKSPACE_LANE — product workspace lane](WORKSPACE_LANE.md)
+- [PRODUCT_FAMILY_INTERNAL — companion bootstrap scope](PRODUCT_FAMILY_INTERNAL.md)
