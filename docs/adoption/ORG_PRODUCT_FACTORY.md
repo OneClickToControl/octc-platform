@@ -16,7 +16,7 @@ OCTC operates **multiple product families** (`*-app`, `*-agents`, `*-workspace`)
 ## What stays outside this public repo
 
 - **Disk bootstrap orchestration** (`bootstrap-product-family.sh`, materialize scripts), PORTFOLIO tables, allowlists, org-facing runbooks — maintained in operational repos in the same GitHub org (not hyperlinked from here per publication policy).
-- **Org-factory repos** (agents + workspace roles for the *factory itself*) ship from materialize templates in those operational repos; create them in GitHub when ready.
+- **Org-factory repos** (agents + workspace for the *factory itself*) are **private org repositories** `octc-platform-agents` and `octc-platform-workspace`, materialized from operational templates in the same GitHub org; create and push them when activating the meta-layer (not hyperlinked procedural detail from here).
 
 ## Declarative control plane (`octc-paperclip`)
 
@@ -30,8 +30,8 @@ OCTC operates **multiple product families** (`*-app`, `*-agents`, `*-workspace`)
 | **octc-platform** | Published standards & packages |
 | **octc-paperclip** | Declarative policies + factory initiative manifests |
 | **Operational repos (same org)** | Bootstrap scripts, lifecycle stage definitions, runbooks |
-| **octc-platform-agents** (template) | Org roles that analyze / propose (not product SSOT) |
-| **octc-platform-workspace** (template) | Org factory memory (not product workspace) |
+| **octc-platform-agents** | Org-level roles that analyze / propose factory evolution (not product behavioral SSOT) |
+| **octc-platform-workspace** | Org factory memory: decisions, drift backlog, initiative state (not `<product>-workspace`) |
 | **`<product>-agents`** | Behavioral truth per product |
 | **`<product>-workspace`** | Product identity / memory / pointers |
 
