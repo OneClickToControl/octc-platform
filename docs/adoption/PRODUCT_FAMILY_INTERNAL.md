@@ -14,8 +14,10 @@ Los enlaces exactos y el nombre del repo internal no se duplican aquí (repo pú
 
 ## Qué sigue en esta capa pública (`octc-platform`)
 
-- CLI **`octc init app`**, **`octc init workspace`**, **`octc add|sync surface`**, **`octc verify monorepo`**: contratos reutilizables y plantillas en `@1c2c/cli` (ver [ADR-0003](../../adr/ADR-0003-monorepo-cli-machine-ssot.md), [WORKSPACE_LANE](./WORKSPACE_LANE.md)).
+- CLI **`octc init app`**, **`octc init workspace`**, **`octc add|sync surface`**, **`octc verify monorepo`**: contratos reutilizables y plantillas en `@1c2c/cli` (ver [ADR-0003](../adr/ADR-0003-monorepo-cli-machine-ssot.md), [WORKSPACE_LANE](./WORKSPACE_LANE.md)).
 - Workflows reusables (portfolio dispatch, ACP dispatch, workspace verify callable) y scripts de pin bajo `scripts/print-*-callable-pin.sh`.
+
+**Meta-fábrica multi-producto:** etapas de ciclo de vida, carriles y superficies se describen en el plano declarativo **Paperclip** (`factory/initiatives/`); la orquestación de bootstrap y plantillas de repos **org-agents/org-workspace** viven en la capa **internal** — ver visión pública [ORG_PRODUCT_FACTORY](./ORG_PRODUCT_FACTORY.md).
 
 **No** centralizar en el CLI la creación de familias enteras más checklist org: desacopla consumidores externos y mantiene el acoplamiento org en la capa internal.
 
