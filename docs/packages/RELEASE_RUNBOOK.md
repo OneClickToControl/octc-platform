@@ -57,6 +57,18 @@ Cada push a `main` ejecuta [`.github/workflows/release.yml`](../../.github/workf
 
 Por tanto, **npm solo se actualiza después de que el PR de versión exista en `main`**. Ese PR es mecánico (bump + changelogs + borrado de changesets).
 
+## Modelo canónico — variables y secretos (release merge mecánico)
+
+**No usar** el identificador numérico legacy “App ID” como variable de este flujo: el workflow **`actions/create-github-app-token` v3** consume el **Client ID**. Un solo nombre estándar:
+
+| Tipo | Nombre | Valor |
+|------|--------|--------|
+| Variable | `OCTC_RELEASE_MERGE_ENABLED` | `true` para activar el job que fusiona con identidad dedicada; cualquier otro valor o ausencia → solo auto-merge con `GITHUB_TOKEN`. |
+| Variable | `OCTC_RELEASE_MERGE_APP_CLIENT_ID` | **Client ID** de la GitHub App (pantalla de la App en GitHub). |
+| Secret | `OCTC_RELEASE_MERGE_APP_PRIVATE_KEY` | Clave privada PEM de la App. |
+| Variable | `OCTC_RELEASE_MERGE_CREDENTIAL_MODE` | **Solo** si necesitáis modo transitorio: `pat`. Si está ausente o es distinto de `pat`, el camino es **GitHub App**. |
+| Secret | `OCTC_RELEASE_MERGE_TOKEN` | PAT **solo** cuando `OCTC_RELEASE_MERGE_CREDENTIAL_MODE=pat` (segunda opción IAM; rotar y acotar). |
+
 ## Workflow `release-pr-automerge.yml` — forma mecánica exacta
 
 El workflow aplica **únicamente** si el PR cumple **todos** estos campos:
@@ -79,10 +91,10 @@ Si **`OCTC_RELEASE_MERGE_ENABLED`** no es `true`: se ejecuta **solo** el job `en
 
 Si **`OCTC_RELEASE_MERGE_ENABLED=true`**:
 
-| Camino | Variable `OCTC_RELEASE_MERGE_CREDENTIAL_MODE` | Credenciales en GitHub |
-|--------|-----------------------------------------------|-------------------------|
-| **Preferido: GitHub App** | vacío o `app` | Variable **`OCTC_RELEASE_MERGE_APP_CLIENT_ID`** (Client ID de la App). Secret **`OCTC_RELEASE_MERGE_APP_PRIVATE_KEY`** (PEM). Job: **`merge-mechanical-pr-github-app`**. |
-| **Residual: PAT** | `pat` (exacto) | Secret **`OCTC_RELEASE_MERGE_TOKEN`**. Job: **`merge-mechanical-pr-pat-fallback`**. |
+| Camino | `OCTC_RELEASE_MERGE_CREDENTIAL_MODE` | Credenciales |
+|--------|--------------------------------------|--------------|
+| **Preferido: GitHub App** (defecto si no es `pat`) | ausente o ≠ `pat` | Variable **`OCTC_RELEASE_MERGE_APP_CLIENT_ID`**, secret **`OCTC_RELEASE_MERGE_APP_PRIVATE_KEY`**. Job **`merge-mechanical-pr-github-app`**. |
+| **Transitorio: PAT** | `pat` (exacto) | Secret **`OCTC_RELEASE_MERGE_TOKEN`**. Job **`merge-mechanical-pr-pat-fallback`**. |
 
 En el camino **App**, el workflow usa [`actions/create-github-app-token`](https://github.com/actions/create-github-app-token) para obtener un **installation access token** en tiempo de ejecución (vida corta, revocado al final del job salvo configuración contraria de la acción). Ese token alimenta `gh pr checks --watch` y `gh pr merge --squash`.
 
@@ -96,8 +108,9 @@ El camino **PAT** existe solo si la org **no** puede desplegar una App; es **seg
    Instalación **solo** en `OneClickToControl/octc-platform` (o lista mínima de repos si la org impide repo-único; documentar excepción).
 2. Anotar el **Client ID** de la App (UI moderna de GitHub; no confundir con el identificador numérico legacy salvo que uséis compatibilidad explícita de la acción).
 3. Generar **Private key** para la App; guardarla como secret **`OCTC_RELEASE_MERGE_APP_PRIVATE_KEY`** en el repo.
-4. Variable de repo **`OCTC_RELEASE_MERGE_APP_CLIENT_ID`** = Client ID.
+4. Variable de repo **`OCTC_RELEASE_MERGE_APP_CLIENT_ID`** = **Client ID** (no el número “App ID” legacy salvo documentación de compatibilidad ajena a este workflow).
 5. Variable **`OCTC_RELEASE_MERGE_ENABLED`** = `true`.
+6. No fijar **`OCTC_RELEASE_MERGE_CREDENTIAL_MODE`** (el defecto es GitHub App). Fijar `pat` solo como transición.
 
 ### Alineación de política en GitHub (fuera del repo; obligatoria para fusionar sin `--admin`)
 

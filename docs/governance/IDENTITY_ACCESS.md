@@ -14,7 +14,7 @@ Política de identidad y acceso transversal para todas las plataformas y SaaS co
 
 | sistema         | método auth            | 2FA      | rotación tokens                             |
 | --------------- | ---------------------- | -------- | ------------------------------------------- |
-| GitHub (org)    | SSO + 2FA app/hardware | enforced | OIDC para CI; PATs prohibidos en automation |
+| GitHub (org)    | SSO + 2FA app/hardware | enforced | OIDC para CI; **installation tokens** de GitHub App (efímeros) para casos documentados; **PAT largo no es modelo preferido** (excepción transitoria solo release-merge mecánico, ver [RELEASE_RUNBOOK](../packages/RELEASE_RUNBOOK.md)) |
 | Sentry          | SSO                    | enforced | OIDC para CI                                |
 | Vercel          | SSO                    | enforced | OIDC para CI                                |
 | Supabase        | SSO                    | enforced | service roles rotados trimestralmente       |
@@ -53,7 +53,9 @@ Política de identidad y acceso transversal para todas las plataformas y SaaS co
 ## Cuentas máquina
 
 - Identificadas con prefijo `bot-` o sufijo `-ci`.
-- Solo OIDC para automation. Tokens long-lived prohibidos.
+- **Preferido en GitHub:** OIDC (`GITHUB_TOKEN`, npm publish) y **GitHub App** con **installation access token** generado en el job (vida corta; ver `actions/create-github-app-token`).
+- **PAT de larga duración:** no usar como diseño por defecto; **solo** excepción documentada y explícita (p. ej. modo `OCTC_RELEASE_MERGE_CREDENTIAL_MODE=pat` en [RELEASE_RUNBOOK](../packages/RELEASE_RUNBOOK.md)) hasta migración completa a App; rotación y alcance mínimo obligatorios.
+- La **clave privada de la GitHub App** vive como secret del repo (material estático acotado a un proveedor); no equivale a un PAT de usuario.
 - Documentadas en `docs/governance/MACHINE_IDENTITIES.md` (a crear cuando aparezca la primera).
 
 ## Identidad git para commits
