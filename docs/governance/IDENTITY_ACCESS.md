@@ -65,6 +65,7 @@ Política de identidad y acceso transversal para todas las plataformas y SaaS co
 | Repos **privados** de producto (cada `<product>-app`) | `OneClickToControl`   | mismo privacy email del autor                                            |
 | `octc-platform-internal`                              | `OneClickToControl`   | mismo privacy email del autor                                            |
 | GitHub Actions (releases, PRs automáticos)            | `github-actions[bot]` | `41898282+github-actions[bot]@users.noreply.github.com` (default GitHub) |
+| GitHub App **OCTC release merge** (opcional; fusiona solo el PR mecánico Changesets) | `<app-slug>[bot]` | ver slug en la instalación de la App; runbook [RELEASE_RUNBOOK.md](../packages/RELEASE_RUNBOOK.md) |
 
 
 ### Por qué el privacy email

@@ -2,17 +2,20 @@
 #   base: main
 #   head: changeset-release/main
 #   title: chore: release packages  (exactly; must match release.yml/changesets/action)
-#   author: github-actions[bot]  (not a human or other bot mimicking the branch name)
+#   author: github-actions[bot]
 #   not from a fork
 #
 # Normal PRs (even touching packages/**) never match this shape.
 #
-# Modes (mutually exclusive):
-#   - Default: enable squash auto-merge with GITHUB_TOKEN (still needs policy: reviews/checks).
-#   - Optional: set repo variable OCTC_RELEASE_MERGE_ENABLED=true and secret OCTC_RELEASE_MERGE_TOKEN
-#     (PAT from a dedicated bot user, or a token issued for a narrowly scoped GitHub App) so this
-#     workflow can merge after checks pass — only if org policy grants that identity bypass / merge
-#     rights. See docs/packages/RELEASE_RUNBOOK.md § "Identidad dedicada".
+# Modes:
+#   A) Default: OCTC_RELEASE_MERGE_ENABLED unset/false → squash auto-merge via GITHUB_TOKEN
+#      (still needs branch policy: reviews + checks satisfied before GitHub merges).
+#   B) Dedicated merge: OCTC_RELEASE_MERGE_ENABLED=true
+#      Preferred: GitHub App installation token minted per run (short-lived).
+#      Fallback: OCTC_RELEASE_MERGE_CREDENTIAL_MODE=pat + OCTC_RELEASE_MERGE_TOKEN (long-lived PAT; second-best).
+#
+# Org policy must allow the App bot (or PAT actor) to merge this PR class — the repo cannot grant that.
+# See docs/packages/RELEASE_RUNBOOK.md § "GitHub App (camino preferido)".
 #
 # This workflow does NOT broaden review/CODEOWNERS for other PRs.
 name: release-pr-automerge
@@ -26,15 +29,13 @@ concurrency:
   group: release-pr-automerge-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
-  # --- Narrow predicate reused conceptually (duplicate per-job; YAML has no YAML anchor for if:) ---
   enable-auto-merge:
     name: enable-auto-merge
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     if: |
       vars.OCTC_RELEASE_MERGE_ENABLED != 'true' &&
       github.event.pull_request.base.ref == 'main' &&
@@ -50,24 +51,73 @@ jobs:
           set -euo pipefail
           gh pr merge "${{ github.event.pull_request.number }}" --auto --squash
 
-  merge-with-release-identity:
-    name: merge-mechanical-pr-with-release-identity
+  # Preferred: installation access token (≈1h, revoked after job). No long-lived PAT.
+  merge-mechanical-pr-github-app:
+    name: merge-mechanical-pr-github-app
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     if: |
       vars.OCTC_RELEASE_MERGE_ENABLED == 'true' &&
+      (vars.OCTC_RELEASE_MERGE_CREDENTIAL_MODE == '' || vars.OCTC_RELEASE_MERGE_CREDENTIAL_MODE == 'app') &&
       github.event.pull_request.base.ref == 'main' &&
       github.event.pull_request.head.ref == 'changeset-release/main' &&
       github.event.pull_request.head.repo.fork == false &&
       github.event.pull_request.title == 'chore: release packages' &&
       github.event.pull_request.user.login == 'github-actions[bot]'
     steps:
-      - name: Require merge token
+      - name: Require App Client ID variable
+        env:
+          APP_CLIENT_ID: ${{ vars.OCTC_RELEASE_MERGE_APP_CLIENT_ID }}
+        run: |
+          set -euo pipefail
+          if [ -z "${APP_CLIENT_ID}" ]; then
+            echo "::error::Set repository variable OCTC_RELEASE_MERGE_APP_CLIENT_ID (GitHub App Client ID). For PAT fallback set OCTC_RELEASE_MERGE_CREDENTIAL_MODE=pat and secret OCTC_RELEASE_MERGE_TOKEN instead."
+            exit 1
+          fi
+
+      - name: Mint installation token
+        id: app-token
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
+        with:
+          client-id: ${{ vars.OCTC_RELEASE_MERGE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.OCTC_RELEASE_MERGE_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.event.repository.name }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Wait for checks then squash merge
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          set -euo pipefail
+          PR="${{ github.event.pull_request.number }}"
+          gh pr checks "$PR" --watch
+          gh pr merge "$PR" --squash
+
+  # Second-best: static PAT. Use only if App provisioning is blocked; rotate and scope minimally.
+  merge-mechanical-pr-pat-fallback:
+    name: merge-mechanical-pr-pat-fallback
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: |
+      vars.OCTC_RELEASE_MERGE_ENABLED == 'true' &&
+      vars.OCTC_RELEASE_MERGE_CREDENTIAL_MODE == 'pat' &&
+      github.event.pull_request.base.ref == 'main' &&
+      github.event.pull_request.head.ref == 'changeset-release/main' &&
+      github.event.pull_request.head.repo.fork == false &&
+      github.event.pull_request.title == 'chore: release packages' &&
+      github.event.pull_request.user.login == 'github-actions[bot]'
+    steps:
+      - name: Require PAT secret
         env:
           TOKEN: ${{ secrets.OCTC_RELEASE_MERGE_TOKEN }}
         run: |
           set -euo pipefail
           if [ -z "${TOKEN}" ]; then
-            echo "::error::OCTC_RELEASE_MERGE_ENABLED is true but OCTC_RELEASE_MERGE_TOKEN is empty. Set the secret or disable the variable."
+            echo "::error::OCTC_RELEASE_MERGE_CREDENTIAL_MODE=pat requires secret OCTC_RELEASE_MERGE_TOKEN."
             exit 1
           fi
 

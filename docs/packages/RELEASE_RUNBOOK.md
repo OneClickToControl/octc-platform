@@ -13,32 +13,30 @@ Este documento describe el **camino operativo real** del repo. **No** afirma “
 ### B. Qué sigue bloqueando baja fricción
 
 - El PR mecánico debe **fusionarse** en `main`; toca `packages/**` (CODEOWNERS).
-- Reglas de la org pueden exigir **aprobación** antes de merge; `GITHUB_TOKEN` **no** sustituye esa aprobación.
-- **`--admin` / merge administrativo** no es modo operativo previsto: es **excepción** (emergencia o política explícita de la org).
+- Reglas de la org pueden exigir **aprobación** antes de merge; `GITHUB_TOKEN` **no** sustituye esa aprobación para el modo dedicado que fusiona con otra identidad.
+- **`--admin` / merge administrativo** **no** forma parte del diseño previsto: solo **incidente** o política explícita fuera de este runbook. El camino previsto es **GitHub App** (preferido) o PAT dedicado acotado (residual).
 
 ### C. En control del repo (implementado o documentado aquí)
 
 - PR mecánico acotado: `changeset-release/main` → `main`, título **`chore: release packages`**, autor **`github-actions[bot]`**, no fork ([`release-pr-automerge.yml`](../../.github/workflows/release-pr-automerge.yml)).
-- Auto-merge (modo por defecto) o merge tras checks con **identidad dedicada** (modo opcional, variable + secret).
-- Este runbook y comparación de gobernanza (App vs ruleset).
+- Auto-merge por defecto con `GITHUB_TOKEN`, o modo dedicado con **token de instalación de GitHub App** generado en cada run (preferido), o PAT estático (segunda opción).
 
 ### D. Solo política / fuera del YAML
 
-- Quién puede **fusionar** sin revisión o con bypass.
-- **Rulesets** y “required reviewers”.
-- Creación e instalación de **GitHub App** o usuario bot, rotación de secretos, auditoría org.
+- Inscripción del **bot de la App** (p. ej. `tu-app-slug[bot]`) en la capacidad efectiva de fusionar en `main` (p. ej. “omitir revisiones obligatorias” para ese actor, en la forma que permita GitHub).
+- Reglas que bloqueen merges hasta cumplir comprobaciones (el workflow espera checks con `gh pr checks --watch`).
 
 ## Comparación de gobernanza (recomendación explícita)
 
-| | **1) GitHub App / identidad dedicada (preferido)** | **2) Excepción estrecha de ruleset (segunda opción)** |
-|---|-----------------------------------------------------|------------------------------------------------------|
-| **Riesgo** | Medio: depende del secreto y de que solo este workflow invoque merge bajo el predicado estricto. | Alto si la excepción afecta más PRs de las previstas. |
-| **Auditoría** | Buena: instalación de App o cuenta bot, logs del workflow, actor estable. | Depende de cómo quede documentada la regla en GitHub. |
-| **Fricción** | Media (aprovisionar App/PAT, variable, policy de bypass para **ese** actor). | Suele ser baja una vez aprobada la excepción; revisar alcance. |
-| **Blast radius** | Acotado mientras el token no se filtre y el job mantenga el `if` estricto; un compromise del token sigue siendo grave. | Puede ser amplio si la regla no es quirúrgica. |
-| **Recomendación** | **Por defecto en este runbook**: actor dedicado alineado con el workflow acotado. | Solo si App/PAT no es viable; documentar riesgo y dueño de la regla. |
+| | **1) GitHub App + installation token en CI (preferido)** | **2) Excepción amplia de ruleset (no recomendado como primera opción)** |
+|---|----------------------------------------------------------|------------------------------------------------------------------------|
+| **Riesgo** | Medio: clave privada de App en secret; token corto (~1 h) por ejecución. | Alto si la regla no es quirúrgica (GitHub raramente filtra por forma exacta de PR). |
+| **Auditoría** | Fuerte: App instalada, actor `slug[bot]`, logs del workflow. | Depende del diseño de la regla; a menudo peor trazabilidad. |
+| **Fricción** | Media (crear App, instalar, secrets/variables, alinear política). | Baja tras acordar la regla; coste de mantenimiento/riesgo mayor. |
+| **Blast radius** | Limitado si la App solo se instala en este repo y permisos mínimos; robo de clave privada sigue siendo grave. | Suele ser mayor si la excepción afecta más PRs de los previstos. |
+| **Recomendación** | **Defecto OCTC.** | Solo si la App es inviable; documentar dueño y revisión. |
 
-**Importante:** En branch protection clásica, “actores que pueden omitir revisiones obligatorias” suele aplicarse al `@octocat` / App para **cualquier** PR que ese actor fusione. El estrechamiento real viene de **(a)** no reutilizar ese token fuera de este workflow y **(b)** que este workflow **solo** llame a `merge` cuando se cumpla la forma mecánica (rama, título, autor). No sustituye revisión humana en **PRs normales** que tocan `packages/**`.
+**Límites de GitHub:** En branch protection clásica, un actor en la lista de bypass suele poder fusionar **cualquier** PR que fusiona **con credenciales de ese actor**. El acercamiento operativo es: **solo** este workflow invoca `gh pr merge` con el token de la App **bajo** el predicado estricto (rama/título/autor); no relajar revisiones para contribuciones humanas normales.
 
 ## Cadena actual (dos fases)
 
@@ -59,80 +57,87 @@ Cada push a `main` ejecuta [`.github/workflows/release.yml`](../../.github/workf
 
 Por tanto, **npm solo se actualiza después de que el PR de versión exista en `main`**. Ese PR es mecánico (bump + changelogs + borrado de changesets).
 
-## Dónde se atasca el flujo (cuellos de botella honestos)
+## Workflow `release-pr-automerge.yml` — forma mecánica exacta
 
-### 1. Merge del PR «chore: release packages»
-
-Ese PR toca rutas bajo `/packages/**`. En este repo, [CODEOWNERS](../../CODEOWNERS) asigna esas rutas a `@1click2control`. Si la **branch protection** y/o **rulesets** de la organización exigen:
-
-- revisión aprobada,
-- comprobaciones obligatorias,
-- o bloqueo explícito hasta que se cumplan reglas,
-
-entonces **alguien con permisos válidos debe aprobar y/o satisfacer esas reglas** antes de que el PR se pueda fusionar. El bot **no puede** autoaprobar CODEOWNERS.
-
-**Bypass con `--admin`/`gh pr merge --admin`:** es un privilegio de administrador de repositorio (u org). Trátalo como **excepción de emergencia o política explícita de la org**, no como parte del diseño del workflow. El código del repo no puede “arreglar” la existencia de ese bypass.
-
-### 2. Workflow `release-pr-automerge.yml`
-
-[Ese workflow](../../.github/workflows/release-pr-automerge.yml) aplica **únicamente** si el PR cumple **todos** estos criterios (ningún otro PR, aunque toque `packages/**`, debe coincidir):
+El workflow aplica **únicamente** si el PR cumple **todos** estos campos:
 
 | Campo | Valor exigido |
 |--------|----------------|
 | Base | `main` |
 | Head | `changeset-release/main` |
-| Título | `chore: release packages` (exactamente; debe coincidir con `title` en `release.yml` / `changesets/action`) |
+| Título | `chore: release packages` (exactamente; alineado con `title` en `release.yml` / `changesets/action`) |
 | Autor del PR | `github-actions[bot]` |
 | Origen | Mismo repo (no fork) |
 
-**Modo por defecto** (`OCTC_RELEASE_MERGE_ENABLED` distinto de `true`): activa **squash auto-merge** con `GITHUB_TOKEN`. Sigue haciendo falta que la **política** considere el PR mergeable (revisiones + checks).
+**Ningún otro PR** califica, aunque toque `packages/**`.
 
-**Modo identidad dedicada** (`OCTC_RELEASE_MERGE_ENABLED=true` + secret `OCTC_RELEASE_MERGE_TOKEN`): tras `gh pr checks --watch`, fusiona con squash usando ese token. Requiere que la **org** otorgue a esa identidad el derecho efectivo de fusionar ese PR (p. ej. inclusión en bypass de revisiones obligatorias para ese actor, u otra política explícita). Sin eso, el paso `merge` fallará: el repo documenta el camino; **no inventa permisos**.
+### Modo 1 — Auto-merge por defecto
 
-### 3. Trusted Publisher en npm
+Si **`OCTC_RELEASE_MERGE_ENABLED`** no es `true`: se ejecuta **solo** el job `enable-auto-merge`, que llama `gh pr merge --auto --squash` con `GITHUB_TOKEN`. Sigue haciendo falta que **política de rama** (revisiones + checks) permita el merge cuando GitHub lo evalúe.
 
-Cada paquete `@1c2c/*` debe tener configurado el Trusted Publisher apuntando a `release.yml` (véase [SUPPLY_CHAIN.md](../security/SUPPLY_CHAIN.md)). Si falta, el `npm publish` desde CI fallará aunque el PR de versión esté fusionado.
+### Modo 2 — Identidad dedicada (fusiona tras checks verdes)
 
-## Identidad dedicada (preferido para quitar fricción sin `--admin`)
+Si **`OCTC_RELEASE_MERGE_ENABLED=true`**:
 
-**Objetivo:** que el PR mecánico pueda fusionarse **sin** merge administrativo humano habitual, manteniendo revisión completa en PRs normales.
+| Camino | Variable `OCTC_RELEASE_MERGE_CREDENTIAL_MODE` | Credenciales en GitHub |
+|--------|-----------------------------------------------|-------------------------|
+| **Preferido: GitHub App** | vacío o `app` | Variable **`OCTC_RELEASE_MERGE_APP_CLIENT_ID`** (Client ID de la App). Secret **`OCTC_RELEASE_MERGE_APP_PRIVATE_KEY`** (PEM). Job: **`merge-mechanical-pr-github-app`**. |
+| **Residual: PAT** | `pat` (exacto) | Secret **`OCTC_RELEASE_MERGE_TOKEN`**. Job: **`merge-mechanical-pr-pat-fallback`**. |
 
-**Pasos típicos (los ejecuta quien administra la org / el repo; no están automatizables solo con commits):**
+En el camino **App**, el workflow usa [`actions/create-github-app-token`](https://github.com/actions/create-github-app-token) para obtener un **installation access token** en tiempo de ejecución (vida corta, revocado al final del job salvo configuración contraria de la acción). Ese token alimenta `gh pr checks --watch` y `gh pr merge --squash`.
 
-1. Crear una **GitHub App** mínima (o usuario bot dedicado) instalada solo en `OneClickToControl/octc-platform`, con permisos `Contents` y `Pull requests` (lectura/escritura según necesidad de merge).
-2. Generar credencial: **installation token** (App) o **fine-grained PAT** (bot) con alcance mínimo al repo.
-3. Añadir en GitHub Actions del repo el secret **`OCTC_RELEASE_MERGE_TOKEN`** y la variable del repo **`OCTC_RELEASE_MERGE_ENABLED`** = `true`.
-4. En **branch protection / ruleset**, permitir que **esa identidad** pueda fusionar cumpliendo la política que la org acepte (habitualmente: figurar como actor con permiso de omitir revisiones obligatorias *para merges que esa identidad ejecuta* — el **workflow** solo invoca merge en el predicado estricto de arriba).
+El camino **PAT** existe solo si la org **no** puede desplegar una App; es **segunda opción** (token de larga duración, más superficie de rotación y filtración).
 
-**Prohibido en el diseño pretendido:** ensanchar bypass para PRs genéricos o relajar CODEOWNERS/review para contribuciones humanas normales.
+## GitHub App (camino preferido) — aprovisionamiento
 
-**Si no configuráis identidad dedicada:** dejad la variable sin activar; seguid usando auto-merge + aprobación según reglas.
+1. **Crear una GitHub App** en la org (o cuenta) con permisos de repositorio acotados a lo necesario para mergear PRs:
+   - **Contents:** Read and write  
+   - **Pull requests:** Read and write  
+   Instalación **solo** en `OneClickToControl/octc-platform` (o lista mínima de repos si la org impide repo-único; documentar excepción).
+2. Anotar el **Client ID** de la App (UI moderna de GitHub; no confundir con el identificador numérico legacy salvo que uséis compatibilidad explícita de la acción).
+3. Generar **Private key** para la App; guardarla como secret **`OCTC_RELEASE_MERGE_APP_PRIVATE_KEY`** en el repo.
+4. Variable de repo **`OCTC_RELEASE_MERGE_APP_CLIENT_ID`** = Client ID.
+5. Variable **`OCTC_RELEASE_MERGE_ENABLED`** = `true`.
 
-## Checklist mínima para quien mantiene releases
+### Alineación de política en GitHub (fuera del repo; obligatoria para fusionar sin `--admin`)
+
+Quien administre la org/repo debe conceder al **actor de la App** (`<app-slug>[bot]`, visible tras instalar la App) la capacidad **efectiva** de fusionar el PR mecánico. Lo habitual es incluir ese actor en **“Permitir que actores específicos omitan las revisiones obligatorias de solicitud de extracción”** (o equivalente en **rulesets**) en la regla que aplica a `main`.
+
+**El repositorio no puede aplicar esa política por sí mismo.** Sin ella, `gh pr merge` fallará por falta de permisos o revisiones pendientes.
+
+**`--admin`:** no es el modo de operación OCTC; no debe usarse como sustituto rutinario de la alineación anterior.
+
+### Por qué esto es preferible a una excepción genérica de ruleset
+
+- El **predicado del PR** (rama/título/autor) lo fuerza el **workflow**, auditable en Git.
+- El **token** es **corto** y **revocable** revocando la App o rotando la clave.
+- Una **regla** demasiado amplia suele ser **menos precisa** que “este actor + este workflow + esta forma de PR”.
+
+## Dependencia de política (texto contractual)
+
+Hasta que el actor de la App (o el PAT residual) tenga permiso efectivo de merge en `main` bajo las rules de la org:
+
+- **Qué bloquea:** revisiones obligatorias / CODEOWNERS / comprobaciones no satisfechas / actor sin bypass donde haga falta.
+- **Quién lo cambia:** administración de la org o del repo con autoridad de gobernanza.
+- **Mientras tanto:** `OCTC_RELEASE_MERGE_ENABLED` desactivado + auto-merge con `GITHUB_TOKEN` + **aprobación humana** según reglas, o merge manual sin depender de identidad dedicada.
+- **Tras la alineación:** el job `merge-mechanical-pr-github-app` puede completar el merge **sin** `--admin` cuando los checks pasen.
+
+## PAT residual (segunda opción)
+
+Solo si **`OCTC_RELEASE_MERGE_CREDENTIAL_MODE=pat`**:
+
+- Secret **`OCTC_RELEASE_MERGE_TOKEN`**: PAT fine-grained o clásica con alcance **mínimo** a este repo; rotación acordada.
+- Misma necesidad de **política** para que ese usuario/bot pueda fusionar.
+- Riesgo residual: exfiltración del PAT permite merges fuera de este workflow si el actor tiene permisos amplios.
+
+## Checklist quien mantiene releases
 
 1. Tras mergear trabajo con changesets: esperar el PR **«chore: release packages»**.
-2. Revisar diffs de versiones/changelogs (deberían ser solo el bump esperado).
-3. Asegurar CI verde en ese PR.
-4. Si **no** usáis `OCTC_RELEASE_MERGE_ENABLED`: aprobar según CODEOWNERS / política; el auto-merge cerrará cuando las reglas lo permitan.
-5. Si usáis identidad dedicada: verificar que el job `merge-mechanical-pr-with-release-identity` complete sin error.
+2. Revisar diffs (versiones/changelogs / eliminación de `.changeset`).
+3. CI verde en ese PR.
+4. Si modo por defecto (sin `OCTC_RELEASE_MERGE_ENABLED`): aprobar según reglas; auto-merge cerrará cuando GitHub lo permita.
+5. Si modo App/PAT dedicado: confirmar que **`merge-mechanical-pr-github-app`** o **`merge-mechanical-pr-pat-fallback`** termina en éxito.
 6. Verificar el siguiente `release.yml` en `main` (`changeset publish` y versión en npm).
-
-## Dependencia de política que el repo no elimina
-
-Hasta que exista identidad con permiso efectivo de merge **o** una excepción de ruleset explicitada y acotada:
-
-- **Qué regla bloquea:** revisiones obligatorias / CODEOWNERS / rulesets en `main` aplicados al PR mecánico como a cualquier otro.
-- **Quién puede cambiarlo:** administradores de org/repo con mandato de gobernanza.
-- **Mientras tanto:** aprobación humana (o configuración correcta del actor dedicado + variable).
-- **`--admin`:** solo **emergencia** o procedimiento explícito fuera de banda; no es el modo objetivo.
-- **¿Puede un bot/App resolverlo?** Sí **si** la org le concede el derecho de fusionar esos PRs y el workflow usa el token solo bajo el predicado estricto.
-
-## Excepción de ruleset (segunda opción, más arriesgada)
-
-Si la org prefiere una **regla** que trate distinto el camino mecánico en lugar de un actor dedicado:
-
-- Debe ser **tan estrecha como permita GitHub** (hoy GitHub no filtra por “título de PR” en muchos controles; el riesgo de alcance amplio es mayor que con un actor + workflow acotado).
-- Documentar **dueño**, **revision trimestral** y **alternativa preferida** (App + token).
 
 ## Desalineaciones conocidas con otros documentos
 
