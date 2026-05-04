@@ -1,0 +1,22 @@
+# OCTC workspace guardrails — delegates to public reusable workflow (single source of truth).
+# Pin: set the SAME commit SHA on uses: and tooling_ref (octc-platform print-workspace-verify-callable-pin.sh).
+# Contract: https://github.com/OneClickToControl/octc-platform/blob/main/docs/adoption/WORKSPACE_LANE.md
+name: OCTC workspace verify
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    permissions:
+      contents: read
+    uses: OneClickToControl/octc-platform/.github/workflows/octc-workspace-verify-callable.yml@__OCTC_WORKSPACE_VERIFY_PIN__
+    with:
+      tooling_ref: __OCTC_WORKSPACE_VERIFY_PIN__

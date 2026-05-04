@@ -1,0 +1,13 @@
+# ADR-0003 v0 — copiar a `<product>-app/.octc/monorepo.yaml`
+schema_version: 0
+
+active_surfaces:
+  - web
+
+paths:
+  web:
+    - "apps/web/**"
+#   - "packages/**"
+
+portfolio:
+  repo_surfaces_csv: "web"

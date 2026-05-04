@@ -1,10 +1,20 @@
 # Reusable: *-workspace guardrails (no monorepo / no *-app CI patterns).
 # Call from *-workspace repos: jobs.verify uses this file @ pin (commit SHA recommended).
 # Contract: docs/adoption/WORKSPACE_LANE.md
+#
+# inputs.tooling_ref must be the SAME commit SHA as in uses: ...@SHA (single source of truth;
+# see scripts/print-workspace-verify-callable-pin.sh). The callable verifies full-SHA checkouts
+# match tooling_ref; branch/tag refs skip strict HEAD equality.
 name: OCTC workspace verify (callable)
 
 on:
-  workflow_call: {}
+  workflow_call:
+    inputs:
+      tooling_ref:
+        description: >
+          octc-platform ref (use the same SHA as in uses: for this workflow).
+        required: true
+        type: string
 
 jobs:
   verify:
@@ -16,6 +26,32 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4.2.2
         with:
           fetch-depth: 1
+
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4.2.2
+        with:
+          repository: OneClickToControl/octc-platform
+          ref: ${{ inputs.tooling_ref }}
+          path: .octc-workspace-tooling
+          fetch-depth: 1
+
+      - name: Verify tooling checkout matches tooling_ref (40-char SHA)
+        working-directory: .octc-workspace-tooling
+        run: |
+          set -euo pipefail
+          REF="${{ inputs.tooling_ref }}"
+          if echo "$REF" | grep -qE '^[0-9a-f]{40}$'; then
+            HEAD=$(git rev-parse HEAD)
+            if [ "$HEAD" != "$REF" ]; then
+              echo "::error::Tooling checkout HEAD $HEAD does not match tooling_ref $REF"
+              exit 1
+            fi
+          fi
+          echo "OK: tooling checkout matches tooling_ref (or non-SHA ref; strict check skipped)"
+
+      - name: Resolve workspace guardrails and optional checks
+        run: |
+          set -euo pipefail
+          ruby "${GITHUB_WORKSPACE}/.octc-workspace-tooling/scripts/workspace-guardrails-verify.rb"
 
       - name: Forbid product monorepo contract in workspace repo
         run: |
@@ -77,7 +113,8 @@ jobs:
       - name: Root markdown presence (template sanity)
         run: |
           set -euo pipefail
-          for f in README.md AGENTS.md CLAUDE.md IDENTITY.md MEMORY.md SOUL.md USER.md TOOLS.md HEARTBEAT.md; do
+          mapfile -t FILES < <(jq -r '.required_root_markdown[]' .workspace-guardrails.json)
+          for f in "${FILES[@]}"; do
             if [ ! -f "$f" ]; then
               echo "::error::Missing required file: $f"
               exit 1

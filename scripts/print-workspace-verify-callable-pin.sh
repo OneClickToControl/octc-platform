@@ -30,5 +30,7 @@ fi
 echo "Pin (commit that last modified octc-workspace-verify-callable.yml on ${REF}):"
 echo "$SHA"
 echo ""
-echo "Wrapper job snippet:"
+echo "Wrapper job snippet (use the SAME SHA for uses and tooling_ref):"
 echo "    uses: ${ORG_REPO}/.github/workflows/octc-workspace-verify-callable.yml@${SHA}"
+echo "    with:"
+echo "      tooling_ref: ${SHA}"

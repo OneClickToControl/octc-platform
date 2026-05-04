@@ -1,0 +1,23 @@
+# Sincroniza contrato monorepo → octc-platform-internal (PORTFOLIO).
+# Secret org/repo: OCTC_PORTFOLIO_DISPATCH_TOKEN. Lógica en octc-platform (callable).
+name: OCTC portfolio dispatch
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".octc/monorepo.yaml"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "package-lock.json"
+      - ".github/workflows/octc-portfolio-dispatch.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: octc-dispatch-portfolio-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  dispatch:
+    uses: OneClickToControl/octc-platform/.github/workflows/octc-portfolio-dispatch-callable.yml@__OCTC_PORTFOLIO_DISPATCH_PIN__
+    secrets: inherit

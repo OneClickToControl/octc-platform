@@ -32,12 +32,22 @@ npx @1c2c/cli sync surface --all --force
 npx @1c2c/cli sync governance --only doc-contract
 npx @1c2c/cli portfolio suggest --repo my-product
 
+# *-workspace bootstrap (files on disk only; does not create GitHub repo or PORTFOLIO)
+npx @1c2c/cli init workspace ./my-workspace --pin <SHA>
+# *-app public-safe scaffold (same limits; --pin optional for portfolio dispatch callable)
+npx @1c2c/cli init app ./my-app
+
 # Shorthand
 npx @1c2c/cli agents verify
 npx @1c2c/cli agents init --force
 ```
 
-Plantilla YAML: en el repo publicado [`templates/monorepo/monorepo.yaml.example`](https://github.com/OneClickToControl/octc-platform/blob/main/templates/monorepo/monorepo.yaml.example); copia a `.octc/monorepo.yaml` en tu producto.
+Plantilla YAML monorepo: en el repo publicado [`templates/monorepo/monorepo.yaml.example`](https://github.com/OneClickToControl/octc-platform/blob/main/templates/monorepo/monorepo.yaml.example); copia a `.octc/monorepo.yaml` en tu producto.
+
+## `init workspace` / `init app`
+
+- **`octc init workspace <dir>`** — Materializa el árbol estándar **`*-workspace`** (paridad con `octc-platform-internal` `templates/workspace-repo`). Opciones: `--force`, `--pin <SHA>` (mismo valor en `uses:` y `tooling_ref` del wrapper generado), `--template-dir <path>`. No crea repo en GitHub ni configuración org; ver runbook interno.
+- **`octc init app <dir>`** — Scaffold **`templates/product`**: contrato *-app* en disco (p. ej. `.octc/monorepo.yaml`, workflow portfolio dispatch). **`--pin`** opcional para el callable de portfolio; por defecto `main` si la plantilla usa placeholder. No sustituye [NEW_PRODUCT_REPO](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/runbooks/NEW_PRODUCT_REPO.md) para rulesets/secretos.
 
 ## Why this package?
 
