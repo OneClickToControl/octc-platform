@@ -40,7 +40,7 @@ Gracias por contribuir a `octc-platform`. Este repo es la SSOT de la plataforma;
 
 ## Releases
 
-- Cambios en `packages/` siguen [POLICY](docs/packages/POLICY.md).
+- Cambios en `packages/` siguen [POLICY](docs/packages/POLICY.md) y el camino **real** de CI/npm en [RELEASE_RUNBOOK](docs/packages/RELEASE_RUNBOOK.md) (PR de versión Changesets, política de `main`, OIDC).
 - Cambios solo en `docs/` no requieren tag de release pero pueden mencionarse en release notes mensuales.
 
 ## Antipatrones

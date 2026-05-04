@@ -12,12 +12,13 @@ Política de ingeniería para los paquetes publicables bajo el scope `@1c2c/*`.
 
 ## Releases
 
-- Workflow `release.yml`:
-  1. `pnpm build` y `pnpm test`.
-  2. `npm publish --provenance --access public` con OIDC (sin tokens long-lived).
-  3. SBOM (`syft`) adjuntada a la GitHub Release.
-  4. `sentry-cli releases new` + `set-commits` + `finalize` para asociar errores al paquete.
-  5. Etiqueta git firmada.
+- **Runbook operativo (fuente de verdad del flujo):** [RELEASE_RUNBOOK.md](RELEASE_RUNBOOK.md) — incluye el PR intermedio «chore: release packages», límites de auto-merge y dependencia de política de rama/CODEOWNERS.
+- Workflow [`.github/workflows/release.yml`](../../.github/workflows/release.yml) (Changesets + `changesets/action`):
+  1. `pnpm install`, `pnpm test`, `pnpm -r build --if-present`.
+  2. Paso opcional de comprobación de firmas en dependencias (`npm audit signatures`, no bloqueante).
+  3. Si quedan changesets en `main`: abre/actualiza el PR de versionado desde `changeset-release/main` (no publica aún).
+  4. Tras fusionar ese PR: `changeset publish` con **OIDC** y provenance (`NPM_CONFIG_PROVENANCE`), sin `NPM_TOKEN` persistido.
+- **No implementado hoy en ese workflow** (objetivos documentados en otros apartados / roadmap de cadena de suministro, no deben asumirse como pasos de CI): SBOM (`syft`) en el job de release, `sentry-cli releases` para paquetes, ni etiquetas git firmadas ad hoc. Si se añaden, actualizar este archivo y el runbook.
 
 ## Provenance — consumer-side
 

@@ -13,10 +13,9 @@ Cadena de confianza de software para OneClickToControl LLC. Cubre paquetes `@1c2
 
 - **OIDC Trusted Publishers de npm** activado por paquete: GitHub Actions intercambia un OIDC token efímero por un token de publicación `npm`. **Ningún `NPM_TOKEN` persistido** en GitHub Secrets ni en `.npmrc` del runner.
 - Workflow `.github/workflows/release.yml` declara `permissions: id-token: write` y usa Node 24 + `npm install -g npm@latest` para garantizar npm CLI ≥ 11.5.1 (mínimo OIDC).
-- Cada `npm publish` corre con `--provenance` (vía `NPM_CONFIG_PROVENANCE=true`), generando attestation SLSA v1 firmada por Sigstore.
+- Cada `npm publish` desde `release.yml` corre con `--provenance` (vía `NPM_CONFIG_PROVENANCE=true`), generando attestation SLSA v1 firmada por Sigstore.
 - Provenance verificable por consumidores con `npm audit signatures` o `pnpm audit signatures`.
-- Tags firmados (`tag.gpg.sign=true` o sigstore).
-- SBOM generada con `syft` y adjuntada a la GitHub Release.
+- **Nota de alcance:** la política de cadena de suministro puede mencionar tags firmados y SBOM (`syft`) en GitHub Releases; **el workflow `release.yml` actual no ejecuta generación de SBOM ni `sentry-cli` para paquetes `@1c2c/*`**. Los tags que crea Changesets/npm tras `changeset publish` son los habituales del flujo publicado; cualquier endurecimiento adicional debe reflejarse explícitamente en el workflow y en [RELEASE_RUNBOOK.md](../packages/RELEASE_RUNBOOK.md).
 
 ### Configuración del Trusted Publisher (uno por paquete)
 

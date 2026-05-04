@@ -1,3 +1,6 @@
+# Changesets: opens "chore: release packages" PR when pending .changeset/* exist;
+# after that PR merges to main, publishes @1c2c/* via npm OIDC.
+# Operational truth (reviews, CODEOWNERS, org rules): docs/packages/RELEASE_RUNBOOK.md
 name: release
 
 on:
@@ -56,7 +59,7 @@ jobs:
         run: pnpm -r build --if-present
 
       - name: Verify provenance of consumed @1c2c packages
-        run: pnpm dlx audit-signatures || npm audit signatures
+        run: npm audit signatures
         continue-on-error: true
 
       - name: Create Release Pull Request or Publish

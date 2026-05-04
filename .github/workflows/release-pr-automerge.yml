@@ -1,0 +1,34 @@
+# Enables auto-merge (squash) on the Changesets "Version Packages" PR so that once
+# branch protection + reviews are satisfied, GitHub merges without a second manual click.
+#
+# This does NOT bypass required reviewers or CODEOWNERS — see docs/packages/RELEASE_RUNBOOK.md
+name: release-pr-automerge
+
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review, synchronize]
+    branches: [main]
+
+concurrency:
+  group: release-pr-automerge-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  enable:
+    name: enable-auto-merge
+    runs-on: ubuntu-latest
+    if: |
+      github.event.pull_request.base.ref == 'main' &&
+      github.event.pull_request.head.ref == 'changeset-release/main' &&
+      github.event.pull_request.head.repo.fork == false
+    steps:
+      - name: Enable squash auto-merge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh pr merge "${{ github.event.pull_request.number }}" --auto --squash
