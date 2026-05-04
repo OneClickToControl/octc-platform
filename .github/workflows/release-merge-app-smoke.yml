@@ -1,0 +1,147 @@
+# Manual smoke test: GitHub App credentials + installation token + open PR + wait checks + squash merge.
+# Does NOT exercise Changesets, npm, or release-pr-automerge.yml predicates.
+# Uses the same App variable/secret model as the real dedicated merge path (no PAT).
+#
+# Run: Actions → "release-merge-app-smoke" → Run workflow
+name: release-merge-app-smoke
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: release-merge-app-smoke
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require App Client ID variable
+        env:
+          CID: ${{ vars.OCTC_RELEASE_MERGE_APP_CLIENT_ID }}
+        run: |
+          set -euo pipefail
+          if [ -z "${CID}" ]; then
+            echo "::error::Set repository variable OCTC_RELEASE_MERGE_APP_CLIENT_ID (same as release merge App path)."
+            exit 1
+          fi
+
+      - name: Mint installation token
+        id: app-token
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
+        with:
+          client-id: ${{ vars.OCTC_RELEASE_MERGE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.OCTC_RELEASE_MERGE_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.event.repository.name }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Configure git as App bot
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          set -euo pipefail
+          APP_SLUG="${{ steps.app-token.outputs.app-slug }}"
+          USER_ID=$(gh api "/users/${APP_SLUG}[bot]" --jq .id)
+          git config user.name "${APP_SLUG}[bot]"
+          git config user.email "${USER_ID}+${APP_SLUG}[bot]@users.noreply.github.com"
+
+      - name: Append smoke record and push branch
+        id: push-branch
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          set -euo pipefail
+          BRANCH="smoke/release-merge-app-${{ github.run_id }}"
+          git checkout -b "$BRANCH"
+          mkdir -p docs/tmp
+          if [ ! -f docs/tmp/release-merge-smoke.md ]; then
+            printf '%s\n' \
+              '# release-merge-app smoke' \
+              '' \
+              '> Governance-only validation. Not product truth. See workflow `release-merge-app-smoke.yml`.' \
+              '' \
+              > docs/tmp/release-merge-smoke.md
+          fi
+          {
+            echo ""
+            echo "## Run ${{ github.run_id }}"
+            echo "- workflow: release-merge-app-smoke"
+            echo "- triggering_sha: ${{ github.sha }}"
+            echo "- recorded_at_utc: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          } >> docs/tmp/release-merge-smoke.md
+          git add docs/tmp/release-merge-smoke.md
+          git commit -m "smoke: append release-merge-app validation run"
+          git push origin "$BRANCH"
+          echo "branch=${BRANCH}" >> "$GITHUB_OUTPUT"
+
+      - name: Open PR
+        id: openpr
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          set -euo pipefail
+          BRANCH="${{ steps.push-branch.outputs.branch }}"
+          gh pr create \
+            --repo "${{ github.repository }}" \
+            --base main \
+            --head "$BRANCH" \
+            --title "smoke: validate GitHub App merge path" \
+            --body "Manual smoke from \`release-merge-app-smoke\` (run_id **${{ github.run_id }}**). Proves App token mint, PR open, required checks, squash merge without \`--admin\`. **Not** a Changesets release; does not exercise \`release-pr-automerge.yml\` mechanical PR rules."
+          PR_NUM=""
+          for _ in $(seq 1 60); do
+            PR_NUM=$(gh pr list --repo "${{ github.repository }}" --head "$BRANCH" --json number --jq '.[0].number // empty')
+            if [ -n "${PR_NUM}" ] && [ "${PR_NUM}" != "null" ]; then
+              break
+            fi
+            sleep 2
+          done
+          if [ -z "${PR_NUM}" ] || [ "${PR_NUM}" = "null" ]; then
+            echo "::error::Could not resolve PR number for head ${BRANCH}"
+            exit 1
+          fi
+          echo "number=${PR_NUM}" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for checks and squash merge
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          set -euo pipefail
+          PR="${{ steps.openpr.outputs.number }}"
+          gh pr checks "$PR" --repo "${{ github.repository }}" --watch
+          gh pr merge "$PR" --repo "${{ github.repository }}" --squash --delete-branch
+
+      - name: Job summary
+        if: success()
+        run: |
+          cat >> "$GITHUB_STEP_SUMMARY" << 'EOF'
+          ## `release-merge-app-smoke` — success
+
+          - App installation token minted.
+          - PR opened with App token, checks awaited, squash-merged with App token (`--delete-branch`).
+          - **Does not** validate Changesets, npm publish, mechanical release PR rules, or provenance.
+
+          If merge failed, fix branch protection / rulesets for the App bot, required checks, or conversation resolution; remote branch may need manual deletion.
+          EOF
+
+      - name: Failure hint
+        if: failure()
+        run: |
+          cat >> "$GITHUB_STEP_SUMMARY" << 'EOF'
+          ## `release-merge-app-smoke` — failed
+
+          Typical causes: invalid App credentials, App not installed on this repo, missing bypass for the App bot on `main`, required checks failing, or unresolved review threads on the PR.
+
+          Cleanup: delete remote branch `smoke/release-merge-app-<run_id>` if it still exists.
+          EOF
