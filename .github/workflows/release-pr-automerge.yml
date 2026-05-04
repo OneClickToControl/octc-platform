@@ -1,7 +1,20 @@
-# Enables auto-merge (squash) on the Changesets "Version Packages" PR so that once
-# branch protection + reviews are satisfied, GitHub merges without a second manual click.
+# Mechanical Changesets release PR only — must match ALL of:
+#   base: main
+#   head: changeset-release/main
+#   title: chore: release packages  (exactly; must match release.yml/changesets/action)
+#   author: github-actions[bot]  (not a human or other bot mimicking the branch name)
+#   not from a fork
 #
-# This does NOT bypass required reviewers or CODEOWNERS — see docs/packages/RELEASE_RUNBOOK.md
+# Normal PRs (even touching packages/**) never match this shape.
+#
+# Modes (mutually exclusive):
+#   - Default: enable squash auto-merge with GITHUB_TOKEN (still needs policy: reviews/checks).
+#   - Optional: set repo variable OCTC_RELEASE_MERGE_ENABLED=true and secret OCTC_RELEASE_MERGE_TOKEN
+#     (PAT from a dedicated bot user, or a token issued for a narrowly scoped GitHub App) so this
+#     workflow can merge after checks pass — only if org policy grants that identity bypass / merge
+#     rights. See docs/packages/RELEASE_RUNBOOK.md § "Identidad dedicada".
+#
+# This workflow does NOT broaden review/CODEOWNERS for other PRs.
 name: release-pr-automerge
 
 on:
@@ -18,13 +31,17 @@ permissions:
   pull-requests: write
 
 jobs:
-  enable:
+  # --- Narrow predicate reused conceptually (duplicate per-job; YAML has no YAML anchor for if:) ---
+  enable-auto-merge:
     name: enable-auto-merge
     runs-on: ubuntu-latest
     if: |
+      vars.OCTC_RELEASE_MERGE_ENABLED != 'true' &&
       github.event.pull_request.base.ref == 'main' &&
       github.event.pull_request.head.ref == 'changeset-release/main' &&
-      github.event.pull_request.head.repo.fork == false
+      github.event.pull_request.head.repo.fork == false &&
+      github.event.pull_request.title == 'chore: release packages' &&
+      github.event.pull_request.user.login == 'github-actions[bot]'
     steps:
       - name: Enable squash auto-merge
         env:
@@ -32,3 +49,33 @@ jobs:
         run: |
           set -euo pipefail
           gh pr merge "${{ github.event.pull_request.number }}" --auto --squash
+
+  merge-with-release-identity:
+    name: merge-mechanical-pr-with-release-identity
+    runs-on: ubuntu-latest
+    if: |
+      vars.OCTC_RELEASE_MERGE_ENABLED == 'true' &&
+      github.event.pull_request.base.ref == 'main' &&
+      github.event.pull_request.head.ref == 'changeset-release/main' &&
+      github.event.pull_request.head.repo.fork == false &&
+      github.event.pull_request.title == 'chore: release packages' &&
+      github.event.pull_request.user.login == 'github-actions[bot]'
+    steps:
+      - name: Require merge token
+        env:
+          TOKEN: ${{ secrets.OCTC_RELEASE_MERGE_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${TOKEN}" ]; then
+            echo "::error::OCTC_RELEASE_MERGE_ENABLED is true but OCTC_RELEASE_MERGE_TOKEN is empty. Set the secret or disable the variable."
+            exit 1
+          fi
+
+      - name: Wait for checks then squash merge
+        env:
+          GH_TOKEN: ${{ secrets.OCTC_RELEASE_MERGE_TOKEN }}
+        run: |
+          set -euo pipefail
+          PR="${{ github.event.pull_request.number }}"
+          gh pr checks "$PR" --watch
+          gh pr merge "$PR" --squash

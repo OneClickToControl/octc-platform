@@ -68,6 +68,7 @@ jobs:
           publish: pnpm exec changeset publish
           version: pnpm exec changeset version
           commit: "chore: release"
+          # Must stay exactly in sync with release-pr-automerge.yml (mechanical PR guard).
           title: "chore: release packages"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
