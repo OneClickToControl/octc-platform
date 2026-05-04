@@ -152,15 +152,6 @@ Solo si **`OCTC_RELEASE_MERGE_CREDENTIAL_MODE=pat`**:
 5. Si modo App/PAT dedicado: confirmar que **`merge-mechanical-pr-github-app`** o **`merge-mechanical-pr-pat-fallback`** termina en éxito.
 6. Verificar el siguiente `release.yml` en `main` (`changeset publish` y versión en npm).
 
-## Smoke manual — validar App merge (sin Changesets)
-
-Para comprobar que la **GitHub App** de release-merge puede mintar token, abrir un PR de prueba, esperar checks y **habilitar auto-merge squash** en `main` con el actor de la App (sin `--admin`), existe el workflow manual **[`release-merge-app-smoke.yml`](../../.github/workflows/release-merge-app-smoke.yml)** (`Actions` → **release-merge-app-smoke** → *Run workflow*).
-
-- Usa las mismas credenciales que el camino preferido: `OCTC_RELEASE_MERGE_APP_CLIENT_ID` + `OCTC_RELEASE_MERGE_APP_PRIVATE_KEY`.
-- Toca solo `docs/tmp/release-merge-smoke.md`; el título del PR es **`smoke: validate GitHub App merge path`** (no interfiere con el PR mecánico `chore: release packages`).
-- Tras checks verdes, el workflow ejecuta **`gh pr merge --auto --squash --delete-branch`**: prueba si GitHub **acepta encolar auto-merge** para ese actor bajo la política actual (el merge puede completarse después si faltan aprobaciones u otros requisitos).
-- **No** demuestra el flujo Changesets ni publicación npm; **no** demuestra por sí solo que las aprobaciones estén omitidas; solo si el camino App puede activar auto-merge bajo la política vigente.
-
 ## Desalineaciones conocidas con otros documentos
 
 Algunos documentos históricos listan SBOM (`syft`), integración Sentry `releases`, o tags firmados como parte del release de paquetes. **El workflow actual `release.yml` no ejecuta esos pasos.** Hasta que se implementen en CI, este runbook y la sección *Releases* de [POLICY.md](POLICY.md) prevalecen para el comportamiento real.
