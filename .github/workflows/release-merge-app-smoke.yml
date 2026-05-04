@@ -1,6 +1,11 @@
-# Manual smoke test: GitHub App credentials + installation token + open PR + wait checks + squash merge.
+# Manual smoke: GitHub App installation token + open PR + wait checks + enable squash auto-merge.
 # Does NOT exercise Changesets, npm, or release-pr-automerge.yml predicates.
 # Uses the same App variable/secret model as the real dedicated merge path (no PAT).
+#
+# Merge step uses `gh pr merge --auto --squash` so the App enables auto-merge under branch policy
+# instead of failing immediately when the PR is not yet mergeable. Success here means auto-merge
+# was accepted for the App actor; GitHub completes the squash merge when requirements are satisfied.
+# `--delete-branch` applies when the merge completes (same flag with --auto in gh; not a second merge).
 #
 # Run: Actions → "release-merge-app-smoke" → Run workflow
 name: release-merge-app-smoke
@@ -98,7 +103,7 @@ jobs:
             --base main \
             --head "$BRANCH" \
             --title "smoke: validate GitHub App merge path" \
-            --body "Manual smoke from \`release-merge-app-smoke\` (run_id **${{ github.run_id }}**). Proves App token mint, PR open, required checks, squash merge without \`--admin\`. **Not** a Changesets release; does not exercise \`release-pr-automerge.yml\` mechanical PR rules."
+            --body "Manual smoke from \`release-merge-app-smoke\` (run_id **${{ github.run_id }}**). Enables **squash auto-merge** with the App token after checks (not an immediate merge). **Not** a Changesets release; does not exercise \`release-pr-automerge.yml\` mechanical PR rules."
           PR_NUM=""
           for _ in $(seq 1 60); do
             PR_NUM=$(gh pr list --repo "${{ github.repository }}" --head "$BRANCH" --json number --jq '.[0].number // empty')
@@ -113,7 +118,7 @@ jobs:
           fi
           echo "number=${PR_NUM}" >> "$GITHUB_OUTPUT"
 
-      - name: Wait for checks and squash merge
+      - name: Wait for checks and enable squash auto-merge
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
@@ -138,20 +143,35 @@ jobs:
             exit 1
           fi
           gh pr checks "${PR}" --repo "${REPO}" --watch
-          gh pr merge "${PR}" --repo "${REPO}" --squash --delete-branch
+          if ! gh pr merge "${PR}" --repo "${REPO}" --auto --squash --delete-branch; then
+            echo "::error::Could not enable auto-merge for PR #${PR} — branch policy or permissions may block the App from queueing auto-merge, or merge requirements failed."
+            exit 1
+          fi
 
       - name: Job summary
         if: success()
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          PR: ${{ steps.openpr.outputs.number }}
         run: |
-          cat >> "$GITHUB_STEP_SUMMARY" << 'EOF'
-          ## `release-merge-app-smoke` — success
-
-          - App installation token minted.
-          - PR opened with App token, checks awaited, squash-merged with App token (`--delete-branch`).
-          - **Does not** validate Changesets, npm publish, mechanical release PR rules, or provenance.
-
-          If merge failed, fix branch protection / rulesets for the App bot, required checks, or conversation resolution; remote branch may need manual deletion.
-          EOF
+          set -euo pipefail
+          REPO="${{ github.repository }}"
+          URL=$(gh pr view "${PR}" --repo "${REPO}" --json url --jq .url)
+          META=$(gh pr view "${PR}" --repo "${REPO}" --json state,autoMergeRequest)
+          STATE=$(echo "${META}" | jq -r .state)
+          AUTO=$(echo "${META}" | jq -r 'if .autoMergeRequest == null then "false" else "true" end')
+          {
+            echo "## \`release-merge-app-smoke\` — success"
+            echo ""
+            echo "**PR #${PR}** — ${URL}"
+            echo ""
+            echo "- App installation token minted; PR opened; required checks watched."
+            echo "- **Squash auto-merge was enabled** (\`gh pr merge --auto --squash --delete-branch\`) with the App actor."
+            echo "- If the PR is not yet **MERGED** in the UI, policy may still require approvals or other gates; GitHub will complete the squash when merge requirements are satisfied (or leave the PR open until they are)."
+            echo "- **Does not** validate Changesets, npm publish, mechanical release PR rules, or that approvals are bypassed; it only tests that the App path could queue auto-merge under current policy."
+            echo ""
+            echo "Current PR state (at job end): **${STATE}**. Auto-merge request present: **${AUTO}**."
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Failure hint
         if: failure()
@@ -159,7 +179,9 @@ jobs:
           cat >> "$GITHUB_STEP_SUMMARY" << 'EOF'
           ## `release-merge-app-smoke` — failed
 
-          Typical causes: invalid App credentials, App not installed on this repo, missing bypass for the App bot on `main`, required checks failing, `gh pr checks --watch` ran before CI attached any checks (retry workflow), or unresolved review threads on the PR.
+          Typical causes: invalid App credentials, App not installed on this repo, missing permissions to enable auto-merge, `gh pr checks --watch` ran before CI attached checks (retry workflow), checks failing, or GitHub rejected **auto-merge** for this actor under branch protection / rulesets (not the same as an immediate merge block).
 
-          Cleanup: close or merge PR manually; delete remote branch `smoke/release-merge-app-<run_id>` if it still exists.
+          A PR may remain **open** with auto-merge disabled if policy never allows the App to queue merge, or if required reviews/conversations are still unsatisfied.
+
+          Cleanup: inspect the smoke PR in the UI; close or merge manually; delete remote branch `smoke/release-merge-app-<run_id>` if it still exists.
           EOF
