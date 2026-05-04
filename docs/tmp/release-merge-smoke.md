@@ -22,3 +22,8 @@
 - workflow: release-merge-app-smoke
 - triggering_sha: ba4edf29b86cd283f76b63227b26c6733060bcf2
 - recorded_at_utc: 2026-05-04T03:55:01Z
+
+## Run 25300341932
+- workflow: release-merge-app-smoke
+- triggering_sha: a410eeebe95ee5dda9fb82d5079bbbfc9243f425
+- recorded_at_utc: 2026-05-04T04:00:51Z
