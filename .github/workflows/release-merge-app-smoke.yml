@@ -119,8 +119,26 @@ jobs:
         run: |
           set -euo pipefail
           PR="${{ steps.openpr.outputs.number }}"
-          gh pr checks "$PR" --repo "${{ github.repository }}" --watch
-          gh pr merge "$PR" --repo "${{ github.repository }}" --squash --delete-branch
+          REPO="${{ github.repository }}"
+          # gh pr checks --watch exits 1 while GitHub has not yet attached any checks to the PR head
+          echo "Waiting for CI checks to appear on PR #${PR}..."
+          ready=0
+          for _ in $(seq 1 120); do
+            if data=$(gh pr checks "${PR}" --repo "${REPO}" --json name 2>/dev/null); then
+              n=$(echo "${data}" | jq 'length')
+              if [ "${n}" -gt 0 ]; then
+                ready=1
+                break
+              fi
+            fi
+            sleep 5
+          done
+          if [ "${ready}" -ne 1 ]; then
+            echo "::error::No checks appeared on PR #${PR} within ~10m (confirm pull_request workflows and Actions permissions)."
+            exit 1
+          fi
+          gh pr checks "${PR}" --repo "${REPO}" --watch
+          gh pr merge "${PR}" --repo "${REPO}" --squash --delete-branch
 
       - name: Job summary
         if: success()
@@ -141,7 +159,7 @@ jobs:
           cat >> "$GITHUB_STEP_SUMMARY" << 'EOF'
           ## `release-merge-app-smoke` — failed
 
-          Typical causes: invalid App credentials, App not installed on this repo, missing bypass for the App bot on `main`, required checks failing, or unresolved review threads on the PR.
+          Typical causes: invalid App credentials, App not installed on this repo, missing bypass for the App bot on `main`, required checks failing, `gh pr checks --watch` ran before CI attached any checks (retry workflow), or unresolved review threads on the PR.
 
-          Cleanup: delete remote branch `smoke/release-merge-app-<run_id>` if it still exists.
+          Cleanup: close or merge PR manually; delete remote branch `smoke/release-merge-app-<run_id>` if it still exists.
           EOF
