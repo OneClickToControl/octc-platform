@@ -1,5 +1,7 @@
 # Platform tour (30 min)
 
+> **Idioma:** esta guía está en **español**; el objetivo del repo público es migrar onboarding a **inglés**. Mientras tanto, el [README](../../README.md) raíz está en **inglés**. Política: [POLICY](../i18n/POLICY.md), [DOCUMENTATION_STANDARDS](../governance/DOCUMENTATION_STANDARDS.md).
+
 Tour humano de `octc-platform` para nuevos contribuidores. Léelo de principio a fin antes de tu primer PR.
 
 ## 1. Qué es octc-platform (5 min)

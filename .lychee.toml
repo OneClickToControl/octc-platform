@@ -1,0 +1,4 @@
+# Lychee — exclude private org URLs that are not resolvable in public CI (offline) or need special auth.
+exclude = [
+    '^https://github\.com/OneClickToControl/octc-platform-internal',
+]
