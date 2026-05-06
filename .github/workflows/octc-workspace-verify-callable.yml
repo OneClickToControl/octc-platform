@@ -1,6 +1,6 @@
 # Reusable: *-workspace guardrails (no monorepo / no *-app CI patterns).
 # Call from *-workspace repos: jobs.verify uses this file @ pin (commit SHA recommended).
-# Contract: docs/adoption/WORKSPACE_LANE.md
+# Contract: docs/adoption/WORKSPACE_LANE.md — bump pin in *-workspace when this file or `scripts/workspace-guardrails-verify.rb` changes.
 #
 # inputs.tooling_ref must be the SAME commit SHA as in uses: ...@SHA (single source of truth;
 # see scripts/print-workspace-verify-callable-pin.sh). The callable verifies full-SHA checkouts
