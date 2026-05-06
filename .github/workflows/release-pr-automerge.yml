@@ -52,7 +52,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          gh pr merge "${{ github.event.pull_request.number }}" --auto --squash
+          gh pr merge "${{ github.event.pull_request.number }}" --repo "${{ github.repository }}" --auto --squash
 
   # Preferred: installation access token (≈1h, revoked after job). No long-lived PAT.
   merge-mechanical-pr-github-app:
@@ -90,14 +90,15 @@ jobs:
           permission-contents: write
           permission-pull-requests: write
 
-      - name: Wait for checks then squash merge
+      # Use --auto --squash (do not `gh pr checks --watch`): this job is a PR check and would deadlock.
+      - name: Enable squash auto-merge (GitHub App)
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           set -euo pipefail
           PR="${{ github.event.pull_request.number }}"
-          gh pr checks "$PR" --watch
-          gh pr merge "$PR" --squash
+          REPO="${{ github.repository }}"
+          gh pr merge "$PR" --repo "$REPO" --auto --squash
 
   # Second-best: static PAT. Use only if App provisioning is blocked; rotate and scope minimally.
   merge-mechanical-pr-pat-fallback:
@@ -128,11 +129,11 @@ jobs:
             exit 1
           fi
 
-      - name: Wait for checks then squash merge
+      - name: Enable squash auto-merge (PAT)
         env:
           GH_TOKEN: ${{ secrets.OCTC_RELEASE_MERGE_TOKEN }}
         run: |
           set -euo pipefail
           PR="${{ github.event.pull_request.number }}"
-          gh pr checks "$PR" --watch
-          gh pr merge "$PR" --squash
+          REPO="${{ github.repository }}"
+          gh pr merge "$PR" --repo "$REPO" --auto --squash
