@@ -1,0 +1,24 @@
+# Same contract as octc-platform-internal: only PRs labeled `octc/auto-merge` (mechanical lane).
+# Requires `octc-factory-automerge-reusable.yml` on `main` in octc-platform-internal before this succeeds at runtime.
+name: OCTC factory automerge (labeled)
+
+on:
+  pull_request:
+    types: [labeled, synchronize, opened, reopened, ready_for_review]
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  merge:
+    if: |
+      github.event.pull_request.draft == false &&
+      contains(github.event.pull_request.labels.*.name, 'octc/auto-merge') &&
+      github.event.pull_request.head.repo.fork == false
+    uses: OneClickToControl/octc-platform-internal/.github/workflows/octc-factory-automerge-reusable.yml@main
+    secrets: inherit
+    with:
+      pr-number: ${{ github.event.pull_request.number }}
+      merge-strategy: squash-when-green
