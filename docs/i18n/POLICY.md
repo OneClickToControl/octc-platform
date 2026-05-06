@@ -1,33 +1,28 @@
 # i18n policy
 
-Política de idioma para documentación y plantillas dentro de OneClickToControl LLC.
+Language rules for **documentation and templates** across OneClickToControl. The **full matrix** (including private `octc-*` meta-repos) lives in **`octc-platform-internal`**: [OCTC_DOCUMENTATION_GOVERNANCE.md](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/runbooks/OCTC_DOCUMENTATION_GOVERNANCE.md). This file focuses on **this repository** (`octc-platform`, **public**).
 
-## Principios
+## Principles (this repo)
 
-- **Coherencia por documento**: cada archivo se escribe en un solo idioma (no mezclas).
-- **Idioma operativo principal**: español (LatAm/España según producto).
-- **Idioma técnico permitido**: inglés cuando aporta precisión (APIs, mensajes de error citados, términos canónicos).
-- **Internacionalización de productos**: las apps se internacionalizan según su mercado en sus propios repos; esta política es para docs y plantillas de plataforma.
+- **One language per document** — do not mix Spanish and English in the same section without labeled blocks (`**English**` / **Español**).
+- **Public audience:** README, ADRs, RFCs, onboarding, and governance docs in **`octc-platform` target English** so the open-source surface is consistent. **Legacy Spanish** pages remain until migrated — see [DOCUMENTATION_STANDARDS.md](../governance/DOCUMENTATION_STANDARDS.md).
+- **Technical precision:** APIs, error messages, canonical terms (ACP, tier, allowlist), and identifiers stay **English** everywhere.
+- **Agent templates** (`CLAUDE.md`, etc.): body may be **English** for tool compatibility; platform policy text can follow the same language as the surrounding repo that consumes the template. Prefer **English** for templates shipped from this **public** repo unless a product explicitly localizes.
 
-## Reglas por área
+## Area rules (`octc-platform` only)
 
-| área | idioma por defecto | excepciones |
-|------|--------------------|-------------|
-| `docs/` (octc-platform) | español | términos técnicos en inglés cuando son canónicos. |
-| Plantillas de agentes (`CLAUDE.md`, etc.) | español | comandos y outputs en inglés cuando aplique. |
-| Schemas, código, configs | inglés | inglés siempre (estándar). |
-| ADR, RFC, audit | español | títulos pueden incluir tecnicismos en inglés. |
-| Brand, marketing | depende del producto y mercado | documentado en cada repo. |
+| Area | Language |
+|------|----------|
+| Root `README.md`, `CONTRIBUTING.md`, `docs/governance/**`, new onboarding | **English** (target) |
+| `docs/adr/**`, `docs/comms/RFC*` | **English** for new work; existing Spanish ADRs stay until translated |
+| `docs/onboarding/PLATFORM_TOUR.md` etc. | **Spanish** until migrated — call out at top when non-English |
+| `schemas/**`, code, workflow YAML | **English** |
+| Private companion docs | Not in this repo — see internal governance |
 
-## Glosario
+## Glossary
 
-Mantenemos un glosario corto en `docs/i18n/GLOSSARY.md` (a crear cuando aparezca un término ambiguo). Términos canónicos (tier, ACP, allowlist, breadcrumbs, replay, profile) se mantienen en inglés.
+Short glossary: [`GLOSSARY.md`](GLOSSARY.md) when ambiguous terms appear. Canonical product terms stay **English**.
 
-## Traducciones
+## Verification
 
-- Productos cara al usuario: cada repo decide su matriz de localización.
-- Plataforma: solo en español por ahora; si entra un mantenedor anglófono, se evaluará bilingüe.
-
-## Verificación
-
-`verify.yml` no impone idioma (sería ruidoso). Revisión manual en revisión trimestral.
+`verify.yml` does **not** enforce language. **Link** integrity is checked via Lychee (`docs-links`). Quarterly review: align new docs with this policy.

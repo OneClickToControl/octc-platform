@@ -34,7 +34,7 @@ Gracias por contribuir a `octc-platform`. Este repo es la SSOT de la plataforma;
 
 ## Estilo
 
-- Idioma: ver [i18n POLICY](docs/i18n/POLICY.md). Por defecto español.
+- Idioma y matriz por repo: [DOCUMENTATION_STANDARDS.md](docs/governance/DOCUMENTATION_STANDARDS.md) y [docs/i18n/POLICY.md](docs/i18n/POLICY.md) (**este** repo público apunta a **inglés** para narrativa nueva).
 - Markdown: títulos en mayúscula inicial estilo oración (Sentence case). Tablas con headers explicativos.
 - Diagramas: Mermaid. Mantener etiquetas cortas y sin caracteres especiales.
 
