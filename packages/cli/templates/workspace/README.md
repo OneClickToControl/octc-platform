@@ -1,6 +1,6 @@
 # Plantilla — repositorio `*-workspace` (memoria / identidad / restore)
 
-Copia este directorio a la **raíz** de `OneClickToControl/<producto>-workspace` (o úsalo como **GitHub Template**). Para volcar el árbol desde un clone de `octc-platform-internal`, usa `scripts/materialize-workspace-from-template.sh` (ver [NEW_WORKSPACE_REPO.md](../../docs/runbooks/NEW_WORKSPACE_REPO.md) §1).
+Copia este directorio a la **raíz** de `OneClickToControl/<producto>-workspace` (o úsalo como **GitHub Template**). Para volcar el árbol desde un clone de `octc-platform-internal`, usa `scripts/materialize-workspace-from-template.sh` (ver [NEW_WORKSPACE_REPO.md](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/runbooks/NEW_WORKSPACE_REPO.md) §1).
 
 ## Qué vive aquí
 
@@ -33,4 +33,4 @@ Copia este directorio a la **raíz** de `OneClickToControl/<producto>-workspace`
 
 ## Runbook org
 
-Para alta de un repo nuevo: en **octc-platform-internal**, [docs/runbooks/NEW_WORKSPACE_REPO.md](../../docs/runbooks/NEW_WORKSPACE_REPO.md).
+Para alta de un repo nuevo: en **octc-platform-internal**, [NEW_WORKSPACE_REPO.md](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/runbooks/NEW_WORKSPACE_REPO.md).
