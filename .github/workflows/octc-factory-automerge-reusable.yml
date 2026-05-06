@@ -14,6 +14,8 @@
 #
 # **Public** repos (e.g. `octc-platform`) must carry the same file locally — do not `uses:` this private repo.
 # Product templates duplicate this file under `templates/{product-repo,agents-repo,workspace-repo}/`.
+
+# merge-strategy: both values use `gh pr merge --auto --squash`. We avoid `gh pr checks --watch` because this workflow is often a pending check on the same PR (deadlock).
 name: OCTC factory automerge (reusable)
 
 on:
@@ -94,7 +96,7 @@ jobs:
           REPO="${{ github.repository }}"
           case "${STRAT}" in
             auto-squash) gh pr merge "$PR" --repo "$REPO" --auto --squash ;;
-            *) gh pr checks "$PR" --repo "$REPO" --watch; gh pr merge "$PR" --repo "$REPO" --squash ;;
+            *) gh pr merge "$PR" --repo "$REPO" --auto --squash ;;
           esac
 
   merge-with-pat:
@@ -139,7 +141,7 @@ jobs:
           REPO="${{ github.repository }}"
           case "${STRAT}" in
             auto-squash) gh pr merge "$PR" --repo "$REPO" --auto --squash ;;
-            *) gh pr checks "$PR" --repo "$REPO" --watch; gh pr merge "$PR" --repo "$REPO" --squash ;;
+            *) gh pr merge "$PR" --repo "$REPO" --auto --squash ;;
           esac
 
   merge-with-github-token:
@@ -169,5 +171,5 @@ jobs:
           REPO="${{ github.repository }}"
           case "${STRAT}" in
             auto-squash) gh pr merge "$PR" --repo "$REPO" --auto --squash ;;
-            *) gh pr checks "$PR" --repo "$REPO" --watch; gh pr merge "$PR" --repo "$REPO" --squash ;;
+            *) gh pr merge "$PR" --repo "$REPO" --auto --squash ;;
           esac
