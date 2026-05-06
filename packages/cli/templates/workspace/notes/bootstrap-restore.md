@@ -1,8 +1,8 @@
 # Bootstrap / restore
 
-Pasos mínimos para reconstruir este workspace en una máquina nueva o tras pérdida de estado local.
+Minimum steps to rebuild this workspace on a new machine or after losing local state.
 
-1. Clonar este repo.
-2. Revisar `IDENTITY.md` / `MEMORY.md`.
-3. Restaurar secretos y tokens fuera del repo (gestor de secretos).
-4. (Opcional) Ejecutar scripts en `scripts/`.
+1. Clone this repo.
+2. Review `IDENTITY.md` / `MEMORY.md`.
+3. Restore secrets and tokens outside the repo (secrets manager).
+4. (Optional) Run scripts under `scripts/`.

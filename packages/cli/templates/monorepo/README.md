@@ -1,1 +1,1 @@
-# Copiar a `<repo>/.octc/monorepo.yaml`. Ver documentación en octc-platform `templates/monorepo/README.md`.
+# Copy to `<repo>/.octc/monorepo.yaml`. See documentation in octc-platform `templates/monorepo/README.md`.

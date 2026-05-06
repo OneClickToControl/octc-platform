@@ -1,3 +1,3 @@
-# Memoria
+# Memory
 
-Punteros y resúmenes de contexto de largo plazo. Mantén referencias a fuentes; evita duplicar el historial completo aquí.
+Pointers and long-term context summaries. Keep references to sources; avoid duplicating full history here.

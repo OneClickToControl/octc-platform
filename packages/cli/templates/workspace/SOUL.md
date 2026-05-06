@@ -1,3 +1,3 @@
 # Soul
 
-Principios y “cómo trabajamos” en este workspace (opcional, humano).
+Principles and “how we work” in this workspace (optional, human-facing).
