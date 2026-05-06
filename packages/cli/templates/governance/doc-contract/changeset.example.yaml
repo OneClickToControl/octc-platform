@@ -1,12 +1,12 @@
-# Ejemplo: metadato de cambio de documentación normativa (sin secretos ni PII).
+# Example: metadata for a normative documentation change (no secrets or PII).
 
 schema_version: 0
 id: "example-001"
 date: "2026-05-01"
 author_type: "human"
-summary: "Describe el cambio en una línea."
+summary: "Describe the change in one line."
 scope:
   paths:
     - "docs/agents/EXAMPLE.md"
 reviewers_required: 1
-notes: "Sin datos sensibles."
+notes: "No sensitive data."

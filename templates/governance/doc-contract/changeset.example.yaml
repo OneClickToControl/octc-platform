@@ -1,14 +1,14 @@
-# Ejemplo: metadato de cambio de documentación normativa (sin secretos ni PII).
-# Copiar y renombrar; ajustar campos a la convención del repo.
+# Example: metadata for a normative documentation change (no secrets or PII).
+# Copy and rename; align fields with repo convention.
 
 schema_version: 0
 id: "example-001"
 date: "2026-05-01"
 author_type: "human" # human | agent | ci
-summary: "Describe en una línea el cambio (p. ej. allowlist L2 bump)."
+summary: "One-line description of the change (e.g. allowlist L2 bump)."
 scope:
   paths:
     - "docs/agents/EXAMPLE.md"
     - "agents/example-acp/manifest.json"
 reviewers_required: 1
-notes: "Opcional: enlace a issue/ADR interno (sin datos sensibles)."
+notes: "Optional: link to internal issue/ADR (no sensitive data)."
