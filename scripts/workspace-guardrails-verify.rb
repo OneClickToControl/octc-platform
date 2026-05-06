@@ -7,6 +7,7 @@
 # Usage: run from workspace repo root (caller checkout).
 #   ruby /path/to/octc-platform/scripts/workspace-guardrails-verify.rb
 
+require "date"
 require "json"
 require "yaml"
 
