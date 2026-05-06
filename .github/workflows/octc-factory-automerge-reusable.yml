@@ -1,0 +1,170 @@
+# Reusable squash automerge. Intended for **mechanical** PRs; narrow callers with `if:` (labels, authors).
+#
+# Same identifiers as `release-pr-automerge` (org or repo):
+#   OCTC_RELEASE_MERGE_ENABLED              = true | false
+#   OCTC_RELEASE_MERGE_APP_CLIENT_ID        = GitHub App Client ID (create-github-app-token v3)
+#   OCTC_RELEASE_MERGE_APP_PRIVATE_KEY      = org secret, App PEM
+#   OCTC_RELEASE_MERGE_CREDENTIAL_MODE      = optional; **pat** = use PAT below instead of App (transitional)
+#   OCTC_RELEASE_MERGE_TOKEN                = org secret when CREDENTIAL_MODE=pat
+#
+# This file lives in **octc-platform** (public) so callers here use a **local** `uses:` — do not reference
+# `octc-platform-internal` reusable from a public repo (GitHub forbids private → public caller).
+#
+# Keep in sync with `octc-platform-internal/.github/workflows/octc-factory-automerge-reusable.yml`.
+#
+# Call example (same repo):
+#   uses: ./.github/workflows/octc-factory-automerge-reusable.yml
+name: OCTC factory automerge (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      pr-number:
+        description: Pull request number (caller repo)
+        required: true
+        type: string
+      merge-strategy:
+        description: auto-squash | squash-when-green
+        required: false
+        default: squash-when-green
+        type: string
+  workflow_dispatch:
+    inputs:
+      pr-number:
+        required: true
+        type: string
+      merge-strategy:
+        required: false
+        default: squash-when-green
+        type: choice
+        options:
+          - squash-when-green
+          - auto-squash
+
+concurrency:
+  group: octc-factory-automerge-${{ github.repository }}-${{ inputs.pr-number || github.event.inputs.pr-number }}
+
+jobs:
+  merge-with-app:
+    name: merge (GitHub App)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: |
+      vars.OCTC_RELEASE_MERGE_ENABLED == 'true' &&
+      vars.OCTC_RELEASE_MERGE_CREDENTIAL_MODE != 'pat'
+    steps:
+      - name: Resolve PR number
+        id: pr
+        run: |
+          set -euo pipefail
+          PR="${{ inputs.pr-number }}"
+          if [ -z "${PR}" ]; then PR="${{ github.event.inputs.pr-number }}"; fi
+          if [ -z "${PR}" ]; then echo "::error::pr-number missing"; exit 1; fi
+          echo "number=${PR}" >> "$GITHUB_OUTPUT"
+
+      - name: Require App Client ID
+        env:
+          CID: ${{ vars.OCTC_RELEASE_MERGE_APP_CLIENT_ID }}
+        run: |
+          set -euo pipefail
+          if [ -z "${CID}" ]; then
+            echo "::error::Set OCTC_RELEASE_MERGE_APP_CLIENT_ID or set OCTC_RELEASE_MERGE_CREDENTIAL_MODE=pat with OCTC_RELEASE_MERGE_TOKEN, or OCTC_RELEASE_MERGE_ENABLED=false for GITHUB_TOKEN merge."
+            exit 1
+          fi
+
+      - name: Mint installation token
+        id: app-token
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
+        with:
+          client-id: ${{ vars.OCTC_RELEASE_MERGE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.OCTC_RELEASE_MERGE_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.event.repository.name }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Merge
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          STRAT: ${{ inputs.merge-strategy || github.event.inputs.merge-strategy || 'squash-when-green' }}
+        run: |
+          set -euo pipefail
+          PR="${{ steps.pr.outputs.number }}"
+          case "${STRAT}" in
+            auto-squash) gh pr merge "$PR" --auto --squash ;;
+            *) gh pr checks "$PR" --watch; gh pr merge "$PR" --squash ;;
+          esac
+
+  merge-with-pat:
+    name: merge (PAT fallback)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: |
+      vars.OCTC_RELEASE_MERGE_ENABLED == 'true' &&
+      vars.OCTC_RELEASE_MERGE_CREDENTIAL_MODE == 'pat'
+    steps:
+      - name: PAT mode is transitional (prefer GitHub App)
+        run: |
+          echo "::notice::OCTC_RELEASE_MERGE_CREDENTIAL_MODE=pat — long-lived token; prefer App + OCTC_RELEASE_MERGE_APP_CLIENT_ID (see docs/governance/IDENTITY_ACCESS.md)."
+
+      - name: Require PAT secret
+        env:
+          TOKEN: ${{ secrets.OCTC_RELEASE_MERGE_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${TOKEN}" ]; then
+            echo "::error::OCTC_RELEASE_MERGE_CREDENTIAL_MODE=pat requires secret OCTC_RELEASE_MERGE_TOKEN."
+            exit 1
+          fi
+
+      - name: Resolve PR number
+        id: pr
+        run: |
+          set -euo pipefail
+          PR="${{ inputs.pr-number }}"
+          if [ -z "${PR}" ]; then PR="${{ github.event.inputs.pr-number }}"; fi
+          if [ -z "${PR}" ]; then echo "::error::pr-number missing"; exit 1; fi
+          echo "number=${PR}" >> "$GITHUB_OUTPUT"
+
+      - name: Merge
+        env:
+          GH_TOKEN: ${{ secrets.OCTC_RELEASE_MERGE_TOKEN }}
+          STRAT: ${{ inputs.merge-strategy || github.event.inputs.merge-strategy || 'squash-when-green' }}
+        run: |
+          set -euo pipefail
+          PR="${{ steps.pr.outputs.number }}"
+          case "${STRAT}" in
+            auto-squash) gh pr merge "$PR" --auto --squash ;;
+            *) gh pr checks "$PR" --watch; gh pr merge "$PR" --squash ;;
+          esac
+
+  merge-with-github-token:
+    name: merge (GITHUB_TOKEN)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    if: vars.OCTC_RELEASE_MERGE_ENABLED != 'true'
+    steps:
+      - name: Resolve PR number
+        id: pr
+        run: |
+          set -euo pipefail
+          PR="${{ inputs.pr-number }}"
+          if [ -z "${PR}" ]; then PR="${{ github.event.inputs.pr-number }}"; fi
+          if [ -z "${PR}" ]; then echo "::error::pr-number missing"; exit 1; fi
+          echo "number=${PR}" >> "$GITHUB_OUTPUT"
+
+      - name: Merge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          STRAT: ${{ inputs.merge-strategy || github.event.inputs.merge-strategy || 'squash-when-green' }}
+        run: |
+          set -euo pipefail
+          PR="${{ steps.pr.outputs.number }}"
+          case "${STRAT}" in
+            auto-squash) gh pr merge "$PR" --auto --squash ;;
+            *) gh pr checks "$PR" --watch; gh pr merge "$PR" --squash ;;
+          esac

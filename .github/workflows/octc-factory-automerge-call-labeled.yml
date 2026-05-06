@@ -1,6 +1,7 @@
-# Same contract as octc-platform-internal: only PRs labeled `octc/auto-merge` (mechanical lane).
-# Reusable uses org vars/secrets OCTC_RELEASE_MERGE_* when OCTC_RELEASE_MERGE_ENABLED=true (secrets: inherit).
-# Requires `octc-factory-automerge-reusable.yml` on `main` in octc-platform-internal before this succeeds at runtime.
+# Mechanical lane: label `octc/auto-merge` on a non-draft, non-fork PR to `main` after policy is satisfied.
+# Uses local reusable (public repo cannot call private octc-platform-internal workflows).
+#
+# Org vars/secrets: OCTC_RELEASE_MERGE_* — see octc-factory-automerge-reusable.yml header.
 name: OCTC factory automerge (labeled)
 
 on:
@@ -18,7 +19,7 @@ jobs:
       github.event.pull_request.draft == false &&
       contains(github.event.pull_request.labels.*.name, 'octc/auto-merge') &&
       github.event.pull_request.head.repo.fork == false
-    uses: OneClickToControl/octc-platform-internal/.github/workflows/octc-factory-automerge-reusable.yml@main
+    uses: ./.github/workflows/octc-factory-automerge-reusable.yml
     secrets: inherit
     with:
       pr-number: ${{ github.event.pull_request.number }}
