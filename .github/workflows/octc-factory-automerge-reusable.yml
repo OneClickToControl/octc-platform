@@ -1,19 +1,19 @@
 # Reusable squash automerge. Intended for **mechanical** PRs; narrow callers with `if:` (labels, authors).
 #
-# Same identifiers as `release-pr-automerge` (org or repo):
+# Same identifiers as `release-pr-automerge` / octc-platform (org or repo):
 #   OCTC_RELEASE_MERGE_ENABLED              = true | false
 #   OCTC_RELEASE_MERGE_APP_CLIENT_ID        = GitHub App Client ID (create-github-app-token v3)
 #   OCTC_RELEASE_MERGE_APP_PRIVATE_KEY      = org secret, App PEM
 #   OCTC_RELEASE_MERGE_CREDENTIAL_MODE      = optional; **pat** = use PAT below instead of App (transitional)
 #   OCTC_RELEASE_MERGE_TOKEN                = org secret when CREDENTIAL_MODE=pat
 #
-# This file lives in **octc-platform** (public) so callers here use a **local** `uses:` — do not reference
-# `octc-platform-internal` reusable from a public repo (GitHub forbids private → public caller).
+# Rulesets on `main` must allow merges by the App actor (or PAT user) when policy requires it.
 #
-# Keep in sync with `octc-platform-internal/.github/workflows/octc-factory-automerge-reusable.yml`.
-#
-# Call example (same repo):
+# Call example (this repo — private):
 #   uses: ./.github/workflows/octc-factory-automerge-reusable.yml
+#
+# **Public** repos (e.g. `octc-platform`) must carry the same file locally — do not `uses:` this private repo.
+# Product templates duplicate this file under `templates/{product-repo,agents-repo,workspace-repo}/`.
 name: OCTC factory automerge (reusable)
 
 on:
@@ -91,9 +91,10 @@ jobs:
         run: |
           set -euo pipefail
           PR="${{ steps.pr.outputs.number }}"
+          REPO="${{ github.repository }}"
           case "${STRAT}" in
-            auto-squash) gh pr merge "$PR" --auto --squash ;;
-            *) gh pr checks "$PR" --watch; gh pr merge "$PR" --squash ;;
+            auto-squash) gh pr merge "$PR" --repo "$REPO" --auto --squash ;;
+            *) gh pr checks "$PR" --repo "$REPO" --watch; gh pr merge "$PR" --repo "$REPO" --squash ;;
           esac
 
   merge-with-pat:
@@ -135,9 +136,10 @@ jobs:
         run: |
           set -euo pipefail
           PR="${{ steps.pr.outputs.number }}"
+          REPO="${{ github.repository }}"
           case "${STRAT}" in
-            auto-squash) gh pr merge "$PR" --auto --squash ;;
-            *) gh pr checks "$PR" --watch; gh pr merge "$PR" --squash ;;
+            auto-squash) gh pr merge "$PR" --repo "$REPO" --auto --squash ;;
+            *) gh pr checks "$PR" --repo "$REPO" --watch; gh pr merge "$PR" --repo "$REPO" --squash ;;
           esac
 
   merge-with-github-token:
@@ -164,7 +166,8 @@ jobs:
         run: |
           set -euo pipefail
           PR="${{ steps.pr.outputs.number }}"
+          REPO="${{ github.repository }}"
           case "${STRAT}" in
-            auto-squash) gh pr merge "$PR" --auto --squash ;;
-            *) gh pr checks "$PR" --watch; gh pr merge "$PR" --squash ;;
+            auto-squash) gh pr merge "$PR" --repo "$REPO" --auto --squash ;;
+            *) gh pr checks "$PR" --repo "$REPO" --watch; gh pr merge "$PR" --repo "$REPO" --squash ;;
           esac
