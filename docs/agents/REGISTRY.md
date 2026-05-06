@@ -1,40 +1,40 @@
 # Agent Capability Provider — REGISTRY
 
-Inventario de **Agent Capability Providers (ACP)** de OneClickToControl LLC. Cada fila productiva debe corresponder a un manifest validado por [`schemas/octc-agent-provider.manifest.v1.json`](../../schemas/octc-agent-provider.manifest.v1.json) y a la CI [`.github/workflows/verify.yml`](../../.github/workflows/verify.yml).
+Inventory of OneClickToControl LLC **Agent Capability Providers (ACP)**. Each productive row must match a manifest validated by [`schemas/octc-agent-provider.manifest.v1.json`](../../schemas/octc-agent-provider.manifest.v1.json) and CI [`.github/workflows/verify.yml`](../../.github/workflows/verify.yml).
 
-## Convenciones
+## Conventions
 
-- `id` debe coincidir con el manifest del ACP.
-- `tier_target` y `tier_actual` se actualizan al cerrar checklists de [CONFORMANCE.md](CONFORMANCE.md).
-- `sensitivity:high` requiere mínimo `L2`.
-- `tools_allowlist_ref` es obligatorio para `L2+` y debe estar versionado.
-- `sentry_project` obligatorio para `L3+`.
-- En documentación **interna**, la tabla `REGISTRY.md` incluye **`manifest_version`**: debe coincidir con el campo `version` (semver) del manifest en el repo `*-agents`.
+- `id` must match the ACP manifest.
+- `tier_target` and `tier_actual` update when [CONFORMANCE.md](CONFORMANCE.md) checklists close.
+- `sensitivity:high` requires at least `L2`.
+- `tools_allowlist_ref` is required for `L2+` and must be versioned.
+- `sentry_project` required for `L3+`.
+- In **internal** documentation, the `REGISTRY.md` table includes **`manifest_version`**: it must match the manifest `version` field (semver) in the `*-agents` repo.
 
-## Inventario de la organización
+## Organization inventory
 
-**No se publica aquí** el listado de ACPs reales ni nombres de repos privados (ver [PUBLIC_REPO_POLICY.md](../security/PUBLIC_REPO_POLICY.md)). En el companion **`octc-platform-internal`** (restringido) conviven tres capas, todas alineadas a [PORTFOLIO.md](../PORTFOLIO.md):
+**Not published here:** the list of real ACPs or private repo names (see [PUBLIC_REPO_POLICY.md](../security/PUBLIC_REPO_POLICY.md)). The **`octc-platform-internal`** companion (restricted) hosts three layers, all aligned to [PORTFOLIO.md](../PORTFOLIO.md):
 
-| Capa | Ubicación (internal) | Rol |
+| Layer | Location (internal) | Role |
 |------|----------------------|-----|
-| Manifest en cada repo **`*-agents`** | `agents/<acp-id>/manifest.json` | **SSOT normativa** del ACP (JSON Schema público). |
-| Registry **automatizado** | `docs/agents/registry/<acp-id>.json` | **SSOT operativo / máquina**: snapshot generado por `octc_acp_sync` (PRs automáticos). No sustituye al manifest; lo refleja + metadata de sync. |
-| REGISTRY **humano** | [`docs/agents/REGISTRY.md`](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/agents/REGISTRY.md) | Tabla resumida para la org (incluye columna **`manifest_version`**, semver del campo `version` del manifest); se actualiza en hitos o cuando cambian tiers, semver o punteros notables. |
+| Manifest in each **`*-agents`** repo | `agents/<acp-id>/manifest.json` | **Normative SSOT** of the ACP (public JSON Schema). |
+| **Automated** registry | `docs/agents/registry/<acp-id>.json` | **Operational / machine SSOT**: snapshot from `octc_acp_sync` (automated PRs). Does not replace the manifest; reflects it + sync metadata. |
+| **Human** REGISTRY | [`docs/agents/REGISTRY.md`](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/agents/REGISTRY.md) | Summary table for the org (includes **`manifest_version`** column, semver of manifest `version`); updated at milestones or when tiers, semver, or notable pointers change. |
 
-**Este archivo** (`octc-platform`) conserva **solo política, convenciones y ejemplos**; no duplica filas productivas ni JSON de catálogo.
+**This file** (`octc-platform`) holds **policy, conventions, and examples** only; it does not duplicate productive rows or catalog JSON.
 
-Runbook operativo (smoke, merge de PRs del registry): [`ACP_REGISTRY_OPERATIONS.md`](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/runbooks/ACP_REGISTRY_OPERATIONS.md) en internal.
+Operational runbook (smoke, merging registry PRs): [`ACP_REGISTRY_OPERATIONS.md`](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/runbooks/ACP_REGISTRY_OPERATIONS.md) in internal.
 
-## Fila ilustrativa (sintaxis únicamente)
+## Illustrative row (syntax only)
 
-| id | owning_product | runtimes | tier_target | tier_actual | sensitivity | tools_allowlist_ref | sentry_project | owner | manifest_version | notas |
+| id | owning_product | runtimes | tier_target | tier_actual | sensitivity | tools_allowlist_ref | sentry_project | owner | manifest_version | notes |
 |----|----------------|----------|-------------|-------------|-------------|---------------------|----------------|-------|------------------|-------|
-| example-product-acp | *(ejemplo; no es un ACP real)* | cursor, http | L0 | L0 | low | `docs/agents/TOOLS_ALLOWLIST_L2.md` (ruta en repo del ACP) | n/a | @1click2control | **0.1.0** | Manifest en `agents/example-product-acp/manifest.json` en el repo del ACP. En internal, alinear `manifest_version` con ese campo. |
+| example-product-acp | *(example; not a real ACP)* | cursor, http | L0 | L0 | low | `docs/agents/TOOLS_ALLOWLIST_L2.md` (path in ACP repo) | n/a | @1click2control | **0.1.0** | Manifest at `agents/example-product-acp/manifest.json` in the ACP repo. In internal, align `manifest_version` with that field. |
 
-## Cómo registrar un ACP nuevo
+## How to register a new ACP
 
-1. Crear `agents/<acp-id>/manifest.json` en el repo del ACP siguiendo el schema.
-2. Añadir la fila al **REGISTRY interno** (tabla humana) y coherencia en **PORTFOLIO** mediante PR al repo privado; el archivo **`docs/agents/registry/<acp-id>.json`** aparecerá **solo** cuando el repo `*-agents` esté en allowlist y el dispatch `octc_acp_sync` haya corrido (PR automático en internal).
-3. Marcar `tier_target` realista según [CONFORMANCE.md](CONFORMANCE.md).
-4. Documentar fuentes/destinos en `docs/agents/RUNTIME_SYNC.md` cuando aplique.
-5. Si `sensitivity:high`, completar previamente la sección correspondiente del [AGENT_THREAT_MODEL](../security/AGENT_THREAT_MODEL.md).
+1. Create `agents/<acp-id>/manifest.json` in the ACP repo following the schema.
+2. Add the row to the **internal REGISTRY** (human table) and align **PORTFOLIO** via PR to the private repo; **`docs/agents/registry/<acp-id>.json`** appears **only** when the `*-agents` repo is allowlisted and `octc_acp_sync` dispatch has run (automated PR on internal).
+3. Set a realistic `tier_target` per [CONFORMANCE.md](CONFORMANCE.md).
+4. Document sources/destinations in `docs/agents/RUNTIME_SYNC.md` when applicable.
+5. If `sensitivity:high`, complete the corresponding section of [AGENT_THREAT_MODEL](../security/AGENT_THREAT_MODEL.md) first.

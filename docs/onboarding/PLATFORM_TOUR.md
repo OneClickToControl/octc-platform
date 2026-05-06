@@ -1,77 +1,78 @@
-# Platform tour (30 min)
+# Platform tour (30 minutes)
 
-> **Idioma:** esta guía está en **español**; el objetivo del repo público es migrar onboarding a **inglés**. Mientras tanto, el [README](../../README.md) raíz está en **inglés**. Política: [POLICY](../i18n/POLICY.md), [DOCUMENTATION_STANDARDS](../governance/DOCUMENTATION_STANDARDS.md).
+Human-readable tour of `octc-platform` for new contributors. Read it end-to-end before your first PR.
 
-Tour humano de `octc-platform` para nuevos contribuidores. Léelo de principio a fin antes de tu primer PR.
+## 1. What octc-platform is (5 minutes)
 
-## 1. Qué es octc-platform (5 min)
+- SSOT repository for OneClickToControl LLC.
+- **Lives here:** `@1c2c/*` packages, agent templates, schemas, policies, ACP registry metadata.
+- **Does not live here:** product roadmaps, product application code, user data.
 
-- Repo SSOT de OneClickToControl LLC.
-- Lo que vive aquí: paquetes `@1c2c/*`, plantillas de agentes, schemas, políticas, registry de ACPs.
-- Lo que **no** vive aquí: roadmap de productos, código de productos, datos de usuarios.
+Minimum reading:
 
-Lectura mínima:
 - [README](../../README.md)
 - [PORTFOLIO](../PORTFOLIO.md)
 - [ADR-0001](../adr/ADR-0001-polyrepo-platform.md)
 
-## 2. Arquitectura mental (5 min)
+## 2. Mental model (5 minutes)
 
-Tres planos:
-1. **Normativa** (este repo): plantillas, schemas, políticas.
-2. **Capacidades** (ACPs en repos `*-agents` o `agents/<acp>/` en producto): skills, MCP, GUARDRAILS.
-3. **Ejecución** (Cursor, Claude Code, OpenClaw, Paperclip, CI): heartbeats y resultados.
+Three layers:
 
-Lectura mínima:
+1. **Policy** (this repo): templates, schemas, governance docs.
+2. **Capabilities** (ACPs in `*-agents` repos or `agents/<acp>/` in a product repo): skills, MCP, guardrails.
+3. **Execution** (Cursor, Claude Code, OpenClaw, Paperclip, CI): heartbeats and outcomes.
+
+Minimum reading:
+
 - [ADR-0002](../adr/ADR-0002-acp-pattern.md)
 - [agents/REGISTRY](../agents/REGISTRY.md)
 - [agents/CONFORMANCE](../agents/CONFORMANCE.md)
 
-## 3. Cómo se cambia algo (5 min)
+## 3. How change happens (5 minutes)
 
-- Cambios pequeños: PR directo con CODEOWNERS.
-- Cambios estructurales: RFC ([template](../comms/RFC_TEMPLATE.md)) → debate → ADR ([template](../adr/_TEMPLATE.md)) → PR.
-- Cambios en plantillas o schemas: doble revisión obligatoria.
+- Small changes: direct PR with CODEOWNERS review.
+- Structural changes: RFC ([template](../comms/RFC_TEMPLATE.md)) → discussion → ADR ([template](../adr/_TEMPLATE.md)) → PR.
+- Template or schema edits: require double review.
 
-## 4. Observabilidad (5 min)
+## 4. Observability (5 minutes)
 
-- Sentry org única, un proyecto por (producto, surface).
-- AI Monitoring para agentes.
-- Sourcemaps subidos via OIDC.
-- Lectura: [OBSERVABILITY](../observability/OBSERVABILITY.md), [AGENT_TELEMETRY](../observability/AGENT_TELEMETRY.md).
+- Single Sentry org; one project per (product, surface).
+- AI monitoring for agents.
+- Source maps via OIDC.
+- Read: [OBSERVABILITY](../observability/OBSERVABILITY.md), [AGENT_TELEMETRY](../observability/AGENT_TELEMETRY.md).
 
-## 5. Seguridad y supply chain (5 min)
+## 5. Security and supply chain (5 minutes)
 
-- OIDC para publish y deploy.
-- Provenance consumer-side obligatorio.
+- OIDC for publish and deploy.
+- Consumer-side provenance is mandatory.
 - SSO + 2FA enforced.
-- Lectura: [SUPPLY_CHAIN](../security/SUPPLY_CHAIN.md), [IDENTITY_ACCESS](../governance/IDENTITY_ACCESS.md).
+- Read: [SUPPLY_CHAIN](../security/SUPPLY_CHAIN.md), [IDENTITY_ACCESS](../governance/IDENTITY_ACCESS.md).
 
-## 6. FinOps LLM (3 min)
+## 6. LLM FinOps (3 minutes)
 
-- Cada agente declara presupuesto y modelo aprobado.
-- Métricas por agente / producto.
-- Lectura: [LLM_COSTS](../finops/LLM_COSTS.md).
+- Each agent declares budget and approved model.
+- Metrics per agent / product.
+- Read: [LLM_COSTS](../finops/LLM_COSTS.md).
 
-## 7. Operación e incidentes (2 min)
+## 7. Operations and incidents (2 minutes)
 
-- DR/BCP con drills semestrales.
-- Runbook con procedimientos.
-- Canales: `#ops`, `#ops-incidents`, `#ops-agents`, `#ops-finops`.
-- Lectura: [DR_BCP](../ops/DR_BCP.md), [PLATFORM_RUNBOOK](../ops/PLATFORM_RUNBOOK.md), [CHANNELS](../comms/CHANNELS.md).
+- DR/BCP with semi-annual drills.
+- Runbooks with procedures.
+- Channels: `#ops`, `#ops-incidents`, `#ops-agents`, `#ops-finops`.
+- Read: [DR_BCP](../ops/DR_BCP.md), [PLATFORM_RUNBOOK](../ops/PLATFORM_RUNBOOK.md), [CHANNELS](../comms/CHANNELS.md).
 
-## 8. Monorepos de producto (cuando apliquen)
+## 8. Product monorepos (when applicable)
 
-- Superficies (`landing`, `web`, `data`, `mobile`, `ml`, `api`, `chat`) declaradas en `docs/architecture.md` y espejadas en PORTFOLIO (`repo_surfaces`).
-- Patrón de referencia (CI por `paths`, docs-only, scripts, paquetes compartidos): [REFERENCE_PRODUCT_MONOREPO](../adoption/REFERENCE_PRODUCT_MONOREPO.md), [REPO_ARCHETYPES](../adoption/REPO_ARCHETYPES.md), [checklist](../adoption/MONOREPO_CONFORMANCE_CHECKLIST.md).
-- Camino de adopción: [GOLDEN_PATH](../adoption/GOLDEN_PATH.md).
+- Surfaces (`landing`, `web`, `data`, `mobile`, `ml`, `api`, `chat`) are declared in `docs/architecture.md` and mirrored in PORTFOLIO (`repo_surfaces`).
+- Reference patterns: [REFERENCE_PRODUCT_MONOREPO](../adoption/REFERENCE_PRODUCT_MONOREPO.md), [REPO_ARCHETYPES](../adoption/REPO_ARCHETYPES.md), [checklist](../adoption/MONOREPO_CONFORMANCE_CHECKLIST.md).
+- Adoption order: [GOLDEN_PATH](../adoption/GOLDEN_PATH.md).
 
-## Tu primera contribución
+## Your first contribution
 
-Sigue [CONTRIBUTING](../../CONTRIBUTING.md) y abre un issue tagueado `good-first-issue` o pide al owner una entrada concreta.
+Follow [CONTRIBUTING](../../CONTRIBUTING.md) and open an issue tagged `good-first-issue` or ask an owner for a scoped task.
 
-## Recursos
+## Resources
 
-- [Plan fundacional](../PLATFORM_PLAN.md)
-- [SCORECARD vigente](../metrics/PLATFORM_SCORECARD.md)
-- [Auditoría visible](../audit/HISTORY.md)
+- [Foundational plan](../PLATFORM_PLAN.md)
+- [Current scorecard](../metrics/PLATFORM_SCORECARD.md)
+- [Public audit history](../audit/HISTORY.md)

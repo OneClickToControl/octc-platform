@@ -1,26 +1,26 @@
 <!-- octc:base v0.1.0 -->
-# AGENTS.md — base octc-platform
+# AGENTS.md — octc-platform base
 
-Plantilla para describir los agentes activos en este repo (humanos y de IA). Vive en la raíz de cada repo y se sincroniza desde `@1c2c/agent-templates`.
+Template describing active agents in this repo (human and AI). Lives at the repo root and syncs from `@1c2c/agent-templates`.
 
-## Cómo usar
+## How to use
 
-- Cada agente se lista con `id`, `tipo`, `runtime`, `responsabilidades`, `límites`.
-- `tipo`: `human` · `ai-coding` · `ai-client` · `ai-ops` · `ai-eval`.
+- Each agent is listed with `id`, `type`, `runtime`, `responsibilities`, `limits`.
+- `type`: `human` · `ai-coding` · `ai-client` · `ai-ops` · `ai-eval`.
 - `runtime`: `cursor` · `claude-code` · `claude-desktop` · `openclaw` · `paperclip` · `ci`.
-- `límites` debe coincidir con `tools_allowlist_ref` cuando aplique.
+- `limits` must match `tools_allowlist_ref` when applicable.
 
-## Agentes registrados (rellenar por repo)
+## Registered agents (fill per repo)
 
-| id | tipo | runtime | responsabilidades | límites |
-|----|------|---------|-------------------|---------|
-|    |      |         |                   |         |
+| id | type | runtime | responsibilities | limits |
+|----|------|---------|------------------|--------|
+|    |      |         |                  |        |
 
-## Reglas comunes
+## Common rules
 
-- Ningún agente puede instalar dependencias nuevas sin abrir RFC ([docs/comms/RFC_TEMPLATE.md](../../docs/comms/RFC_TEMPLATE.md)).
-- Operaciones destructivas (rebases, drops, force-push) requieren aprobación humana explícita registrada en el PR.
-- Las salidas de agentes que tocan código deben ser revisadas por CODEOWNERS antes de merge.
+- No agent may add new dependencies without opening an RFC ([docs/comms/RFC_TEMPLATE.md](../../docs/comms/RFC_TEMPLATE.md)).
+- Destructive operations (rebases, drops, force-push) require explicit human approval recorded on the PR.
+- Agent outputs that touch code must be reviewed by CODEOWNERS before merge.
 
 <!-- octc:end-base -->
 

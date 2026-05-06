@@ -1,22 +1,23 @@
 # Architecture Decision Records — INDEX
 
-ADR estándar (Markdown Any Decision Records) para decisiones arquitectónicas de la plataforma. Cada ADR se numera consecutivamente y se referencia desde aquí.
+Standard ADRs (Markdown Any Decision Records) for platform architectural decisions. Each ADR is numbered sequentially and referenced from here.
 
-## Estados
+## Statuses
 
-- **proposed**: en debate.
-- **accepted**: vigente.
-- **deprecated**: superado, mantenerse como referencia histórica.
-- **superseded**: reemplazado por otro ADR (referenciar el sucesor).
+- **proposed**: under discussion.
+- **accepted**: in force.
+- **deprecated**: superseded historically; keep as reference.
+- **superseded**: replaced by another ADR (reference the successor).
 
-## Índice
+## Index
 
-| nº | título | estado | fecha | tags |
+| no. | title | status | date | tags |
 |----|--------|--------|-------|------|
-| [0001](ADR-0001-polyrepo-platform.md) | Polyrepo + repo `octc-platform` como SSOT | accepted | 2026-04-29 | platform, repo |
-| [0003](ADR-0003-monorepo-cli-machine-ssot.md) | SSOT máquina-legible `.octc/monorepo.yaml` y CLI `verify` / `add surface` (Fase 4) | accepted | 2026-05-01 | platform, cli, monorepo |
+| [0001](ADR-0001-polyrepo-platform.md) | Polyrepo + `octc-platform` as SSOT | accepted | 2026-04-29 | platform, repo |
+| [0002](ADR-0002-acp-pattern.md) | Agent Capability Provider (ACP) pattern | accepted | 2026-04-29 | agents, governance |
+| [0003](ADR-0003-monorepo-cli-machine-ssot.md) | Machine-readable `.octc/monorepo.yaml` SSOT and CLI `verify` / `add surface` (Phase 4) | accepted | 2026-05-01 | platform, cli, monorepo |
 
-1. Copiar `_TEMPLATE.md`.
-2. Numerar consecutivamente (`ADR-XXXX-slug.md`).
-3. PR a `octc-platform` con discusión en el PR; al mergear, marcar `accepted`.
-4. Actualizar este INDEX.
+1. Copy `_TEMPLATE.md`.
+2. Number consecutively (`ADR-XXXX-slug.md`).
+3. PR to `octc-platform` with discussion in the PR; on merge, mark `accepted`.
+4. Update this INDEX.

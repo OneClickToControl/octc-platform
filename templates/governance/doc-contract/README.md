@@ -1,35 +1,35 @@
-# Plantilla — contrato de documentación (repos ACP / agent-heavy)
+# Template — documentation contract (ACP / agent-heavy repos)
 
-Patrón **opcional** para repos que versionan muchos artefactos normativos (skills, manifiestos, allowlists) y quieren **trazabilidad** tipo “cambio ↔ revisión” sin mezclar contenido de clientes en `octc-platform` público.
+**Optional** pattern for repos that version many normative artifacts (skills, manifests, allowlists) and want **traceability** (“change ↔ review”) without mixing client content into the public `octc-platform`.
 
-## Cuándo usarla
+## When to use it
 
-- El repo es un **ACP** o consume fuerte el modelo “manifest + schema + docs normativas”.
-- Queréis registrar **qué** cambió en documentación normativa (p. ej. nueva skill, bump de tier) con un artefacto pequeño revisable en PR.
+- The repo is an **ACP** or heavily uses the “manifest + schema + normative docs” model.
+- You want to record **what** changed in normative documentation (e.g. new skill, tier bump) with a small, PR-reviewable artifact.
 
-## Qué copiar al repo
+## What to copy into the repo
 
-1. Desde el consumidor, tras `@1c2c/cli` ≥ 0.3.0:
+1. From the consumer, with `@1c2c/cli` ≥ 0.3.0:
    ```bash
    pnpm exec octc sync governance --only doc-contract
    ```
-   (o copiar manualmente esta carpeta a `templates/governance/doc-contract/` del repo destino).
+   (or manually copy this folder to `templates/governance/doc-contract/` in the target repo.)
 
-2. Añadir en CI (opcional) un paso que falle si falta `schema_version` en los changesets recientes o que valide el manifiesto ACP contra `.octc/agents/manifest.schema.json` (patrón ya usado en repos org).
+2. Optionally add a CI step that fails if recent changesets lack `schema_version` or that validates the ACP manifest against `.octc/agents/manifest.schema.json` (pattern already used in org repos).
 
-## Archivos de referencia
+## Reference files
 
-| Archivo | Uso |
+| File | Use |
 |---------|-----|
-| `changeset.example.yaml` | Formato sugerido para describir un cambio de contrato doc (sin datos sensibles). Copiar a `changesets/` o `docs/changes/` con otro nombre. |
+| `changeset.example.yaml` | Suggested format for describing a doc-contract change (no sensitive data). Copy to `changesets/` or `docs/changes/` with another name. |
 
-## Límites
+## Limits
 
-- No sustituye **ADRs** ni **PUBLIC_REPO_POLICY**: cualquier dato sensible sigue fuera del público.
-- La validación estricta (JSON Schema, grep de secretos) sigue siendo responsabilidad del workflow del repo.
+- Does not replace **ADRs** or **PUBLIC_REPO_POLICY**: sensitive data stays out of the public repo.
+- Strict validation (JSON Schema, secret grep) remains the repo workflow’s responsibility.
 
-## Enlaces
+## Links
 
-- [REFERENCE_PRODUCT_MONOREPO](../../../docs/adoption/REFERENCE_PRODUCT_MONOREPO.md) — superficies en monorepos producto.
-- [REGISTRY](../../../docs/agents/REGISTRY.md) — registro de ACPs.
-- Golden path — paso ACP / doc-contract: [GOLDEN_PATH](../../../docs/adoption/GOLDEN_PATH.md).
+- [REFERENCE_PRODUCT_MONOREPO](../../../docs/adoption/REFERENCE_PRODUCT_MONOREPO.md) — surfaces in product monorepos.
+- [REGISTRY](../../../docs/agents/REGISTRY.md) — ACP registry.
+- Golden path — ACP / doc-contract step: [GOLDEN_PATH](../../../docs/adoption/GOLDEN_PATH.md).

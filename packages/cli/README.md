@@ -1,6 +1,6 @@
 # @1c2c/cli
 
-Unified **OCTC** command-line entry point (**`@1c2c/cli` · v0.3+**). Agent flows delegate to [`octc-agents`](../agent-templates); monorepo / superficies / gobernanza / sugerencias de PORTFOLIO viven en el mismo binario (`octc verify monorepo`, `octc add|sync surface`, `octc sync governance`, `octc portfolio suggest` — ver [ADR-0003](../../docs/adr/ADR-0003-monorepo-cli-machine-ssot.md)).
+Unified **OCTC** command-line entry point (**`@1c2c/cli` · v0.3+**). Agent flows delegate to [`octc-agents`](../agent-templates); monorepo / surfaces / governance / PORTFOLIO suggestions live in the same binary (`octc verify monorepo`, `octc add|sync surface`, `octc sync governance`, `octc portfolio suggest` — see [ADR-0003](../../docs/adr/ADR-0003-monorepo-cli-machine-ssot.md)).
 
 ## Install
 
@@ -25,7 +25,7 @@ npx @1c2c/cli sync agents --target ./some-repo
 npx @1c2c/cli verify monorepo
 npx @1c2c/cli verify monorepo --cwd ./some-repo
 
-# Stubs y plantillas empaquetadas (≥ 0.3)
+# Packaged stubs and templates (≥ 0.3)
 npx @1c2c/cli add surface web
 npx @1c2c/cli sync surface web --dry-run
 npx @1c2c/cli sync surface --all --force
@@ -42,16 +42,16 @@ npx @1c2c/cli agents verify
 npx @1c2c/cli agents init --force
 ```
 
-Plantilla YAML monorepo: en el repo publicado [`templates/monorepo/monorepo.yaml.example`](https://github.com/OneClickToControl/octc-platform/blob/main/templates/monorepo/monorepo.yaml.example); copia a `.octc/monorepo.yaml` en tu producto.
+Monorepo YAML template: in the published repo [`templates/monorepo/monorepo.yaml.example`](https://github.com/OneClickToControl/octc-platform/blob/main/templates/monorepo/monorepo.yaml.example); copy to `.octc/monorepo.yaml` in your product repo.
 
 ## `init workspace` / `init app`
 
-- **`octc init workspace <dir>`** — Materializa el árbol estándar **`*-workspace`** (paridad con `octc-platform-internal` `templates/workspace-repo`). Opciones: `--force`, `--pin <SHA>` (mismo valor en `uses:` y `tooling_ref` del wrapper generado), `--template-dir <path>`. No crea repo en GitHub ni configuración org; ver runbook interno.
-- **`octc init app <dir>`** — Scaffold **`templates/product`**: contrato *-app* en disco (p. ej. `.octc/monorepo.yaml`, workflow portfolio dispatch). **`--pin`** opcional para el callable de portfolio; por defecto `main` si la plantilla usa placeholder. No sustituye [NEW_PRODUCT_REPO](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/runbooks/NEW_PRODUCT_REPO.md) para rulesets/secretos.
+- **`octc init workspace <dir>`** — Materializes the standard **`*-workspace`** tree (parity with `octc-platform-internal` `templates/workspace-repo`). Options: `--force`, `--pin <SHA>` (same value in `uses:` and `tooling_ref` of the generated wrapper), `--template-dir <path>`. Does not create a GitHub repo or org configuration; see internal runbook.
+- **`octc init app <dir>`** — Scaffolds **`templates/product`**: **`*-app`** contract on disk (e.g. `.octc/monorepo.yaml`, portfolio dispatch workflow). **`--pin`** optional for the portfolio callable; defaults to `main` if the template uses a placeholder. Does not replace [NEW_PRODUCT_REPO](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/runbooks/NEW_PRODUCT_REPO.md) for rulesets/secrets.
 
 ## Why this package?
 
-- **`octc verify monorepo`**, **`octc add surface`**, **`octc sync surface`**, **`octc sync governance`**, **`octc portfolio suggest`** — ver [ADR-0003](../../docs/adr/ADR-0003-monorepo-cli-machine-ssot.md) y [PORTFOLIO_BRIDGE](../../docs/adoption/PORTFOLIO_BRIDGE.md). Matriz de superficies pensada para repos **`*-app`** ([REFERENCE_PRODUCT_MONOREPO](../../docs/adoption/REFERENCE_PRODUCT_MONOREPO.md)). Roadmap: automatizar PR a internal solo con credenciales org.
+- **`octc verify monorepo`**, **`octc add surface`**, **`octc sync surface`**, **`octc sync governance`**, **`octc portfolio suggest`** — see [ADR-0003](../../docs/adr/ADR-0003-monorepo-cli-machine-ssot.md) and [PORTFOLIO_BRIDGE](../../docs/adoption/PORTFOLIO_BRIDGE.md). Surface matrix targets **`*-app`** repos ([REFERENCE_PRODUCT_MONOREPO](../../docs/adoption/REFERENCE_PRODUCT_MONOREPO.md)). Roadmap: automate PRs to internal only with org credentials.
 - `@1c2c/agent-templates` remains the **implementation** for agent file sync; this package pins it as a dependency.
 
 ## Provenance

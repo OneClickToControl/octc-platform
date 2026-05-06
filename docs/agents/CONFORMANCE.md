@@ -1,41 +1,41 @@
 # ACP Conformance — Tiers L0–L4
 
-Los Agent Capability Providers (ACP) declaran un `conformance_tier_target` en su manifest. Los tiers son acumulativos: L1 incluye todo lo de L0, etc.
+Agent Capability Providers (ACP) declare `conformance_tier_target` in their manifest. Tiers are cumulative: L1 includes all of L0, etc.
 
-## L0 — Declarado
+## L0 — Declared
 
-- Manifest válido contra el schema y referenciado en [REGISTRY.md](REGISTRY.md).
-- `owner` declarado.
-- `repositories[]` apunta a destinos reales.
+- Valid manifest against schema referenced in [REGISTRY.md](REGISTRY.md).
+- `owner` declared.
+- `repositories[]` points to real destinations.
 
-## L1 — Documentado
+## L1 — Documented
 
-- README del ACP con propósito, alcance, runtimes soportados.
-- `upstream_sources[]` y `downstream_deployments[]` poblados (mínimo 1 cada uno).
-- Plantillas `CLAUDE.md` y `.cursor/rules/` extendiendo `@1c2c/agent-templates` versionado.
+- ACP README with purpose, scope, supported runtimes.
+- `upstream_sources[]` and `downstream_deployments[]` populated (at least 1 each).
+- `CLAUDE.md` and `.cursor/rules/` templates extending versioned `@1c2c/agent-templates`.
 
-## L2 — Seguridad mínima
+## L2 — Minimum security
 
-- `tools_allowlist_ref` apuntando a archivo versionado en el repo del ACP.
-- GUARDRAILS documentados (qué no debe hacer el agente).
-- PII scrubbing en logs/traces (alineado con [SUPPLY_CHAIN.md](../security/SUPPLY_CHAIN.md) y `beforeSend` Sentry).
-- Datos de entrada clasificados (none/low/high) según [DATA_CLASSIFICATION.md](../compliance/DATA_CLASSIFICATION.md).
+- `tools_allowlist_ref` pointing to a versioned file in the ACP repo.
+- GUARDRAILS documented (what the agent must not do).
+- PII scrubbing in logs/traces (aligned with [SUPPLY_CHAIN.md](../security/SUPPLY_CHAIN.md) and Sentry `beforeSend`).
+- Input data classified (none/low/high) per [DATA_CLASSIFICATION.md](../compliance/DATA_CLASSIFICATION.md).
 
-## L3 — Observado
+## L3 — Observed
 
-- Telemetría agéntica activa: breadcrumbs Sentry y AI Monitoring spans configurados (ver [AGENT_TELEMETRY.md](../observability/AGENT_TELEMETRY.md)).
-- `sentry_project` declarado en manifest y vivo.
-- Alertas mínimas: `eval_pass_rate` < umbral, picos de latencia/coste, errores no manejados.
-- Tablero FinOps por ACP en [LLM_COSTS.md](../finops/LLM_COSTS.md).
+- Agent telemetry active: Sentry breadcrumbs and AI Monitoring spans (see [AGENT_TELEMETRY.md](../observability/AGENT_TELEMETRY.md)).
+- `sentry_project` declared in manifest and healthy.
+- Minimum alerts: `eval_pass_rate` below threshold, latency/cost spikes, unhandled errors.
+- FinOps dashboard per ACP in [LLM_COSTS.md](../finops/LLM_COSTS.md).
 
-## L4 — Auditado en continuo
+## L4 — Continuously audited
 
-- Suite de **evals** ejecutada en CI (golden set + adversarial).
-- Reporte de evals adjunto a cada release del ACP.
-- Revisión trimestral del `tools_allowlist_ref` registrada en [docs/audit/HISTORY.md](../audit/HISTORY.md).
-- Métricas de calidad agéntica reportadas en [QUALITY_METRICS.md](QUALITY_METRICS.md) y agregadas en el SCORECARD.
+- **Eval** suite runs in CI (golden + adversarial).
+- Eval report attached to every ACP release.
+- Quarterly `tools_allowlist_ref` review recorded in [docs/audit/HISTORY.md](../audit/HISTORY.md).
+- Agent quality metrics in [QUALITY_METRICS.md](QUALITY_METRICS.md) and rolled up in the SCORECARD.
 
-## Promociones y retrocesos
+## Promotions and rollbacks
 
-- La promoción se aprueba por PR con evidencia (links, screenshots, logs).
-- Un ACP puede **retroceder** a un tier inferior si pierde alertas, allowlist o evals; documentar en HISTORY.
+- Promotion approved by PR with evidence (links, screenshots, logs).
+- An ACP may **roll back** to a lower tier if it loses alerts, allowlist, or evals; document in HISTORY.

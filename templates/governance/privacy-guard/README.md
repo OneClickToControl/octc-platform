@@ -1,30 +1,30 @@
-# Plantilla: privacy-guard (repo público)
+# Template: privacy-guard (public repo)
 
-Copia de referencia del stack usado en el repo público **OneClickToControl/octc-platform** antes de hacer público un repo que antes era privado (o para mantener un repo público sin fugas operativas).
+Reference copy of the stack used in the public **OneClickToControl/octc-platform** repo before making a previously private repo public (or to keep a public repo free of operational leaks).
 
-## Contenido
+## Contents
 
-| Archivo en esta carpeta | Destino en el repo adoptante |
+| File in this folder | Destination in adopting repo |
 |-------------------------|--------------------------------|
-| `gitleaks.toml` | `.gitleaks.toml` (raíz) |
-| `precommit-privacy-check.sh` | `scripts/precommit-privacy-check.sh` (ajusta rutas y regex) |
+| `gitleaks.toml` | `.gitleaks.toml` (root) |
+| `precommit-privacy-check.sh` | `scripts/precommit-privacy-check.sh` (adjust paths and regex) |
 | `privacy-guard.yml` | `.github/workflows/privacy-guard.yml` |
 
-## Pasos de adopción
+## Adoption steps
 
-1. **Política**: escribe un `PUBLIC_REPO_POLICY.md` (o equivalente) con qué no puede aparecer en el repo público.
-2. **Reglas**: edita `gitleaks.toml` — reglas custom (Sentry org id, nombres de repos privados, tokens) y `[allowlist].paths` para los archivos que *sí* pueden citar esos términos (definición de política, esta plantilla, etc.).
-3. **Pre-commit**: edita `ALLOWLIST_REGEX` y `PATTERNS` en `precommit-privacy-check.sh` para alinearlos con tu política y rutas.
-4. **CI**: copia el workflow; asegúrate de que los jobs llamen a `.gitleaks.toml` y al script en las rutas reales.
-5. **Protección de rama**: haz obligatorio el workflow `privacy-guard` en `main` (o `trunk`).
-6. **Hook local** (opcional): instala un hook que ejecute `scripts/precommit-privacy-check.sh` en modo `git` antes de commit.
+1. **Policy:** write `PUBLIC_REPO_POLICY.md` (or equivalent) defining what must not appear in the public repo.
+2. **Rules:** edit `gitleaks.toml` — custom rules (Sentry org id, private repo names, tokens) and `[allowlist].paths` for files that *may* cite those terms (policy definition, this template, etc.).
+3. **Pre-commit:** edit `ALLOWLIST_REGEX` and `PATTERNS` in `precommit-privacy-check.sh` to match your policy and paths.
+4. **CI:** copy the workflow; ensure jobs call `.gitleaks.toml` and the script at real paths.
+5. **Branch protection:** require the `privacy-guard` workflow on `main` (or `trunk`).
+6. **Local hook** (optional): install a hook that runs `scripts/precommit-privacy-check.sh` in `git` mode before commit.
 
-## Notas
+## Notes
 
-- Los archivos de ejemplo pueden contener **nombres/resoluciones propias de OneClickToControl** en las reglas (sirven como patrón). Sustitúyelos por los de tu org antes de usar la plantilla en otro contexto.
-- Mantén sincronizada la **allowlist** entre `gitleaks.toml` y el script bash; si no, uno pasará y el otro fallará.
-- Para Apache-2.0, este repo invoca el binario `gitleaks` en CI en lugar del action comercial que exige licencia de org.
+- Example files may contain **OneClickToControl-specific** names/resolutions in rules (as a pattern). Replace with your org’s before reusing the template elsewhere.
+- Keep the **allowlist** in sync between `gitleaks.toml` and the bash script; otherwise one will pass and the other fail.
+- For Apache-2.0, this repo invokes the `gitleaks` binary in CI instead of the commercial action that requires an org license.
 
-## Actualización
+## Updates
 
-La versión canónica evoluciona en **OneClickToControl/octc-platform**. Tras fusionar mejoras allí, vuelve a copiar los archivos que apliquen o diff contra esta plantilla.
+The canonical version evolves in **OneClickToControl/octc-platform**. After merging improvements there, copy applicable files again or diff against this template.

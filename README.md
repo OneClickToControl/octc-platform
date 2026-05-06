@@ -1,6 +1,6 @@
 # octc-platform
 
-**Language:** This **public** repo’s **README, ADRs, and governance** are maintained in **English**. Some onboarding pages (e.g. `docs/onboarding/PLATFORM_TOUR.md`) are still **Spanish** and are being migrated — see [Documentation standards](docs/governance/DOCUMENTATION_STANDARDS.md). **Private** org repos (`octc-platform-internal`, `octc-platform-workspace`, `octc-platform-agents`) use **Spanish** for narrative runbooks.
+**Language:** This **public** repository’s **README, ADRs, and governance** are maintained in **English**. **Private** org repos (`octc-platform-internal`, `octc-platform-workspace`, `octc-platform-agents`) use **Spanish** for narrative runbooks unless an exception is documented in [internal governance](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/runbooks/OCTC_DOCUMENTATION_GOVERNANCE.md). See also [Documentation standards](docs/governance/DOCUMENTATION_STANDARDS.md) and [i18n policy](docs/i18n/POLICY.md).
 
 ---
 
@@ -35,7 +35,7 @@ docs/            # cross-cutting documentation
 
 ## Getting started
 
-- New to the platform: read [docs/onboarding/PLATFORM_TOUR.md](docs/onboarding/PLATFORM_TOUR.md) (~30 min; **Spanish** until translated).
+- New to the platform: read [docs/onboarding/PLATFORM_TOUR.md](docs/onboarding/PLATFORM_TOUR.md) (~30 min).
 - Contributing: [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/PORTFOLIO.md](docs/PORTFOLIO.md) (links private inventory where needed).
 - Registering a new ACP: [schemas/octc-agent-provider.manifest.v1.json](schemas/octc-agent-provider.manifest.v1.json) and [docs/agents/REGISTRY.md](docs/agents/REGISTRY.md).
 - Master plan: [docs/PLATFORM_PLAN.md](docs/PLATFORM_PLAN.md).

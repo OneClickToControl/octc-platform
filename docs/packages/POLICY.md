@@ -1,28 +1,28 @@
 # Packages POLICY — `@1c2c/*`
 
-Política de ingeniería para los paquetes publicables bajo el scope `@1c2c/*`.
+Engineering policy for publishable packages under the `@1c2c/*` scope.
 
-## Principios
+## Principles
 
-- **SemVer estricto**: cualquier cambio breaking exige major.
-- **Conventional Commits** + **Changesets** generan changelog y bump automático.
-- Tests obligatorios en cada PR (mínimo unit; integration cuando aplique).
-- Cobertura de tipos al 100% del API público.
-- Política de deprecación documentada en [DEPRECATION.md](../governance/DEPRECATION.md).
+- **Strict SemVer**: any breaking change requires a major bump.
+- **Conventional Commits** + **Changesets** generate changelog and automatic version bumps.
+- Tests required on every PR (unit minimum; integration where applicable).
+- 100% type coverage of the public API.
+- Deprecation policy documented in [DEPRECATION.md](../governance/DEPRECATION.md).
 
 ## Releases
 
-- **Runbook operativo (fuente de verdad del flujo):** [RELEASE_RUNBOOK.md](RELEASE_RUNBOOK.md) — incluye el PR intermedio «chore: release packages», límites de auto-merge y dependencia de política de rama/CODEOWNERS.
+- **Operational runbook (source of truth for the flow):** [RELEASE_RUNBOOK.md](RELEASE_RUNBOOK.md) — includes the intermediate “chore: release packages” PR, auto-merge limits, and dependency on branch policy/CODEOWNERS.
 - Workflow [`.github/workflows/release.yml`](../../.github/workflows/release.yml) (Changesets + `changesets/action`):
   1. `pnpm install`, `pnpm test`, `pnpm -r build --if-present`.
-  2. Paso opcional de comprobación de firmas en dependencias (`npm audit signatures`, no bloqueante).
-  3. Si quedan changesets en `main`: abre/actualiza el PR de versionado desde `changeset-release/main` (no publica aún).
-  4. Tras fusionar ese PR: `changeset publish` con **OIDC** y provenance (`NPM_CONFIG_PROVENANCE`), sin `NPM_TOKEN` persistido.
-- **No implementado hoy en ese workflow** (objetivos documentados en otros apartados / roadmap de cadena de suministro, no deben asumirse como pasos de CI): SBOM (`syft`) en el job de release, `sentry-cli releases` para paquetes, ni etiquetas git firmadas ad hoc. Si se añaden, actualizar este archivo y el runbook.
+  2. Optional dependency signature check (`npm audit signatures`, non-blocking).
+  3. If changesets remain on `main`: opens/updates the versioning PR from `changeset-release/main` (does not publish yet).
+  4. After merging that PR: `changeset publish` with **OIDC** and provenance (`NPM_CONFIG_PROVENANCE`), without a persisted `NPM_TOKEN`.
+- **Not implemented today in that workflow** (goals documented elsewhere / supply-chain roadmap; do **not** assume these are CI steps): SBOM (`syft`) in the release job, `sentry-cli releases` for packages, or ad-hoc signed git tags. If added, update this file and the runbook.
 
 ## Provenance — consumer-side
 
-Todos los repos consumidores deben validar la provenance de cualquier paquete `@1c2c/*` en CI:
+Every consuming repo must validate provenance for any `@1c2c/*` package in CI:
 
 ```yaml
 - name: Verify provenance of @1c2c packages
@@ -31,73 +31,73 @@ Todos los repos consumidores deben validar la provenance de cualquier paquete `@
     pnpm dlx audit-signatures || npm audit signatures
 ```
 
-- Si la verificación falla, el job se corta y se abre issue automática.
-- `verify.yml` chequea que cada repo en PORTFOLIO con `at1c2c_pin` tiene este step.
+- If verification fails, the job stops and an issue is opened automatically.
+- `verify.yml` checks that each PORTFOLIO repo with `at1c2c_pin` includes this step.
 
-## Versionado de `@1c2c/agent-templates` (caso especial)
+## Special case: `@1c2c/agent-templates` versioning
 
-El paquete cubre dos superficies, ambas con SemVer estricto:
+The package spans two surfaces, both under strict SemVer:
 
-1. **Contenido normativo** — `templates/CLAUDE.md`, `templates/AGENTS.md`, `templates/cursor/*.mdc`, `schemas/octc-agent-provider.manifest.v1.json`.
-2. **API JS / CLI** — `index.mjs`, `templates/index.mjs`, `bin/octc-agents.mjs`.
+1. **Normative content** — `templates/CLAUDE.md`, `templates/AGENTS.md`, `templates/cursor/*.mdc`, `schemas/octc-agent-provider.manifest.v1.json`.
+2. **JS API / CLI** — `index.mjs`, `templates/index.mjs`, `bin/octc-agents.mjs`.
 
-Reglas de bump:
+Bump rules:
 
 - **Major**
-  - Cambios incompatibles en la estructura del bloque `<!-- octc:base -->` (secciones eliminadas o renombradas).
-  - Eliminación o rename de exports JS (`templates`, `schemas`, `paths`, `VERSION`).
-  - Cambio breaking en flags o subcomandos de `octc-agents` (`init` / `verify` / `sync`).
-  - Cambio breaking del JSON Schema (campos requeridos nuevos, tipos cambiados).
+  - Incompatible changes to the `<!-- octc:base -->` block structure (sections removed or renamed).
+  - Removal or rename of JS exports (`templates`, `schemas`, `paths`, `VERSION`).
+  - Breaking change to `octc-agents` flags or subcommands (`init` / `verify` / `sync`).
+  - Breaking change to the JSON Schema (new required fields, changed types).
 - **Minor**
-  - Secciones nuevas en CLAUDE/AGENTS que se añaden sin romper consumidores existentes.
-  - Reglas adicionales no breaking, soporte para nuevos runtimes.
-  - Nuevos exports JS o subcomandos CLI no destructivos.
-  - Campos opcionales nuevos en el JSON Schema.
+  - New sections in CLAUDE/AGENTS added without breaking existing consumers.
+  - Additional non-breaking rules, support for new runtimes.
+  - New JS exports or non-destructive CLI subcommands.
+  - New optional JSON Schema fields.
 - **Patch**
-  - Typos, correcciones de redacción, ejemplos.
-  - Mejoras de output del CLI sin cambiar contratos.
+  - Typos, wording fixes, examples.
+  - CLI output improvements without contract changes.
 
-Adopción y SLAs:
+Adoption and SLAs:
 
-- Cada release minor/major dispara una **issue automática** en cada repo con `agent_templates_pin` desactualizado.
-- Major: 30 días para adoptar antes de aparecer en alerta del SCORECARD.
-- Minor: 90 días.
-- Una versión major se mantiene con parches durante mínimo 6 meses tras el lanzamiento de la siguiente major (overlap window).
-- La política de adopción detallada vive en [docs/agents/ADOPTION.md](../agents/ADOPTION.md).
+- Each minor/major release opens an **automatic issue** in every repo with an outdated `agent_templates_pin`.
+- Major: 30 days to adopt before a SCORECARD alert.
+- Minor: 90 days.
+- A major version receives patches for at least 6 months after the next major ships (overlap window).
+- Detailed adoption policy: [docs/agents/ADOPTION.md](../agents/ADOPTION.md).
 
-Sincronización con el SSOT:
+SSOT sync:
 
-- El SSOT de los archivos normativos vive en `templates/agents/` y `schemas/` de `octc-platform`.
-- `packages/agent-templates/` los espeja vía `scripts/sync-from-ssot.mjs` (`prepack`).
-- El job `agent-templates-drift` en `verify.yml` bloquea PRs donde el espejo y el SSOT divergen.
+- Normative files SSOT live in `octc-platform` under `templates/agents/` and `schemas/`.
+- `packages/agent-templates/` mirrors them via `scripts/sync-from-ssot.mjs` (`prepack`).
+- The `agent-templates-drift` job in `verify.yml` blocks PRs where the mirror and SSOT diverge.
 
-## Tests obligatorios por paquete
+## Required tests per package
 
-- Unit: cobertura mínima 80% de líneas en código nuevo.
-- Type tests donde aplique (`tsd` o `vitest typecheck`).
-- Snapshot tests para plantillas que generan archivos (`agent-templates`, `sentry-config`).
+- Unit: minimum 80% line coverage on new code.
+- Type tests where applicable (`tsd` or `vitest typecheck`).
+- Snapshot tests for packages that generate files (`agent-templates`, `sentry-config`).
 
-## Documentación obligatoria
+## Required documentation
 
-- README con propósito, instalación, ejemplos.
-- CHANGELOG generado por Changesets.
-- Sección "When to use / when not to use" para evitar adopciones inadecuadas.
+- README with purpose, installation, examples.
+- CHANGELOG generated by Changesets.
+- “When to use / when not to use” section to avoid inappropriate adoption.
 
-## Catálogo inicial de paquetes
+## Initial package catalog
 
-| paquete | propósito |
-|---------|-----------|
-| `@1c2c/eslint-config` | ESLint compartido. |
-| `@1c2c/tsconfig` | base TS estricta. |
-| `@1c2c/agent-templates` | plantillas CLAUDE/AGENTS/cursor rules. |
-| `@1c2c/cli` | CLI `octc` (sync agentes hoy; governance y ACP en roadmap). |
-| `@1c2c/sentry-config` (opcional) | configs Sentry empaquetadas. |
+| Package | Purpose |
+|---------|---------|
+| `@1c2c/eslint-config` | Shared ESLint. |
+| `@1c2c/tsconfig` | Strict TS bases. |
+| `@1c2c/agent-templates` | CLAUDE/AGENTS/cursor rule templates. |
+| `@1c2c/cli` | `octc` CLI (sync agents today; governance and ACP on the roadmap). |
+| `@1c2c/sentry-config` (optional) | Packaged Sentry configs. |
 
-## Versionado de `@1c2c/cli`
+## `@1c2c/cli` versioning
 
-- **Dependencia:** declara rango semver de `@1c2c/agent-templates` en `dependencies` (hoy `^0.1.0`).
-- **Major:** cambios breaking en flags o subcomandos de `octc` (p. ej. renombrar `sync agents`), o eliminación de rutas soportadas.
-- **Minor:** nuevos subcomandos no breaking (p. ej. `octc sync governance`), nuevas flags opcionales.
-- **Patch:** ayudas, mensajes, delegación interna sin cambiar contrato.
+- **Dependency:** declares a semver range of `@1c2c/agent-templates` in `dependencies` (today `^0.1.0`).
+- **Major:** breaking changes to `octc` flags or subcommands (e.g. renaming `sync agents`), or removal of supported paths.
+- **Minor:** new non-breaking subcommands (e.g. `octc sync governance`), new optional flags.
+- **Patch:** help text, messages, internal delegation without contract changes.
 
-Registro de versiones: Changesets igual que el resto de `@1c2c/*`.
+Version log: Changesets like the rest of `@1c2c/*`.

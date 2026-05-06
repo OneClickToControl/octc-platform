@@ -1,51 +1,51 @@
-# ADR-0001: Polyrepo + repo `octc-platform` como SSOT
+# ADR-0001: Polyrepo + `octc-platform` as SSOT
 
-- **Estado**: accepted
-- **Fecha**: 2026-04-29
+- **Status**: accepted
+- **Date**: 2026-04-29
 - **Tags**: platform, repo, governance
 
-## Contexto
+## Context
 
-OneClickToControl LLC opera múltiples productos privados y servicios de soporte (agentes, runtimes). La pregunta: ¿monorepo único o polyrepo con un repo de plataforma compartido?
+OneClickToControl LLC operates multiple private products and supporting services (agents, runtimes). Question: single monorepo or polyrepo with a shared platform repo?
 
-Restricciones:
-- Equipos pequeños, alta exigencia de DX.
-- Productos con stacks heterogéneos (Next.js, Flutter, Python ML).
-- Necesidad de reglas y plantillas comunes para agentes IA.
-- Seguridad/observabilidad consistentes.
+Constraints:
+- Small teams, high DX expectations.
+- Products with heterogeneous stacks (Next.js, Flutter, Python ML).
+- Need for common rules and templates for AI agents.
+- Consistent security/observability.
 
-## Decisión
+## Decision
 
-Adoptamos **polyrepo** con un repo dedicado `octc-platform` como **Single Source of Truth** para:
+We adopt **polyrepo** with a dedicated `octc-platform` repo as **Single Source of Truth** for:
 
-- Paquetes compartidos publicados como `@1c2c/*`.
-- Plantillas de agentes (`CLAUDE.md`, `.cursor/rules`, `AGENTS.md`).
-- Schemas, políticas, governance, observabilidad, FinOps, supply chain.
-- Documentación transversal y registry de capacidades agénticas (ACP).
+- Shared packages published as `@1c2c/*`.
+- Agent templates (`CLAUDE.md`, `.cursor/rules`, `AGENTS.md`).
+- Schemas, policies, governance, observability, FinOps, supply chain.
+- Cross-cutting documentation and agent capability (ACP) registry.
 
-Cada producto vive en su repo y consume la plataforma por **versión** (`@1c2c/*` y plantillas).
+Each product lives in its own repo and consumes the platform by **version** (`@1c2c/*` and templates).
 
-## Consecuencias
+## Consequences
 
-### Positivas
-- Aislamiento por producto: blast radius reducido.
-- Releases independientes y rollback granular.
-- Onboarding más simple por repo.
-- Permite stacks heterogéneos sin contagio de tooling.
+### Positive
+- Isolation per product: reduced blast radius.
+- Independent releases and granular rollback.
+- Simpler per-repo onboarding.
+- Heterogeneous stacks without tooling contagion.
 
-### Negativas
-- Coordinación de versiones entre repos requiere disciplina.
-- Cambios cross-cutting necesitan PRs en múltiples repos.
+### Negative
+- Coordinating versions across repos requires discipline.
+- Cross-cutting changes need PRs in multiple repos.
 
-### Neutras
-- Necesidad de un PORTFOLIO vivo y un SCORECARD para rastrear adopción.
+### Neutral
+- Need a live PORTFOLIO and SCORECARD to track adoption.
 
-## Alternativas consideradas
+## Alternatives considered
 
-- **Monorepo (Turborepo/Nx)**: descartado por tamaño actual del equipo y coste de tooling unificado para stacks dispares.
-- **Repo único `1click2control` con submódulos**: descartado por fricción operativa.
+- **Monorepo (Turborepo/Nx)**: rejected for current team size and cost of unified tooling across disparate stacks.
+- **Single `1click2control` repo with submodules**: rejected for operational friction.
 
-## Notas y referencias
+## Notes and references
 
-- Plan fundacional ([PLATFORM_PLAN](../PLATFORM_PLAN.md)).
+- Foundational plan ([PLATFORM_PLAN](../PLATFORM_PLAN.md)).
 - [PORTFOLIO](../PORTFOLIO.md).

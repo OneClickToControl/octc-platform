@@ -30,7 +30,7 @@ npx @1c2c/agent-templates init
 
 The package exposes a binary `octc-agents`.
 
-Para la **CLI unificada** `octc` (instalar con **`pnpm add -D @1c2c/cli`**, incluye `octc sync agents` y comandos de monorepo en repos **`*-app`**), usa el paquete [`@1c2c/cli`](../cli); para rutas de solo plantillas delega aquí (`octc-agents`).
+For the unified **`octc`** CLI (install with **`pnpm add -D @1c2c/cli`**, includes `octc sync agents` and monorepo commands on **` *-app`** repos), use [`@1c2c/cli`](../cli); for template-only paths delegate here (`octc-agents`).
 
 ```bash
 # scaffold the canonical files in the current repo
@@ -129,7 +129,7 @@ This package mirrors them at build time via `scripts/sync-from-ssot.mjs` (run by
 
 ## Versioning
 
-Strict SemVer, Changesets-driven. See [`docs/packages/POLICY.md#versionado-de-1c2cagent-templates-caso-especial`](../../docs/packages/POLICY.md#versionado-de-1c2cagent-templates-caso-especial):
+Strict SemVer, Changesets-driven. See the **Special case: `@1c2c/agent-templates` versioning** section in [`docs/packages/POLICY.md`](../../docs/packages/POLICY.md):
 
 - **Major** — breaking structural change, removed sections, or anything that breaks tooling that parses the files.
 - **Minor** — new sections, additional non-breaking rules, support for new runtimes.

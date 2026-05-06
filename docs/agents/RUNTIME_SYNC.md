@@ -1,14 +1,14 @@
 # Agent runtime sync
 
-Cómo se propagan capacidades agénticas desde un ACP hasta los runtimes de ejecución (Cursor, Claude Code/Desktop, OpenClaw, Codex, Paperclip, CI).
+How agent capabilities propagate from an ACP to execution runtimes (Cursor, Claude Code/Desktop, OpenClaw, Codex, Paperclip, CI).
 
-## Modelo
+## Model
 
-- **Fuente única por capacidad:** una skill o un MCP **vive en un solo ACP**. Si dos repos la necesitan, se consume desde el ACP, no se duplica.
-- **Plantilla normativa única:** `CLAUDE.md`, `.cursor/rules/*.mdc` y `AGENTS.md` se generan desde `@1c2c/agent-templates`. Los repos extienden mediante `extends:` o secciones marcadas, nunca redefinen la base.
-- **Sincronización:** un script `octc-sync` (planeado) consume el manifest del ACP y produce los archivos consumibles por cada runtime.
+- **Single source per capability:** a skill or MCP **lives in one ACP** only. If two repos need it, they consume from the ACP — no duplication.
+- **Single normative template:** `CLAUDE.md`, `.cursor/rules/*.mdc`, and `AGENTS.md` are generated from `@1c2c/agent-templates`. Repos extend via `extends:` or marked sections; they never redefine the base.
+- **Synchronization:** a planned `octc-sync` script will consume the ACP manifest and emit files consumable by each runtime.
 
-## Ejemplos de flujo
+## Example flow
 
 ```mermaid
 flowchart LR
@@ -22,13 +22,13 @@ flowchart LR
   SYNC --> productB["product B"]
 ```
 
-## Reglas
+## Rules
 
-1. Versión del template fijada por commit en cada repo consumidor (`agent_templates_pin` en PORTFOLIO).
-2. Cambios en `@1c2c/agent-templates` siguen política de [docs/packages/POLICY.md](../packages/POLICY.md).
-3. Allowlist de herramientas/MCP del ACP debe ser respetada por todos los runtimes; si un runtime no la respeta, ese runtime queda **fuera** del tier L2+.
+1. Template version is pinned by commit in each consumer repo (`agent_templates_pin` in PORTFOLIO).
+2. Changes to `@1c2c/agent-templates` follow [docs/packages/POLICY.md](../packages/POLICY.md).
+3. ACP tool/MCP allowlists must be respected by all runtimes; if a runtime cannot enforce them, that runtime is **out** of tier L2+.
 
-## Pendientes
+## Open items
 
-- Extender `octc sync` con plantillas de governance y pipeline ACP→runtime (ver adapters en `docs/agents/ORCHESTRATION.md`).
-- **`@1c2c/cli`:** publicado como MVP — `octc sync agents` y `octc agents …` delegan en `octc-agents`.
+- Extend `octc sync` with governance templates and ACP→runtime pipeline (see adapters in `docs/agents/ORCHESTRATION.md`).
+- **`@1c2c/cli`:** published as MVP — `octc sync agents` and `octc agents …` delegate to `octc-agents`.

@@ -1,23 +1,23 @@
 # Integrations CATALOG
 
-Inventario de APIs, MCPs e integraciones de terceros consumidas por la plataforma o por sus productos. Cualquier consumo nuevo debe entrar aquí antes de mergear.
+Inventory of APIs, MCPs, and third-party integrations consumed by the platform or its products. Any new consumption must be added here before merge.
 
-## Esquema
+## Schema
 
-| id | nombre | tipo | proveedor | sensibilidad | tier de uso | secret_ref | docs_ref | owners | notas |
+| id | name | type | vendor | sensitivity | usage tier | secret_ref | docs_ref | owners | notes |
 |----|--------|------|-----------|--------------|-------------|------------|----------|--------|-------|
 |    |        |      |           |              |             |            |          |        |       |
 
-- `tipo`: `api` · `mcp` · `webhook` · `sdk` · `cron`.
-- `proveedor`: nombre canónico (Zoho, Sentry, Supabase, Cloudflare, Vercel, Resend, OpenAI, Anthropic, etc.).
-- `sensibilidad`: `none` · `low` · `high` (peor caso de datos manejados).
-- `tier de uso`: `core` · `support` · `experimental`.
-- `secret_ref`: dónde vive el secreto (Vault, GitHub Secrets, Doppler, etc.).
+- `type`: `api` · `mcp` · `webhook` · `sdk` · `cron`.
+- `vendor`: canonical name (Zoho, Sentry, Supabase, Cloudflare, Vercel, Resend, OpenAI, Anthropic, etc.).
+- `sensitivity`: `none` · `low` · `high` (worst-case data handled).
+- `usage tier`: `core` · `support` · `experimental`.
+- `secret_ref`: where the secret lives (Vault, GitHub Secrets, Doppler, etc.).
 
-## Patrones de consumo
+## Consumption patterns
 
-Los patrones recurrentes (paginación, retries, idempotencia, webhooks firmados) se documentan en [PATTERNS.md](PATTERNS.md).
+Recurring patterns (pagination, retries, idempotency, signed webhooks) are documented in [PATTERNS.md](PATTERNS.md).
 
-## Cadencia
+## Cadence
 
-Revisión trimestral con limpieza de integraciones experimentales no promovidas.
+Quarterly review with cleanup of unpromoted experimental integrations.

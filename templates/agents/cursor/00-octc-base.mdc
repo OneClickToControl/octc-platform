@@ -1,27 +1,27 @@
 ---
-description: Reglas base octc-platform para Cursor. No editar; extender en archivos posteriores.
+description: octc-platform baseline rules for Cursor. Do not edit; extend in later rule files.
 alwaysApply: true
 ---
 
-# octc-platform — reglas base
+# octc-platform — baseline rules
 
-- Sigue las reglas de [CLAUDE.md](../../CLAUDE.md). Esta regla es complementaria.
-- Cita siempre archivo:línea cuando referencies código existente.
-- No introduzcas dependencias nuevas sin RFC. Si la tarea lo requiere, propón el RFC y detente.
-- No silencies errores. Repórtalos a Sentry siguiendo `docs/observability/OBSERVABILITY.md`.
-- Para tareas de larga duración, usa heartbeats hacia el orquestador (Paperclip o el adapter declarado).
+- Follow the rules in [CLAUDE.md](../../CLAUDE.md). This rule is complementary.
+- Always cite file:line when referencing existing code.
+- Do not introduce new dependencies without an RFC. If the task requires it, propose the RFC and stop.
+- Do not silence errors. Report them to Sentry per `docs/observability/OBSERVABILITY.md`.
+- For long-running tasks, send heartbeats to the orchestrator (Paperclip or the declared adapter).
 
-## PII y datos sensibles
+## PII and sensitive data
 
-- En repos con `sensitivity:high`, ningún string que pueda ser PII se escribe en logs sin pasar por `beforeSend` con redacción.
-- Tokens, secretos y claves nunca en chat ni en commits.
+- In `sensitivity:high` repos, no string that could be PII is written to logs without `beforeSend` redaction.
+- Never put tokens, secrets, or keys in chat or commits.
 
 ## FinOps
 
-- Para tareas de exploración, prefiere subagentes `explore` (readonly).
-- Para implementación, sigue test-driven cuando aplique. Reduce iteraciones.
+- For exploration tasks, prefer readonly `explore` subagents.
+- For implementation, follow test-driven approaches when applicable. Reduce iterations.
 
-## Plataforma vs producto
+## Platform vs product
 
-- Si la tarea cambia algo bajo `octc-platform/`, exige PR con CODEOWNERS y, si es estructural, ADR.
-- Si es producto, no toques `@1c2c/*` salvo que sea para fijar versión.
+- If the task changes something under `octc-platform/`, require a PR with CODEOWNERS and, if structural, an ADR.
+- If it is product work, do not touch `@1c2c/*` except to pin versions.

@@ -1,62 +1,62 @@
 # FinOps LLM
 
-Política de control de costes en uso de LLMs y agentes para OneClickToControl LLC.
+Cost control policy for LLM and agent usage at OneClickToControl LLC.
 
-## Objetivos
+## Goals
 
-- Predecibilidad mensual del gasto.
-- Visibilidad por agente / ACP / producto.
-- Disuasión de bucles caros y modelos sobredimensionados.
-- Decisiones de modelo guiadas por **calidad / coste**, no por hábito.
+- Predictable monthly spend.
+- Visibility per agent / ACP / product.
+- Discourage expensive loops and oversized models.
+- Model choices driven by **quality / cost**, not habit.
 
-## Presupuestos
+## Budgets
 
-### Niveles
+### Levels
 
-- **Org budget** (mensual): tope global agregado.
-- **Product budget** (mensual): por producto del [PORTFOLIO](../PORTFOLIO.md).
-- **Agent budget** (por ejecución): tope por ejecución de un agente.
+- **Org budget** (monthly): global aggregate cap.
+- **Product budget** (monthly): per product in [PORTFOLIO](../PORTFOLIO.md).
+- **Agent budget** (per run): cap per agent execution.
 
-Los presupuestos se declaran como variables de entorno y validan en runtime.
+Budgets are declared as environment variables and enforced at runtime.
 
-### Tier mapping (orientativo)
+### Tier mapping (guidance)
 
-| Tier ACP | Modelo recomendado por defecto | Excepciones |
-|----------|--------------------------------|-------------|
-| L0–L1 | modelos de coste medio (sonnet-class) | tareas exploratorias one-off. |
-| L2 | sonnet-class para implementación, modelos pequeños para clasificación. | rags pesados pueden subir a opus-class con justificación. |
-| L3 | sonnet-class por defecto. | endpoints user-facing time-sensitive: modelos rápidos. |
-| L4 | sonnet-class baseline + evals con modelos opus-class para validación. | revisar trimestralmente. |
+| ACP tier | Recommended default model | Exceptions |
+|----------|---------------------------|------------|
+| L0–L1 | Medium-cost models (sonnet-class) | One-off exploratory tasks. |
+| L2 | Sonnet-class for implementation, small models for classification. | Heavy RAG may move to opus-class with justification. |
+| L3 | Sonnet-class default. | User-facing time-sensitive endpoints: faster models. |
+| L4 | Sonnet-class baseline + evals with opus-class for validation. | Review quarterly. |
 
-## Métricas
+## Metrics
 
-- Coste USD por agente / día.
-- Coste USD por tarea / petición.
-- Tokens IN/OUT por modelo.
-- `tokens_per_resolution`: media de tokens hasta resolver una tarea.
-- `cost_overrun_rate`: % de ejecuciones que superan el presupuesto por agente.
+- USD cost per agent / day.
+- USD cost per task / request.
+- IN/OUT tokens per model.
+- `tokens_per_resolution`: average tokens until task resolution.
+- `cost_overrun_rate`: % of runs exceeding per-agent budget.
 
-Reportadas vía Sentry AI Monitoring (atributos en spans `agent.llm.call`) y agregadas en el SCORECARD.
+Reported via Sentry AI Monitoring (attributes on `agent.llm.call` spans) and rolled up in the SCORECARD.
 
-## Alertas
+## Alerts
 
-- Coste org diario > 1.2× baseline 7 días → alerta crítica al canal `#ops-finops`.
-- `cost_overrun_rate` por agente > 5% / día → ticket de optimización al owner del ACP.
-- Aparición de modelo no aprobado en spans → alerta crítica.
+- Daily org cost > 1.2× 7-day baseline → critical alert to `#ops-finops`.
+- Per-agent `cost_overrun_rate` > 5% / day → optimization ticket to ACP owner.
+- Unapproved model appears in spans → critical alert.
 
-## Optimizaciones
+## Optimizations
 
-- Caching de prompts (`@1c2c/prompt-cache` planeado).
-- Reuso de retrievals via vector store.
-- Truncado agresivo del contexto histórico cuando aplique.
-- Selección dinámica del modelo según complejidad detectada.
+- Prompt caching (`@1c2c/prompt-cache` planned).
+- Reuse retrievals via vector store.
+- Aggressive truncation of historical context where appropriate.
+- Dynamic model selection by detected complexity.
 
-## Reportes
+## Reports
 
-- Semanal: top 5 agentes por coste, top 5 ACPs por coste/tarea.
-- Mensual: cierre vs presupuesto por producto en [comms/RELEASE_NOTES](../comms/RELEASE_NOTES_TEMPLATE.md).
-- Trimestral: revisión de tier mapping y modelos aprobados.
+- Weekly: top 5 agents by cost, top 5 ACPs by cost per task.
+- Monthly: close vs product budget in [comms/RELEASE_NOTES](../comms/RELEASE_NOTES_TEMPLATE.md).
+- Quarterly: review tier mapping and approved models.
 
-## Modelos aprobados
+## Approved models
 
-Se mantiene una lista versionada por proveedor. Cualquier modelo nuevo entra mediante RFC. Modelos no aprobados son bloqueados por configuración del orquestador y/o gateway central (planeado).
+A versioned list per provider is maintained. New models enter via RFC. Unapproved models are blocked by orchestrator and/or central gateway configuration (planned).

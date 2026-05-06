@@ -1,26 +1,26 @@
 # Golden path
 
-Camino estándar para crear o adoptar un repo nuevo en la plataforma.
+Standard path to create or adopt a new repo on the platform.
 
-## Pasos
+## Steps
 
-1. Abrir issue en `octc-platform` con plantilla `repo-bootstrap`.
-2. Crear repo en GitHub bajo la org. Activar branch protection y SSO.
-3. Registrar el repo en **PORTFOLIO** del companion privado [`octc-platform-internal`](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/PORTFOLIO.md) (PR a ese repo; ver [PORTFOLIO en este repo](../PORTFOLIO.md) como puntero).
-4. Adoptar `@1c2c/eslint-config`, `@1c2c/tsconfig`, `@1c2c/agent-templates` y, para la CLI unificada, **`@1c2c/cli`** (`npx @1c2c/cli sync agents` delega en `octc-agents`).
-5. Copiar la estructura mínima de [DOCUMENTATION_TREE.md](DOCUMENTATION_TREE.md); si habrá más de un cliente o backend servido, leer [REFERENCE_PRODUCT_MONOREPO.md](REFERENCE_PRODUCT_MONOREPO.md) y elegir [arquetipo](REPO_ARCHETYPES.md).
-6. En `docs/architecture.md`, declarar **`active_surfaces`** y la tabla **superficie ↔ rutas** (`apps/*`, `supabase/`, `packages/*`, …). Opcional: duplicar el contrato en **`.octc/monorepo.yaml`** (plantilla [`templates/monorepo/monorepo.yaml.example`](../../templates/monorepo/monorepo.yaml.example)) y validar con `pnpm exec octc verify monorepo` (`@1c2c/cli` ≥ 0.2.0, ver [ADR-0003](../adr/ADR-0003-monorepo-cli-machine-ssot.md)). Tras el primer despliegue real, validar con [MONOREPO_CONFORMANCE_CHECKLIST.md](MONOREPO_CONFORMANCE_CHECKLIST.md).
-7. **Repos ACP / agent-heavy (opcional):** sincronizar la plantilla **doc-contract** para cambios de documentación normativa revisables en PR (`pnpm exec octc sync governance --only doc-contract`, requiere `@1c2c/cli` ≥ 0.3.0; ver [templates/governance/doc-contract](../../templates/governance/doc-contract/README.md) y [PORTFOLIO_BRIDGE](PORTFOLIO_BRIDGE.md) para el flujo hacia internal sin token).
-8. Si el repo expone capacidades a agentes: declarar manifest en `agents/<acp>/manifest.json`, registrar en [REGISTRY](../agents/REGISTRY.md), apuntar a tier objetivo.
-9. Configurar Sentry: crear proyectos en la org única siguiendo `octc-{producto}-{surface}` y subir source maps en CI ([SUPPLY_CHAIN.md](../security/SUPPLY_CHAIN.md)).
-10. Configurar CI de verificación: copiar y adaptar [`templates/governance/ci/octc-consumer-verify.yml`](../../templates/governance/ci/octc-consumer-verify.yml) (instalar → `pnpm dlx audit-signatures || npm audit signatures` → lint/build; opcional `octc agents verify` y **`octc verify monorepo`** si usas `.octc/monorepo.yaml`). En monorepos multi-superficie, añadir matriz de jobs y `paths` como en [REFERENCE_PRODUCT_MONOREPO.md](REFERENCE_PRODUCT_MONOREPO.md) § Matriz CI. Detalle en [README de la plantilla](../../templates/governance/ci/README.md).
-11. PR final cierra el issue del paso 1 con checklist completo.
+1. Open an issue in `octc-platform` using the `repo-bootstrap` template.
+2. Create the repo under the GitHub org. Enable branch protection and SSO.
+3. Register the repo in the private companion **PORTFOLIO** [`octc-platform-internal`](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/PORTFOLIO.md) (PR to that repo; see [PORTFOLIO in this repo](../PORTFOLIO.md) as a pointer).
+4. Adopt `@1c2c/eslint-config`, `@1c2c/tsconfig`, `@1c2c/agent-templates`, and for the unified CLI **`@1c2c/cli`** (`npx @1c2c/cli sync agents` delegates to `octc-agents`).
+5. Copy the minimum structure from [DOCUMENTATION_TREE.md](DOCUMENTATION_TREE.md); if you will serve more than one client or backend, read [REFERENCE_PRODUCT_MONOREPO.md](REFERENCE_PRODUCT_MONOREPO.md) and choose an [archetype](REPO_ARCHETYPES.md).
+6. In `docs/architecture.md`, declare **`active_surfaces`** and the **surface ↔ paths** table (`apps/*`, `supabase/`, `packages/*`, …). Optional: duplicate the contract in **`.octc/monorepo.yaml`** (template [`templates/monorepo/monorepo.yaml.example`](../../templates/monorepo/monorepo.yaml.example)) and validate with `pnpm exec octc verify monorepo` (`@1c2c/cli` ≥ 0.2.0, see [ADR-0003](../adr/ADR-0003-monorepo-cli-machine-ssot.md)). After the first real deploy, validate with [MONOREPO_CONFORMANCE_CHECKLIST.md](MONOREPO_CONFORMANCE_CHECKLIST.md).
+7. **ACP / agent-heavy repos (optional):** sync the **doc-contract** template for normative doc changes reviewable in PR (`pnpm exec octc sync governance --only doc-contract`, requires `@1c2c/cli` ≥ 0.3.0; see [templates/governance/doc-contract](../../templates/governance/doc-contract/README.md) and [PORTFOLIO_BRIDGE](PORTFOLIO_BRIDGE.md) for the no-token flow to internal).
+8. If the repo exposes capabilities to agents: declare the manifest at `agents/<acp>/manifest.json`, register in [REGISTRY](../agents/REGISTRY.md), and target tier.
+9. Configure Sentry: create projects in the single org following `octc-{product}-{surface}` and upload source maps in CI ([SUPPLY_CHAIN.md](../security/SUPPLY_CHAIN.md)).
+10. Configure verification CI: copy and adapt [`templates/governance/ci/octc-consumer-verify.yml`](../../templates/governance/ci/octc-consumer-verify.yml) (install → `pnpm dlx audit-signatures || npm audit signatures` → lint/build; optional `octc agents verify` and **`octc verify monorepo`** if you use `.octc/monorepo.yaml`). For multi-surface monorepos, add a job matrix and `paths` as in [REFERENCE_PRODUCT_MONOREPO.md](REFERENCE_PRODUCT_MONOREPO.md) § CI matrix. Details in the [template README](../../templates/governance/ci/README.md).
+11. Final PR closes the step-1 issue with a complete checklist.
 
-## Indicadores de adopción
+## Adoption indicators
 
-- Tiempo medio de bootstrap < 1 día.
-- 100% de repos nuevos con SCORECARD verde en su primera revisión.
+- Mean bootstrap time < 1 day.
+- 100% of new repos green on SCORECARD at first review.
 
-## Plantilla de issue
+## Issue template
 
-Ver [templates/governance/ISSUE_TEMPLATE/repo_bootstrap.yml](../../templates/governance/ISSUE_TEMPLATE/repo_bootstrap.yml) (creada en bootstrap).
+See [templates/governance/ISSUE_TEMPLATE/repo_bootstrap.yml](../../templates/governance/ISSUE_TEMPLATE/repo_bootstrap.yml) (created at bootstrap).

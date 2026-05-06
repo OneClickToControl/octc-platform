@@ -1,35 +1,35 @@
-# Frontera producto vs plataforma — TEMPLATE
+# Product vs platform boundary — TEMPLATE
 
-Plantilla para documentar, por producto, qué pertenece a `octc-platform` y qué al repo del producto. Copiar este archivo a `docs/boundaries/<producto>.md` al inicio de cada producto.
+Template to document, per product, what belongs in `octc-platform` and what belongs in the product repo. Copy this file to `docs/boundaries/<product>.md` at product kickoff.
 
-## Producto
+## Product
 
-`<nombre del producto>` — repo `<org/repo>` — owner `<handle>`.
+`<product name>` — repo `<org/repo>` — owner `<handle>`.
 
-## En octc-platform
+## In octc-platform
 
-- [ ] Plantillas (`@1c2c/agent-templates`)
-- [ ] Reglas Cursor base
-- [ ] Schemas y políticas comunes
-- [ ] Workflows base (verify, release)
-- [ ] Observabilidad: convención de naming Sentry
+- [ ] Templates (`@1c2c/agent-templates`)
+- [ ] Base Cursor rules
+- [ ] Shared schemas and policies
+- [ ] Base workflows (verify, release)
+- [ ] Observability: Sentry naming convention
 - [ ] Supply chain: provenance, SBOM, source maps
 
-## En el repo del producto
+## In the product repo
 
-- [ ] Roadmap y PRD
-- [ ] Diseño y branding propios
-- [ ] ACP local con manifest y skills
-- [ ] Configuración Sentry específica (DSNs, environments)
-- [ ] Integraciones específicas y secretos
-- [ ] Tests y evals propios
+- [ ] Roadmap and PRD
+- [ ] Product design and branding
+- [ ] Local ACP with manifest and skills
+- [ ] Product-specific Sentry config (DSNs, environments)
+- [ ] Product integrations and secrets
+- [ ] Product tests and evals
 
-## Excepciones
+## Exceptions
 
-Documentar cualquier excepción al modelo plataforma vs producto, con justificación y plan de migración hacia el modelo canónico.
+Document any exception to the platform vs product model, with rationale and a migration plan toward the canonical model.
 
-## Decisiones relevantes
+## Relevant decisions
 
-| fecha | decisión | adr |
+| date | decision | adr |
 |-------|----------|-----|
 |       |          |     |

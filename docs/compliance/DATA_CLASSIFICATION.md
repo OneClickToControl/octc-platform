@@ -1,29 +1,29 @@
 # Data classification
 
-Niveles canónicos de sensibilidad de datos para octc-platform. Todo flujo (integración, ACP, producto) declara el peor caso que maneja.
+Canonical data sensitivity levels for octc-platform. Every flow (integration, ACP, product) declares the worst case it handles.
 
-## Niveles
+## Levels
 
-- **none**: datos públicos o sintéticos. Sin restricción.
-- **low**: datos internos no personales (telemetría operacional, logs sin PII, métricas de plataforma).
-- **high**: PII, salud, finanzas, autenticación, secretos, contenido privado de usuarios.
+- **none**: public or synthetic data. No restriction.
+- **low**: internal non-personal data (operational telemetry, logs without PII, platform metrics).
+- **high**: PII, health, finance, authentication, secrets, private user content.
 
-## Reglas por nivel
+## Rules by level
 
-| Regla | none | low | high |
+| Rule | none | low | high |
 |-------|------|-----|------|
-| Logs en Sentry | OK | OK con scrubbing | Solo con scrubbing y `beforeSend` riguroso |
-| Replay Sentry | OK | Sampling reducido | Off o sampling 0% en flujos sensibles |
-| Profiling | OK | OK | Selectivo |
-| Retención Sentry (eventos) | 90 días | 90 días | 30 días o menor según producto |
-| RAG/KB sin filtros | OK | OK | Prohibido sin filtros por tenant/rol |
-| Tools que salen al exterior | OK | OK con review | Doble aprobación + auditoría |
-| Eval datasets con datos reales | OK | Anonimizar | Sintetizar o anonimizar siempre |
+| Sentry logs | OK | OK with scrubbing | Only with scrubbing and strict `beforeSend` |
+| Sentry replay | OK | Reduced sampling | Off or 0% on sensitive flows |
+| Profiling | OK | OK | Selective |
+| Sentry retention (events) | 90 days | 90 days | 30 days or less per product |
+| RAG/KB without filters | OK | OK | Forbidden without tenant/role filters |
+| Tools that reach the internet | OK | OK with review | Double approval + audit |
+| Eval datasets with real data | OK | Anonymize | Always synthesize or anonymize |
 
 ## DPIA
 
-Cualquier flujo `high` requiere apuntar a un DPIA en `docs/compliance/DPIA/<flow-id>.md` (a crear cuando aparezca el primer flujo).
+Any `high` flow must reference a DPIA at `docs/compliance/DPIA/<flow-id>.md` (create when the first flow appears).
 
-## Mapeo a Sentry
+## Sentry mapping
 
-Ver [OBSERVABILITY.md](../observability/OBSERVABILITY.md#retencion-por-sensibilidad).
+See [OBSERVABILITY.md](../observability/OBSERVABILITY.md#retention-by-sensitivity).

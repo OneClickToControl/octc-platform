@@ -1,12 +1,12 @@
 # AGENTS — `*-workspace`
 
-Este repositorio es **memoria, identidad y continuidad operativa** — no es el SSOT de capacidades agénticas ni de código de producto.
+This repository is **memory, identity, and operational continuity** — not the SSOT for agent capabilities or primary product code.
 
-## Límites
+## Boundaries
 
-| Aquí | En otro lado |
+| Here | Elsewhere |
 |------|----------------|
-| `MEMORY.md`, `IDENTITY.md`, notas, canales | Manifest ACP, allowlists L2, guardrails → `*-agents` |
-| Punteros y restore | Superficies y monorepo → `*-app` |
+| `MEMORY.md`, `IDENTITY.md`, notes, channels | ACP manifest, L2 allowlists, guardrails → `*-agents` |
+| Pointers and restore | Surfaces and monorepo → `*-app` |
 
-No coloques `agents/*/manifest.json` ni políticas canónicas de herramientas aquí.
+Do not place `agents/*/manifest.json` or canonical tool policies here.

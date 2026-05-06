@@ -1,16 +1,16 @@
-# Contrato de documentación (repos ACP / agent-heavy)
+# Documentation contract (ACP / agent-heavy repos)
 
-Patrón **opcional** para normalizar cambios en docs/manifiestos revisables en PR.
+**Optional** pattern to normalize manifest/doc changes reviewable in PR.
 
-## Origen
+## Origin
 
-Copiado desde `@1c2c/cli` (`octc sync governance --only doc-contract`). Documentación canónica: [doc-contract en octc-platform](https://github.com/OneClickToControl/octc-platform/tree/main/templates/governance/doc-contract).
+Copied from `@1c2c/cli` (`octc sync governance --only doc-contract`). Canonical docs: [doc-contract in octc-platform](https://github.com/OneClickToControl/octc-platform/tree/main/templates/governance/doc-contract).
 
-## Uso
+## Usage
 
-Ver el README público enlazado arriba. `changeset.example.yaml` es un ejemplo sin secretos: copiarlo a tu carpeta de changesets y ajustar convención del repo.
+See the public README linked above. `changeset.example.yaml` is a secrets-free example: copy to your changesets folder and adjust repo conventions.
 
-## Enlaces
+## Links
 
 - [REFERENCE_PRODUCT_MONOREPO](https://github.com/OneClickToControl/octc-platform/blob/main/docs/adoption/REFERENCE_PRODUCT_MONOREPO.md)
 - [REGISTRY](https://github.com/OneClickToControl/octc-platform/blob/main/docs/agents/REGISTRY.md)

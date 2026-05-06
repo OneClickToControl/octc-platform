@@ -1,55 +1,55 @@
 # Release notes template
 
-Plantilla para release notes mensuales/cuatrimestrales de la plataforma. Crear copia en `docs/comms/releases/<YYYY>-<MM>.md` o `docs/comms/releases/<YYYY>-Q<n>.md` y publicar en `#release`.
+Template for monthly or quarterly platform release notes. Copy to `docs/comms/releases/<YYYY>-<MM>.md` or `docs/comms/releases/<YYYY>-Q<n>.md` and post in `#release`.
 
 ---
 
-# octc-platform — release notes <período>
+# octc-platform — release notes <period>
 
 ## Highlights
 
-- 1–3 bullets con lo más importante del período.
+- 1–3 bullets with the most important items in the period.
 
-## Cambios por área
+## Changes by area
 
-### Plataforma normativa
-- ADRs nuevos y aceptados.
-- Cambios en políticas (security, observability, FinOps, governance).
+### Normative platform
+- New and accepted ADRs.
+- Policy changes (security, observability, FinOps, governance).
 
-### Paquetes `@1c2c/*`
-- Releases destacados (major/minor) con changelog.
-- Plan de migración si hubo majors.
+### `@1c2c/*` packages
+- Notable releases (major/minor) with changelog.
+- Migration plan if majors shipped.
 
-### Plantillas de agentes
-- Versión vigente de `@1c2c/agent-templates`.
-- Repos pendientes de adoptar (lista corta).
+### Agent templates
+- Current `@1c2c/agent-templates` version.
+- Short list of repos pending adoption.
 
-### Observabilidad
-- Cambios en proyectos Sentry, sampling, retención.
-- Incidentes destacados vinculados a alertas.
+### Observability
+- Sentry project changes, sampling, retention.
+- Notable incidents linked to alerts.
 
-### FinOps LLM
-- Coste org y por producto vs presupuesto.
-- Top 3 ahorros y top 3 incrementos.
+### LLM FinOps
+- Org and per-product cost vs budget.
+- Top 3 savings and top 3 increases.
 
 ### Governance
-- ADRs aceptados/deprecated.
-- Cambios en CODEOWNERS o branch protection.
+- ADRs accepted/deprecated.
+- CODEOWNERS or branch protection changes.
 
-## Próximos pasos
+## Next steps
 
-- Plan para el siguiente período (3–5 bullets).
+- Plan for the next period (3–5 bullets).
 
-## Métricas clave
+## Key metrics
 
-| KPI | valor | tendencia |
+| KPI | value | trend |
 |-----|-------|-----------|
 | eval_pass_rate (avg L4) |  |  |
 | codeowners_coverage (%) |  |  |
 | sentry_uptime |  |  |
 | llm_budget_utilization (%) |  |  |
 
-## Anexos
+## Appendices
 
-- Enlaces a auditoría visible del trimestre.
-- Enlaces a ADRs nuevos.
+- Links to visible quarterly audit.
+- Links to new ADRs.

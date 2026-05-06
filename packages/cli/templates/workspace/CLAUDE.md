@@ -1,14 +1,14 @@
 # CLAUDE.md — `*-workspace`
 
-## Rol
+## Role
 
-Repositorio **workspace**: identidad, memoria, notas, canales y bootstrap — **no** ACP, **no** monorepo OCTC, **no** código de producto principal.
+**Workspace** repository: identity, memory, notes, channels, and bootstrap — **not** an ACP, **not** an OCTC product monorepo, **not** primary product code.
 
-## Prohibido confundir con
+## Do not confuse with
 
-- **`*-agents`:** manifest y comportamiento agéntico normativo.
+- **`*-agents`:** normative manifest and agent behaviour.
 - **`*-app`:** `octc verify monorepo`, surfaces.
 
-## Comandos
+## Commands
 
-No hay comandos OCTC obligatorios en la plantilla. Scripts locales van en `scripts/` si los necesitas.
+No mandatory OCTC commands in this template. Put local scripts under `scripts/` if needed.
