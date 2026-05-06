@@ -18,7 +18,7 @@ Plantilla para describir los agentes activos en este repo (humanos y de IA). Viv
 
 ## Reglas comunes
 
-- Ningún agente puede instalar dependencias nuevas sin abrir RFC ([docs/comms/RFC_TEMPLATE.md](../../docs/comms/RFC_TEMPLATE.md)).
+- Ningún agente puede instalar dependencias nuevas sin abrir RFC ([docs/comms/RFC_TEMPLATE.md](../../../docs/comms/RFC_TEMPLATE.md)).
 - Operaciones destructivas (rebases, drops, force-push) requieren aprobación humana explícita registrada en el PR.
 - Las salidas de agentes que tocan código deben ser revisadas por CODEOWNERS antes de merge.
 
