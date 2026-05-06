@@ -1,9 +1,9 @@
-# Release train hacia repos producto (Fase 4)
+# Release train to product repos (Phase 4)
 
-Los pasos de diseño y el backlog viven en el companion privado:
+Design steps and backlog live in the private companion:
 
 - [docs/backlog/OCTC_RELEASE_TRAIN.md](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/backlog/OCTC_RELEASE_TRAIN.md) (`octc-platform-internal`)
 
-Este repo público publica los paquetes `@1c2c/*` vía [`.github/workflows/release.yml`](../../.github/workflows/release.yml) (Changesets + npm); el camino operativo (PR de versión, revisiones, OIDC) está en [`docs/packages/RELEASE_RUNBOOK.md`](../packages/RELEASE_RUNBOOK.md). Tras cada publicación, los productos hoy actualizan versiones mediante **Dependabot** y checklist manual ([merge train](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/runbooks/OCTC_MERGE_TRAIN_CHECKLIST.md)).
+This public repo publishes `@1c2c/*` packages via [`.github/workflows/release.yml`](../../.github/workflows/release.yml) (Changesets + npm); the operational path (version PR, reviews, OIDC) is in [`docs/packages/RELEASE_RUNBOOK.md`](../packages/RELEASE_RUNBOOK.md). After each publish, products today bump versions with **Dependabot** and a manual checklist ([merge train](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/runbooks/OCTC_MERGE_TRAIN_CHECKLIST.md)).
 
-Una automatización que abra PRs en varios repos requerirá PAT u organización GitHub App; ver sección *Opciones de implementación* en el backlog enlazado arriba.
+Automation that opens PRs across many repos will need a PAT or a GitHub App; see *implementation options* in the backlog linked above.

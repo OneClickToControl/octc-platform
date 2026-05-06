@@ -1,36 +1,36 @@
 name: Feature
-description: Proponer una mejora o capacidad nueva
+description: Propose an improvement or new capability
 title: "[feat] "
 labels: ["enhancement"]
 body:
   - type: textarea
     id: motivation
     attributes:
-      label: Motivación
-      description: Qué problema resuelve y por qué importa.
+      label: Motivation
+      description: Problem it solves and why it matters.
     validations:
       required: true
   - type: textarea
     id: proposal
     attributes:
-      label: Propuesta
-      description: Boceto de la solución. Si es estructural, abrir RFC en lugar de issue.
+      label: Proposal
+      description: Solution sketch. If structural, open an RFC instead of this issue.
     validations:
       required: true
   - type: dropdown
     id: structural
     attributes:
-      label: ¿Cambio estructural?
-      description: Si sí, este issue se convertirá en RFC.
+      label: Structural change?
+      description: If yes, this issue should become an RFC.
       options:
         - "no"
-        - "sí (necesita RFC + ADR)"
+        - "yes (needs RFC + ADR)"
     validations:
       required: true
   - type: textarea
     id: impact
     attributes:
-      label: Impacto en repos consumidores
-      description: Lista de repos que requieren cambios (PORTFOLIO).
+      label: Impact on consumer repos
+      description: List of repos that need changes (PORTFOLIO).
     validations:
       required: false

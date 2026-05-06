@@ -1,157 +1,157 @@
-# Runbook — publicación `@1c2c/*` (Changesets + `release.yml`)
+# Runbook — publishing `@1c2c/*` (Changesets + `release.yml`)
 
-Este documento describe el **camino operativo real** del repo. **No** afirma “release totalmente automático” mientras exista un candado de política (revisiones obligatorias, CODEOWNERS, rulesets) que el código no pueda derogar.
+This document describes the **actual operational path** in this repository. It does **not** claim “fully automatic release” while policy locks exist (required reviews, CODEOWNERS, rulesets) that code cannot override.
 
-## Informe de cuello de botella (resumen)
+## Bottleneck report (summary)
 
-### A. Ya automatizado (sin intervención en ese paso)
+### A. Already automated (no human step at that stage)
 
-- Push a `main` → `release.yml` instala, testea, buildea, ejecuta `changesets/action`.
-- Con `.changeset/*.md` pendientes en `main`: la acción versiona en `changeset-release/main` y mantiene un PR hacia `main` con título fijo **`chore: release packages`**.
-- Sin changesets pendientes y con versiones locales por publicar: `changeset publish` vía **OIDC** + provenance.
+- Push to `main` → `release.yml` installs, tests, builds, runs `changesets/action`.
+- With pending `.changeset/*.md` files on `main`: the action versions on `changeset-release/main` and keeps a PR to `main` with fixed title **`chore: release packages`**.
+- With no pending changesets and local package versions ahead of the registry: `changeset publish` via **OIDC** + provenance.
 
-### B. Qué sigue bloqueando baja fricción
+### B. Still blocking low friction
 
-- El PR mecánico debe **fusionarse** en `main`; toca `packages/**` (CODEOWNERS).
-- Reglas de la org pueden exigir **aprobación** antes de merge; `GITHUB_TOKEN` **no** sustituye esa aprobación para el modo dedicado que fusiona con otra identidad.
-- **`--admin` / merge administrativo** **no** forma parte del diseño previsto: solo **incidente** o política explícita fuera de este runbook. El camino previsto es **GitHub App** (preferido) o PAT dedicado acotado (residual).
+- The mechanical PR must be **merged** into `main`; it touches `packages/**` (CODEOWNERS).
+- Org rules may require **approval** before merge; `GITHUB_TOKEN` **cannot** substitute that approval for the dedicated mode that merges with another identity.
+- **`--admin` / administrative merge** is **not** part of the intended design: only **incidents** or explicit policy outside this runbook. The intended path is **GitHub App** (preferred) or a narrowly scoped PAT (residual).
 
-### C. En control del repo (implementado o documentado aquí)
+### C. Under repository control (implemented or documented here)
 
-- PR mecánico acotado: `changeset-release/main` → `main`, título **`chore: release packages`**, autor **`github-actions[bot]`**, no fork ([`release-pr-automerge.yml`](../../.github/workflows/release-pr-automerge.yml)).
-- Auto-merge por defecto con `GITHUB_TOKEN`, o modo dedicado con **token de instalación de GitHub App** generado en cada run (preferido), o PAT estático (segunda opción).
+- Bounded mechanical PR: `changeset-release/main` → `main`, title **`chore: release packages`**, author **`github-actions[bot]`**, not a fork ([`release-pr-automerge.yml`](../../.github/workflows/release-pr-automerge.yml)).
+- Default auto-merge with `GITHUB_TOKEN`, or dedicated mode with a **GitHub App installation token** generated per run (preferred), or a static PAT (second choice).
 
-### D. Solo política / fuera del YAML
+### D. Policy only / outside YAML
 
-- Inscripción del **bot de la App** (p. ej. `tu-app-slug[bot]`) en la capacidad efectiva de fusionar en `main` (p. ej. “omitir revisiones obligatorias” para ese actor, en la forma que permita GitHub).
-- Reglas que bloqueen merges hasta cumplir comprobaciones (el workflow espera checks con `gh pr checks --watch`).
+- Registration of the **App bot** (e.g. `your-app-slug[bot]`) with **effective** permission to merge to `main` (e.g. “allow specific actors to bypass required pull request reviews”, as GitHub permits).
+- Rules blocking merges until checks pass (the workflow waits on checks with `gh pr checks --watch`).
 
-## Comparación de gobernanza (recomendación explícita)
+## Governance comparison (explicit recommendation)
 
-| | **1) GitHub App + installation token en CI (preferido)** | **2) Excepción amplia de ruleset (no recomendado como primera opción)** |
-|---|----------------------------------------------------------|------------------------------------------------------------------------|
-| **Riesgo** | Medio: clave privada de App en secret; token corto (~1 h) por ejecución. | Alto si la regla no es quirúrgica (GitHub raramente filtra por forma exacta de PR). |
-| **Auditoría** | Fuerte: App instalada, actor `slug[bot]`, logs del workflow. | Depende del diseño de la regla; a menudo peor trazabilidad. |
-| **Fricción** | Media (crear App, instalar, secrets/variables, alinear política). | Baja tras acordar la regla; coste de mantenimiento/riesgo mayor. |
-| **Blast radius** | Limitado si la App solo se instala en este repo y permisos mínimos; robo de clave privada sigue siendo grave. | Suele ser mayor si la excepción afecta más PRs de los previstos. |
-| **Recomendación** | **Defecto OCTC.** | Solo si la App es inviable; documentar dueño y revisión. |
+| | **1) GitHub App + installation token in CI (preferred)** | **2) Broad ruleset exception (not recommended first)** |
+|---|----------------------------------------------------------|--------------------------------------------------------|
+| **Risk** | Medium: App private key in secret; short (~1h) token per run. | High if the rule is not surgical (GitHub rarely filters by exact PR shape). |
+| **Audit** | Strong: installed App, `slug[bot]` actor, workflow logs. | Depends on rule design; often weaker traceability. |
+| **Friction** | Medium (create App, install, secrets/variables, align policy). | Low after agreeing the rule; higher maintenance/risk. |
+| **Blast radius** | Limited if the App is installed only on this repo with minimal permissions; stolen private key is still severe. | Often larger if the exception hits more PRs than intended. |
+| **Recommendation** | **OCTC default.** | Only if an App is impossible; document owner and review. |
 
-**Límites de GitHub:** En branch protection clásica, un actor en la lista de bypass suele poder fusionar **cualquier** PR que fusiona **con credenciales de ese actor**. El acercamiento operativo es: **solo** este workflow invoca `gh pr merge` con el token de la App **bajo** el predicado estricto (rama/título/autor); no relajar revisiones para contribuciones humanas normales.
+**GitHub limits:** In classic branch protection, a bypass-listed actor can often merge **any** PR when using **that actor’s** credentials. The operational approach is: **only** this workflow calls `gh pr merge` with the App token **under** the strict predicate (branch/title/author); do not relax reviews for normal human contributions.
 
-## Cadena actual (dos fases)
+## Current chain (two phases)
 
-### Fase A — Entran cambios con changeset
+### Phase A — Changes arrive with a changeset
 
-1. Trabajo en una rama normal; añades un archivo bajo `.changeset/` (`pnpm exec changeset` o equivalente).
-2. Abres PR → `main`, pasas CI (p. ej. `verify.yml`, `privacy-guard` si aplica).
-3. Merge a `main` (según política de la org: aprobaciones, CODEOWNERS, etc.).
+1. Work on a normal branch; add a file under `.changeset/` (`pnpm exec changeset` or equivalent).
+2. Open PR → `main`, pass CI (e.g. `verify.yml`, `privacy-guard` when applicable).
+3. Merge to `main` (per org policy: approvals, CODEOWNERS, etc.).
 
-### Fase B — Workflow `release.yml` en `main`
+### Phase B — `release.yml` on `main`
 
-Cada push a `main` ejecuta [`.github/workflows/release.yml`](../../.github/workflows/release.yml).
+Each push to `main` runs [`.github/workflows/release.yml`](../../.github/workflows/release.yml).
 
-| Estado de `.changeset/` en `main` | Qué hace el job `changesets` |
-|----------------------------------|------------------------------|
-| **Hay** archivos `.changeset/*.md` sin versionar | Ejecuta `changeset version`, hace commit en la rama **`changeset-release/main`** y abre/actualiza un PR titulado **«chore: release packages»** hacia `main` (actor habitual: `github-actions[bot]`). **No publica npm todavía.** |
-| **No hay** changesets pendientes; hay paquetes con versión local mayor que en el registry | Ejecuta `changeset publish` con **OIDC → npm** y provenance (`NPM_CONFIG_PROVENANCE`). Crea tags de paquete en Git. |
+| State of `.changeset/` on `main` | What the `changesets` job does |
+|----------------------------------|--------------------------------|
+| **Has** unversioned `.changeset/*.md` files | Runs `changeset version`, commits on **`changeset-release/main`**, opens/updates a PR titled **`chore: release packages`** to `main` (usual actor: `github-actions[bot]`). **Does not publish to npm yet.** |
+| **No** pending changesets; local package versions ahead of registry | Runs `changeset publish` with **OIDC → npm** and provenance (`NPM_CONFIG_PROVENANCE`). Creates package tags in Git. |
 
-Por tanto, **npm solo se actualiza después de que el PR de versión exista en `main`**. Ese PR es mecánico (bump + changelogs + borrado de changesets).
+Therefore **npm only updates after the version PR lands on `main`**. That PR is mechanical (bumps + changelogs + removes changeset files).
 
-## Modelo canónico — variables y secretos (release merge mecánico)
+## Canonical secrets and variables (mechanical release merge)
 
-**No usar** el identificador numérico legacy “App ID” como variable de este flujo: el workflow **`actions/create-github-app-token` v3** consume el **Client ID**. Un solo nombre estándar:
+**Do not** use the legacy numeric “App ID” as this flow’s variable: **`actions/create-github-app-token` v3** uses the **Client ID**. Standard names:
 
-| Tipo | Nombre | Valor |
-|------|--------|--------|
-| Variable | `OCTC_RELEASE_MERGE_ENABLED` | `true` para activar el job que fusiona con identidad dedicada; cualquier otro valor o ausencia → solo auto-merge con `GITHUB_TOKEN`. |
-| Variable | `OCTC_RELEASE_MERGE_APP_CLIENT_ID` | **Client ID** de la GitHub App (pantalla de la App en GitHub). |
-| Secret | `OCTC_RELEASE_MERGE_APP_PRIVATE_KEY` | Clave privada PEM de la App. |
-| Variable | `OCTC_RELEASE_MERGE_CREDENTIAL_MODE` | **Solo** si necesitáis modo transitorio: `pat`. Si está ausente o es distinto de `pat`, el camino es **GitHub App**. |
-| Secret | `OCTC_RELEASE_MERGE_TOKEN` | PAT **solo** cuando `OCTC_RELEASE_MERGE_CREDENTIAL_MODE=pat` (segunda opción IAM; rotar y acotar). |
+| Kind | Name | Value |
+|------|------|--------|
+| Variable | `OCTC_RELEASE_MERGE_ENABLED` | `true` to enable the dedicated merge job; any other value or unset → auto-merge with `GITHUB_TOKEN` only. |
+| Variable | `OCTC_RELEASE_MERGE_APP_CLIENT_ID` | GitHub App **Client ID** (App settings page). |
+| Secret | `OCTC_RELEASE_MERGE_APP_PRIVATE_KEY` | App private key PEM. |
+| Variable | `OCTC_RELEASE_MERGE_CREDENTIAL_MODE` | **Only** for transitional mode: `pat`. If unset or not `pat`, the path is **GitHub App**. |
+| Secret | `OCTC_RELEASE_MERGE_TOKEN` | PAT **only** when `OCTC_RELEASE_MERGE_CREDENTIAL_MODE=pat` (second-class IAM; rotate and scope). |
 
-## Workflow `release-pr-automerge.yml` — forma mecánica exacta
+## `release-pr-automerge.yml` — exact mechanical shape
 
-El workflow aplica **únicamente** si el PR cumple **todos** estos campos:
+The workflow applies **only** when the PR satisfies **all**:
 
-| Campo | Valor exigido |
+| Field | Required value |
 |--------|----------------|
 | Base | `main` |
 | Head | `changeset-release/main` |
-| Título | `chore: release packages` (exactamente; alineado con `title` en `release.yml` / `changesets/action`) |
-| Autor del PR | `github-actions[bot]` |
-| Origen | Mismo repo (no fork) |
+| Title | `chore: release packages` (exact; aligned with `release.yml` / `changesets/action` `title`) |
+| PR author | `github-actions[bot]` |
+| Origin | Same repo (not a fork) |
 
-**Ningún otro PR** califica, aunque toque `packages/**`.
+**No other PR qualifies**, even if it touches `packages/**`.
 
-### Modo 1 — Auto-merge por defecto
+### Mode 1 — Default auto-merge
 
-Si **`OCTC_RELEASE_MERGE_ENABLED`** no es `true`: se ejecuta **solo** el job `enable-auto-merge`, que llama `gh pr merge --auto --squash` con `GITHUB_TOKEN`. Sigue haciendo falta que **política de rama** (revisiones + checks) permita el merge cuando GitHub lo evalúe.
+If **`OCTC_RELEASE_MERGE_ENABLED`** is not `true`: only the `enable-auto-merge` job runs, calling `gh pr merge --auto --squash` with `GITHUB_TOKEN`. Branch policy (reviews + checks) must still allow the merge when GitHub evaluates it.
 
-### Modo 2 — Identidad dedicada (fusiona tras checks verdes)
+### Mode 2 — Dedicated identity (merges after green checks)
 
-Si **`OCTC_RELEASE_MERGE_ENABLED=true`**:
+If **`OCTC_RELEASE_MERGE_ENABLED=true`**:
 
-| Camino | `OCTC_RELEASE_MERGE_CREDENTIAL_MODE` | Credenciales |
-|--------|--------------------------------------|--------------|
-| **Preferido: GitHub App** (defecto si no es `pat`) | ausente o ≠ `pat` | Variable **`OCTC_RELEASE_MERGE_APP_CLIENT_ID`**, secret **`OCTC_RELEASE_MERGE_APP_PRIVATE_KEY`**. Job **`merge-mechanical-pr-github-app`**. |
-| **Transitorio: PAT** | `pat` (exacto) | Secret **`OCTC_RELEASE_MERGE_TOKEN`**. Job **`merge-mechanical-pr-pat-fallback`**. |
+| Path | `OCTC_RELEASE_MERGE_CREDENTIAL_MODE` | Credentials |
+|------|--------------------------------------|-------------|
+| **Preferred: GitHub App** (default when not `pat`) | absent or ≠ `pat` | Variable **`OCTC_RELEASE_MERGE_APP_CLIENT_ID`**, secret **`OCTC_RELEASE_MERGE_APP_PRIVATE_KEY`**. Job **`merge-mechanical-pr-github-app`**. |
+| **Transitional: PAT** | `pat` (exact) | Secret **`OCTC_RELEASE_MERGE_TOKEN`**. Job **`merge-mechanical-pr-pat-fallback`**. |
 
-En el camino **App**, el workflow usa [`actions/create-github-app-token`](https://github.com/actions/create-github-app-token) para obtener un **installation access token** en tiempo de ejecución (vida corta, revocado al final del job salvo configuración contraria de la acción). Ese token alimenta `gh pr checks --watch` y `gh pr merge --squash`.
+On the **App** path, the workflow uses [`actions/create-github-app-token`](https://github.com/actions/create-github-app-token) to mint a short-lived **installation access token** (revoked when the job ends unless the action is configured otherwise). That token feeds `gh pr checks --watch` and `gh pr merge --squash`.
 
-El camino **PAT** existe solo si la org **no** puede desplegar una App; es **segunda opción** (token de larga duración, más superficie de rotación y filtración).
+The **PAT** path exists only if the org **cannot** deploy an App; it is the **second choice** (long-lived token, larger rotation and leak surface).
 
-## GitHub App (camino preferido) — aprovisionamiento
+## GitHub App (preferred) — provisioning
 
-1. **Crear una GitHub App** en la org (o cuenta) con permisos de repositorio acotados a lo necesario para mergear PRs:
+1. **Create a GitHub App** in the org (or account) with narrowly scoped repo permissions:
    - **Contents:** Read and write  
    - **Pull requests:** Read and write  
-   Instalación **solo** en `OneClickToControl/octc-platform` (o lista mínima de repos si la org impide repo-único; documentar excepción).
-2. Anotar el **Client ID** de la App (UI moderna de GitHub; no confundir con el identificador numérico legacy salvo que uséis compatibilidad explícita de la acción).
-3. Generar **Private key** para la App; guardarla como secret **`OCTC_RELEASE_MERGE_APP_PRIVATE_KEY`** en el repo.
-4. Variable de repo **`OCTC_RELEASE_MERGE_APP_CLIENT_ID`** = **Client ID** (no el número “App ID” legacy salvo documentación de compatibilidad ajena a este workflow).
+   Install **only** on `OneClickToControl/octc-platform` (or the minimal repo list if org policy forbids single-repo install; document exceptions).
+2. Record the App **Client ID** (modern GitHub UI; do not confuse with legacy numeric “App ID” unless you have explicit action compatibility).
+3. Generate **Private key**; store as secret **`OCTC_RELEASE_MERGE_APP_PRIVATE_KEY`** on the repo.
+4. Repo variable **`OCTC_RELEASE_MERGE_APP_CLIENT_ID`** = **Client ID**.
 5. Variable **`OCTC_RELEASE_MERGE_ENABLED`** = `true`.
-6. No fijar **`OCTC_RELEASE_MERGE_CREDENTIAL_MODE`** (el defecto es GitHub App). Fijar `pat` solo como transición.
+6. Do **not** set **`OCTC_RELEASE_MERGE_CREDENTIAL_MODE`** (default is GitHub App). Set `pat` only during transition.
 
-### Alineación de política en GitHub (fuera del repo; obligatoria para fusionar sin `--admin`)
+### GitHub policy alignment (outside the repo; required to merge without `--admin`)
 
-Quien administre la org/repo debe conceder al **actor de la App** (`<app-slug>[bot]`, visible tras instalar la App) la capacidad **efectiva** de fusionar el PR mecánico. Lo habitual es incluir ese actor en **“Permitir que actores específicos omitan las revisiones obligatorias de solicitud de extracción”** (o equivalente en **rulesets**) en la regla que aplica a `main`.
+Org/repo admins must grant the **App actor** (`<app-slug>[bot]`, visible after install) **effective** permission to merge the mechanical PR. Typical pattern: include that actor under **“Allow specified actors to bypass required pull request reviews”** (or rulesets equivalent) on the rule that protects `main`.
 
-**El repositorio no puede aplicar esa política por sí mismo.** Sin ella, `gh pr merge` fallará por falta de permisos o revisiones pendientes.
+**The repository cannot apply that policy by itself.** Without it, `gh pr merge` fails on permissions or pending reviews.
 
-**`--admin`:** no es el modo de operación OCTC; no debe usarse como sustituto rutinario de la alineación anterior.
+**`--admin`:** not the routine OCTC operating mode; do not use it as a permanent substitute for the above.
 
-### Por qué esto es preferible a una excepción genérica de ruleset
+### Why this beats a generic ruleset carve-out
 
-- El **predicado del PR** (rama/título/autor) lo fuerza el **workflow**, auditable en Git.
-- El **token** es **corto** y **revocable** revocando la App o rotando la clave.
-- Una **regla** demasiado amplia suele ser **menos precisa** que “este actor + este workflow + esta forma de PR”.
+- Workflow-enforced **PR predicate** (branch/title/author) is auditable in Git.
+- Tokens are **short-lived** and revocable by rotating the App key or removing the App.
+- Overly broad **rules** are usually **less precise** than “this actor + this workflow + this PR shape”.
 
-## Dependencia de política (texto contractual)
+## Policy dependency (contract text)
 
-Hasta que el actor de la App (o el PAT residual) tenga permiso efectivo de merge en `main` bajo las rules de la org:
+Until the App actor (or residual PAT) can **effectively** merge to `main` under org rules:
 
-- **Qué bloquea:** revisiones obligatorias / CODEOWNERS / comprobaciones no satisfechas / actor sin bypass donde haga falta.
-- **Quién lo cambia:** administración de la org o del repo con autoridad de gobernanza.
-- **Mientras tanto:** `OCTC_RELEASE_MERGE_ENABLED` desactivado + auto-merge con `GITHUB_TOKEN` + **aprobación humana** según reglas, o merge manual sin depender de identidad dedicada.
-- **Tras la alineación:** el job `merge-mechanical-pr-github-app` puede completar el merge **sin** `--admin` cuando los checks pasen.
+- **What blocks:** required reviews / CODEOWNERS / unsatisfied checks / actor lacks bypass where needed.
+- **Who changes it:** org or repo admins with governance authority.
+- **Meanwhile:** `OCTC_RELEASE_MERGE_ENABLED` off + `GITHUB_TOKEN` auto-merge + **human approval** per rules, or manual merge without a dedicated identity.
+- **After alignment:** `merge-mechanical-pr-github-app` can complete the merge **without** `--admin` once checks pass.
 
-## PAT residual (segunda opción)
+## Residual PAT (second choice)
 
-Solo si **`OCTC_RELEASE_MERGE_CREDENTIAL_MODE=pat`**:
+Only when **`OCTC_RELEASE_MERGE_CREDENTIAL_MODE=pat`**:
 
-- Secret **`OCTC_RELEASE_MERGE_TOKEN`**: PAT fine-grained o clásica con alcance **mínimo** a este repo; rotación acordada.
-- Misma necesidad de **política** para que ese usuario/bot pueda fusionar.
-- Riesgo residual: exfiltración del PAT permite merges fuera de este workflow si el actor tiene permisos amplios.
+- Secret **`OCTC_RELEASE_MERGE_TOKEN`**: fine-grained or classic PAT with **minimum** scope to this repo; agreed rotation.
+- Same **policy** requirement so that user/bot can merge.
+- Residual risk: PAT exfiltration enables merges outside this workflow if the actor has broad permissions.
 
-## Checklist quien mantiene releases
+## Maintainer checklist (releases)
 
-1. Tras mergear trabajo con changesets: esperar el PR **«chore: release packages»**.
-2. Revisar diffs (versiones/changelogs / eliminación de `.changeset`).
-3. CI verde en ese PR.
-4. Si modo por defecto (sin `OCTC_RELEASE_MERGE_ENABLED`): aprobar según reglas; auto-merge cerrará cuando GitHub lo permita.
-5. Si modo App/PAT dedicado: confirmar que **`merge-mechanical-pr-github-app`** o **`merge-mechanical-pr-pat-fallback`** termina en éxito.
-6. Verificar el siguiente `release.yml` en `main` (`changeset publish` y versión en npm).
+1. After merging work with changesets: wait for the **`chore: release packages`** PR.
+2. Review diffs (versions/changelogs / removal of `.changeset`).
+3. Green CI on that PR.
+4. Default mode (no `OCTC_RELEASE_MERGE_ENABLED`): approve per rules; auto-merge completes when GitHub allows.
+5. App/PAT dedicated mode: confirm **`merge-mechanical-pr-github-app`** or **`merge-mechanical-pr-pat-fallback`** succeeds.
+6. Verify the next `release.yml` on `main` (`changeset publish` and npm version).
 
-## Desalineaciones conocidas con otros documentos
+## Known drift vs other documents
 
-Algunos documentos históricos listan SBOM (`syft`), integración Sentry `releases`, o tags firmados como parte del release de paquetes. **El workflow actual `release.yml` no ejecuta esos pasos.** Hasta que se implementen en CI, este runbook y la sección *Releases* de [POLICY.md](POLICY.md) prevalecen para el comportamiento real.
+Some historical docs list SBOM (`syft`), Sentry `releases` integration, or signed tags as part of package release. **The current `release.yml` does not run those steps.** Until implemented in CI, this runbook and the *Releases* section of [POLICY.md](POLICY.md) prevail for actual behavior.

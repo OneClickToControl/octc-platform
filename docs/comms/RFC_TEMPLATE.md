@@ -1,56 +1,56 @@
 # RFC template
 
-Plantilla para Requests For Comments en `octc-platform`. Usar para cualquier cambio normativo o estructural antes de implementar.
+Template for Requests For Comments in `octc-platform`. Use for any normative or structural change before implementation.
 
 ---
 
-# RFC-XXXX: <título>
+# RFC-XXXX: <title>
 
-- **Autor**: @handle
-- **Estado**: draft | review | accepted | rejected | withdrawn | superseded
-- **Fecha**: YYYY-MM-DD
+- **Author**: @handle
+- **Status**: draft | review | accepted | rejected | withdrawn | superseded
+- **Date**: YYYY-MM-DD
 - **Tags**: tag1, tag2
 
-## Resumen
+## Summary
 
-Una o dos frases.
+One or two sentences.
 
-## Motivación
+## Motivation
 
-Por qué importa esto. Problema actual, oportunidades.
+Why this matters. Current problem, opportunities.
 
-## Propuesta
+## Proposal
 
-Detalle de qué se propone hacer.
+What you propose to do.
 
-## Diseño
+## Design
 
-Detalle técnico, diagramas, ejemplos. Cita archivos y líneas si aplica.
+Technical detail, diagrams, examples. Cite files and lines if applicable.
 
-## Migración y compatibilidad
+## Migration and compatibility
 
-Cómo afectaría a repos existentes. Plan de migración por etapas.
+Impact on existing repos. Phased migration plan.
 
-## Riesgos
+## Risks
 
-- Riesgo 1 — mitigación.
-- Riesgo 2 — mitigación.
+- Risk 1 — mitigation.
+- Risk 2 — mitigation.
 
-## Alternativas consideradas
+## Alternatives considered
 
-- Alternativa A — pros/contras.
-- Alternativa B — pros/contras.
+- Alternative A — pros/cons.
+- Alternative B — pros/cons.
 
-## Métricas de éxito
+## Success metrics
 
-Qué KPIs mediríamos para confirmar que el RFC funciona.
+Which KPIs we would measure to confirm the RFC works.
 
-## Plan de adopción
+## Adoption plan
 
-- Hito 1 (fecha).
-- Hito 2 (fecha).
-- Cierre y revisión post-adopción.
+- Milepost 1 (date).
+- Milepost 2 (date).
+- Closure and post-adoption review.
 
-## ADR resultante
+## Resulting ADR
 
-Tras aceptación, este RFC dispara un ADR. Enlazar aquí cuando exista.
+After acceptance, this RFC should spawn an ADR. Link it here when it exists.

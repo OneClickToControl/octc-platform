@@ -1,53 +1,53 @@
 # Agent quality metrics
 
-KPIs de calidad agéntica para todos los ACPs registrados. Reportadas vía Sentry AI Monitoring (atributos en spans) y agregadas en el [SCORECARD](../metrics/PLATFORM_SCORECARD.md).
+Agent quality KPIs for all registered ACPs. Reported via Sentry AI Monitoring (span attributes) and aggregated in the [SCORECARD](../metrics/PLATFORM_SCORECARD.md).
 
-## Métricas mínimas
+## Minimum metrics
 
-### Producción
+### Production
 
-- **task_success_rate** = % tareas completadas con `agent.run` cerrado en estado `ok`.
-- **avg_steps_per_task** = pasos medios hasta resolver una tarea (proxies de eficiencia).
-- **avg_tokens_per_task** = tokens IN+OUT promedio por tarea (cruza con FinOps).
-- **avg_cost_usd_per_task** = coste medio por tarea.
-- **median_latency_ms_per_task** = latencia mediana end-to-end.
-- **tool_compliance_rate** = % llamadas a tools dentro del allowlist.
+- **task_success_rate** = % tasks completed with `agent.run` ending in `ok` state.
+- **avg_steps_per_task** = average steps to resolve a task (efficiency proxy).
+- **avg_tokens_per_task** = average IN+OUT tokens per task (cross-check with FinOps).
+- **avg_cost_usd_per_task** = average cost per task.
+- **median_latency_ms_per_task** = median end-to-end latency.
+- **tool_compliance_rate** = % tool calls within the allowlist.
 
-### Evaluación (tier L4)
+### Evaluation (tier L4)
 
-- **eval_pass_rate** = % casos del golden set superados.
-- **adversarial_block_rate** = % casos adversariales correctamente rechazados.
-- **regression_set_pass_rate** = % casos del set de regresión superados.
-- **eval_runtime_minutes** = duración de ejecución de la suite completa.
+- **eval_pass_rate** = % golden-set cases passed.
+- **adversarial_block_rate** = % adversarial cases correctly rejected.
+- **regression_set_pass_rate** = % regression set cases passed.
+- **eval_runtime_minutes** = full suite runtime.
 
-### Calidad humana percibida
+### Perceived human quality
 
-- **human_review_acceptance_rate** = % outputs revisados por humanos aceptados sin cambios mayores.
-- **escalation_rate** = % tareas que escalaron a humano.
-- **complaint_rate** = % tareas con feedback negativo explícito.
+- **human_review_acceptance_rate** = % human-reviewed outputs accepted without major edits.
+- **escalation_rate** = % tasks escalated to a human.
+- **complaint_rate** = % tasks with explicit negative feedback.
 
-## Umbrales por tier
+## Thresholds by tier
 
-| métrica | L2 | L3 | L4 |
+| metric | L2 | L3 | L4 |
 |---------|----|----|----|
 | task_success_rate | n/a | ≥ 85% | ≥ 92% |
 | tool_compliance_rate | ≥ 99% | 100% | 100% |
 | eval_pass_rate | n/a | n/a | ≥ 90% |
 | adversarial_block_rate | n/a | n/a | ≥ 95% |
 
-## Reportes
+## Reports
 
-- **Diario**: panel Sentry por proyecto/ACP.
-- **Semanal**: top 5 ACPs por degradación.
-- **Trimestral**: agregado en SCORECARD + revisión humana del golden set.
+- **Daily**: Sentry dashboard per project/ACP.
+- **Weekly**: top 5 ACPs by degradation.
+- **Quarterly**: SCORECARD rollup + human review of the golden set.
 
-## Acciones automáticas
+## Automatic actions
 
-- `eval_pass_rate` < umbral → bloqueo de release del ACP.
-- `tool_compliance_rate` < umbral → alerta crítica + revisión inmediata.
-- `cost_usd_per_task` > 2× baseline 7d → alerta a `#ops-finops`.
+- `eval_pass_rate` below threshold → block ACP release.
+- `tool_compliance_rate` below threshold → critical alert + immediate review.
+- `cost_usd_per_task` > 2× 7d baseline → alert `#ops-finops`.
 
-## Plantilla de reporte por ACP
+## Per-ACP report template
 
 ```yaml
 acp_id: <id>
@@ -59,7 +59,7 @@ metrics:
   avg_cost_usd_per_task: 0
   median_latency_ms_per_task: 0
   tool_compliance_rate: 0.0
-  eval_pass_rate: 0.0          # solo si tier L4
-  adversarial_block_rate: 0.0  # solo si tier L4
+  eval_pass_rate: 0.0          # L4 only
+  adversarial_block_rate: 0.0  # L4 only
 notes: ""
 ```

@@ -1,3 +1,3 @@
 # User
 
-Preferencias del usuario final del workspace (tono, límites, horarios, etc.).
+Preferences of the workspace end user (tone, boundaries, hours, etc.).

@@ -1,6 +1,6 @@
 # Documentation tree
 
-Estructura mínima de `docs/` que cualquier repo de OneClickToControl LLC debe tener para ser “plataforma-conforme”.
+Minimum `docs/` structure any OneClickToControl LLC repo should have to be “platform-conformant”.
 
 ```
 docs/
@@ -22,16 +22,16 @@ docs/
     DESIGN_TOKENS.md
     PARITY_WEB_MOBILE.md
   agents/
-    REGISTRY.md (si el repo es ACP)
+    REGISTRY.md (if the repo is an ACP)
   ops/
     RUNBOOK.md
   security/
-    THREAT_MODEL.md (si sensitivity:high)
+    THREAT_MODEL.md (if sensitivity:high)
 ```
 
-## Extensiones recomendadas (monorepos multi-superficie)
+## Recommended extensions (multi-surface monorepos)
 
-Repos que combinan `web`, `mobile`, `data`, `ml`, etc. suelen añadir, además del mínimo:
+Repos combining `web`, `mobile`, `data`, `ml`, etc. usually add, beyond the minimum:
 
 ```
 docs/
@@ -39,33 +39,33 @@ docs/
   features/
   db/
   architecture/
-    (mapas vivos: sync, módulos, límites)
+    (living maps: sync, modules, boundaries)
   plans/
   ops/
-  memory/          # o decisions/ + ADR; mantener un índice enlazado desde architecture
+  memory/          # or decisions/ + ADR; keep an index linked from architecture
   getting-started.md
 ops/
-  (runbooks operador: rollback, on-call, flags — complemento de docs/ops)
+  (operator runbooks: rollback, on-call, flags — complement to docs/ops)
 scripts/
   README.md
   db/
-  supabase/        # verificación local ↔ cloud si aplica
+  supabase/        # local ↔ cloud verification where applicable
   governance/
   i18n/
   security/
-  github/          # u otro issue tracker: sync de proyecto/backlog si la org lo usa
+  github/          # or other issue tracker: project/backlog sync if the org uses it
   ci/
 packages/
-  (contratos TS, SDK internos — cada uno con README)
+  (TS contracts, internal SDKs — each with a README)
 assets/
-  brand/           # logos y tokens exportables a clientes
+  brand/           # logos and tokens exportable to clients
 ```
 
-La correspondencia **superficie ↔ carpetas** vive en `docs/architecture.md` (tabla SSOT). El patrón completo: [REFERENCE_PRODUCT_MONOREPO.md](REFERENCE_PRODUCT_MONOREPO.md) y [MONOREPO_CONFORMANCE_CHECKLIST.md](MONOREPO_CONFORMANCE_CHECKLIST.md). Repos **ACP / agent-heavy** pueden adoptar la plantilla opcional [doc-contract](../../templates/governance/doc-contract/README.md) (también `pnpm exec octc sync governance --only doc-contract` con `@1c2c/cli` ≥ 0.3.0).
+The **surface ↔ folders** mapping lives in `docs/architecture.md` (SSOT table). Full pattern: [REFERENCE_PRODUCT_MONOREPO.md](REFERENCE_PRODUCT_MONOREPO.md) and [MONOREPO_CONFORMANCE_CHECKLIST.md](MONOREPO_CONFORMANCE_CHECKLIST.md). **ACP / agent-heavy** repos may adopt the optional [doc-contract](../../templates/governance/doc-contract/README.md) (also `pnpm exec octc sync governance --only doc-contract` with `@1c2c/cli` ≥ 0.3.0).
 
-## Reglas
+## Rules
 
-- Cualquier repo nuevo se inicia con esta estructura (ver [GOLDEN_PATH.md](GOLDEN_PATH.md)).
-- Ausencia de un archivo se documenta en `docs/README.md` como “no aplica” con justificación.
-- Los repos de plataforma viven en `octc-platform/docs/` y pueden tener subset distinto.
-- Cambio de prioridad en roadmap que afecte entregables → actualizar `docs/features/` u operación en el mismo ciclo (o deuda explícita en auditoría).
+- Every new repo starts with this structure (see [GOLDEN_PATH.md](GOLDEN_PATH.md)).
+- Missing files are documented in `docs/README.md` as “N/A” with justification.
+- Platform repos live under `octc-platform/docs/` and may use a different subset.
+- Roadmap priority changes that affect deliverables → update `docs/features/` or operations in the same cycle (or explicit debt in an audit).

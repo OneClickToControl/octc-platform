@@ -1,20 +1,20 @@
 name: Repo bootstrap
-description: Crear o adoptar un repo nuevo bajo el GOLDEN_PATH
+description: Create or adopt a new repo following GOLDEN_PATH
 title: "[bootstrap] <repo-name>"
 labels: ["bootstrap", "platform"]
 body:
   - type: input
     id: repo
     attributes:
-      label: Nombre del repo
-      description: Nombre kebab-case que aparecerá en GitHub y PORTFOLIO.
+      label: Repo name
+      description: Kebab-case name as it will appear on GitHub and PORTFOLIO.
       placeholder: "my-product"
     validations:
       required: true
   - type: dropdown
     id: type
     attributes:
-      label: Tipo
+      label: Type
       options:
         - product
         - acp
@@ -27,13 +27,13 @@ body:
     id: owner
     attributes:
       label: Owner
-      description: Handle del owner principal.
+      description: Primary owner handle.
     validations:
       required: true
   - type: dropdown
     id: sensitivity
     attributes:
-      label: Sensibilidad de datos
+      label: Data sensitivity
       options:
         - none
         - low
@@ -44,12 +44,12 @@ body:
     id: golden-path
     attributes:
       label: Golden path
-      description: Marcar al completar cada paso.
+      description: Check off each step when complete.
       options:
-        - label: Repo creado en GitHub bajo la org y branch protection activada.
-        - label: PORTFOLIO actualizado con la nueva fila.
-        - label: Adopción de @1c2c/eslint-config + @1c2c/tsconfig + @1c2c/agent-templates.
-        - label: Estructura mínima de docs/ aplicada (DOCUMENTATION_TREE).
-        - label: Manifest ACP creado y registrado (si aplica).
-        - label: Sentry projects creados según OBSERVABILITY (si aplica).
-        - label: verify.yml configurado y verde.
+        - label: Repo created under the org on GitHub with branch protection enabled.
+        - label: PORTFOLIO updated with the new row.
+        - label: Adopted @1c2c/eslint-config + @1c2c/tsconfig + @1c2c/agent-templates.
+        - label: Minimum docs/ structure applied (DOCUMENTATION_TREE).
+        - label: ACP manifest created and registered (if applicable).
+        - label: Sentry projects created per OBSERVABILITY (if applicable).
+        - label: verify.yml configured and green.

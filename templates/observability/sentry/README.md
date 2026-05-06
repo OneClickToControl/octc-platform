@@ -1,17 +1,18 @@
 # Sentry templates
 
-Plantillas de inicialización de Sentry para los stacks soportados por OneClickToControl LLC. Todas implementan la política de [docs/observability/OBSERVABILITY.md](../../../docs/observability/OBSERVABILITY.md).
+Sentry initialization templates for stacks supported by OneClickToControl LLC. All implement [docs/observability/OBSERVABILITY.md](../../../docs/observability/OBSERVABILITY.md).
 
-| Stack | Carpeta | Cuándo usar |
+| Stack | Folder | When to use |
 |-------|---------|-------------|
-| Next.js (web) | [`next/`](next/) | Apps web React/Next del portfolio. |
-| Flutter (mobile) | [`flutter/`](flutter/) | Apps mobile multiplataforma. |
-| Python (services/ML) | [`python/`](python/) | APIs FastAPI, workers, ML pipelines. |
+| Next.js (web) | [`next/`](next/) | Portfolio React/Next web apps. |
+| Flutter (mobile) | [`flutter/`](flutter/) | Cross-platform mobile apps. |
+| Python (services/ML) | [`python/`](python/) | FastAPI APIs, workers, ML pipelines. |
 
-Cada plantilla incluye:
-- Inicialización mínima del SDK con `dsn`, `environment`, `release`, sampling.
-- `beforeSend` con scrubbing PII por defecto.
-- Hook para AI Monitoring spans (cuando aplique).
-- Snippet de subida de source maps en CI vía OIDC + `sentry-cli`.
+Each template includes:
 
-Versión de los SDKs fijada en `@1c2c/sentry-config` (paquete planeado en Fase 1).
+- Minimal SDK init with `dsn`, `environment`, `release`, sampling.
+- `beforeSend` with default PII scrubbing.
+- Hook for AI Monitoring spans (where applicable).
+- CI snippet for source map upload via OIDC + `sentry-cli`.
+
+SDK versions are pinned in `@1c2c/sentry-config` (package planned in Phase 1).

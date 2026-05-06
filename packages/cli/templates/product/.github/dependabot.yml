@@ -1,4 +1,4 @@
-# Ajustar director / ecosistema según el repo (npm en raíz, pnpm workspace, etc.).
+# Adjust directory / ecosystem per repo (npm at root, pnpm workspace, etc.).
 
 version: 2
 updates:

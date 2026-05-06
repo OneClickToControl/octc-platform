@@ -1,22 +1,22 @@
 ---
-description: Tooling estándar de octc-platform. Convive con la base.
+description: octc-platform standard tooling. Works alongside the baseline.
 alwaysApply: true
 ---
 
 # Tooling
 
-- TypeScript con `@1c2c/tsconfig`.
-- ESLint con `@1c2c/eslint-config`.
-- Conventional Commits + Changesets para releases.
-- pnpm como package manager por defecto en JS/TS.
-- Python: ruff + pyright + uv (o poetry según repo, declarado en su README).
+- TypeScript with `@1c2c/tsconfig`.
+- ESLint with `@1c2c/eslint-config`.
+- Conventional Commits + Changesets for releases.
+- pnpm as the default package manager for JS/TS.
+- Python: ruff + pyright + uv (or poetry per repo, declared in its README).
 
-## Pruebas
+## Tests
 
-- Si el repo expone tests, ejecútalos antes de declarar listo.
-- Para cambios en agentes (skills/MCP), incluye casos en `agents/<acp>/evals/`.
+- If the repo exposes tests, run them before declaring done.
+- For agent changes (skills/MCP), include cases in `agents/<acp>/evals/`.
 
 ## CI
 
-- `verify.yml` valida manifests, plantillas, schemas y allowlists.
-- `release.yml` publica `@1c2c/*` con OIDC + provenance + sentry-cli releases.
+- `verify.yml` validates manifests, templates, schemas, and allowlists.
+- `release.yml` publishes `@1c2c/*` with OIDC + provenance + sentry-cli releases.

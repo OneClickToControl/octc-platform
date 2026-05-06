@@ -1,58 +1,58 @@
-# Checklist de conformidad — monorepo de producto
+# Product monorepo conformance checklist
 
-Usar en PRs que **añaden o quitan** superficies, o en auditorías trimestrales. Marcar **N/A** con enlace a la justificación en `docs/README.md` o ADR.
+Use on PRs that **add or remove** surfaces, or in quarterly audits. Mark **N/A** with a link to justification in `docs/README.md` or an ADR.
 
-## A. Por superficie activa
+## A. Per active surface
 
-Repite el bloque por cada etiqueta en `active_surfaces`.
+Repeat this block for every label in `active_surfaces`.
 
 ### `landing` / `web` / `mobile` / `ml` / `api` / `chat`
 
-- [ ] Fila en `docs/architecture.md`: directorios, stack, despliegue, variables críticas (sin secretos).
-- [ ] Proyecto Sentry (u observabilidad acordada) con nombre `octc-<producto>-<surface>`.
-- [ ] Jobs CI con filtros de rutas documentados; build/test reproducibles localmente (`docs/getting-started.md` o equivalente).
-- [ ] Runbook o sección ops: despliegue, rollback, **secretos** (referencia a política de auth/env).
+- [ ] Row in `docs/architecture.md`: directories, stack, deploy, critical variables (no secrets).
+- [ ] Sentry project (or agreed observability) named `octc-<product>-<surface>`.
+- [ ] CI jobs with documented path filters; build/test reproducible locally (`docs/getting-started.md` or equivalent).
+- [ ] Runbook or ops section: deploy, rollback, **secrets** (reference auth/env policy).
 
 ### `data` (Supabase)
 
-- [ ] `supabase/` bajo control de versión; migraciones RLS revisadas.
-- [ ] Edge Functions documentadas (entrada en architecture o `supabase/functions/*/README.md`).
-- [ ] Tipos cliente (p. ej. TS) alineados con esquema; job o comando de regeneración documentado.
-- [ ] Pruebas o procedimientos que validen RLS (automáticos o runbook explícito).
+- [ ] `supabase/` under version control; RLS migrations reviewed.
+- [ ] Edge Functions documented (entry in architecture or `supabase/functions/*/README.md`).
+- [ ] Client types (e.g. TS) aligned with schema; regen job or command documented.
+- [ ] Tests or procedures validating RLS (automated or explicit runbook).
 
-### `docs/` (capa transversal)
+### `docs/` (cross-cutting)
 
-- [ ] Árbol mínimo según [DOCUMENTATION_TREE.md](DOCUMENTATION_TREE.md) o equivalente justificado.
-- [ ] Decisiones de impacto en ADR / memoria / índice enlazado desde architecture.
+- [ ] Minimum tree per [DOCUMENTATION_TREE.md](DOCUMENTATION_TREE.md) or justified equivalent.
+- [ ] Impactful decisions in ADR / memory / index linked from architecture.
 
-## B. Cambio de composición (alta/baja de superficie)
+## B. Composition change (surface add/remove)
 
-- [ ] Tabla `active_surfaces` y rutas actualizadas en el mismo PR estructural (o ventana máxima acordada + deuda registrada).
-- [ ] PORTFOLIO interno: `repo_surfaces` actualizado (y `monorepo_archetype` si la org lo usa).
-- [ ] Workflows CI: nuevos `paths` o jobs; eliminación de jobs huérfanos.
-- [ ] Turbo / workspaces: paquetes y pipelines coherentes.
-- [ ] Observabilidad: proyectos creados o deprecados según política.
+- [ ] `active_surfaces` table and paths updated in the same structural PR (or agreed max window + logged debt).
+- [ ] Internal PORTFOLIO: `repo_surfaces` updated (and `monorepo_archetype` if the org uses it).
+- [ ] CI workflows: new `paths` or jobs; removal of orphan jobs.
+- [ ] Turbo / workspaces: packages and pipelines coherent.
+- [ ] Observability: projects created or deprecated per policy.
 
-## C. Capa producto y trazabilidad
+## C. Product layer and traceability
 
-- [ ] Roadmap/backlog reflejan el cambio de alcance; issues o contrato de sync actualizado si la org lo exige.
-- [ ] `docs/features/` o mapa equivalente enlaza comportamiento nuevo o marcado como deprecado.
-- [ ] Auditoría o entrada de riesgo si el cambio afecta compliance o datos sensibles.
+- [ ] Roadmap/backlog reflect scope change; issues or sync contract updated if the org requires it.
+- [ ] `docs/features/` or equivalent map links new behaviour or marks deprecation.
+- [ ] Audit or risk entry if the change affects compliance or sensitive data.
 
-## D. Automatización y gobernanza (patrón “máquina de productos”)
+## D. Automation and governance (“machine of products” pattern)
 
-Marcar lo que aplica al repo; N/A documentado.
+Mark what applies; document N/A.
 
-- [ ] Workflow **solo documentación** (enlaces MD, estilo) si el CI principal omite `*.md`.
-- [ ] **`octc verify monorepo`** en CI cuando exista `.octc/monorepo.yaml` ([ADR-0003](../adr/ADR-0003-monorepo-cli-machine-ssot.md); `@1c2c/cli` ≥ 0.2.0).
-- [ ] Scripts indexados (`scripts/README.md`) para db, supabase, gobernanza, i18n, seguridad.
-- [ ] Paquetes compartidos (`packages/*`) con README de contrato.
-- [ ] `assets/` o política de marca explícita si hay multi-superficie con identidad compartida.
+- [ ] **Documentation-only** workflow (MD links, style) if main CI skips `*.md`.
+- [ ] **`octc verify monorepo`** in CI when `.octc/monorepo.yaml` exists ([ADR-0003](../adr/ADR-0003-monorepo-cli-machine-ssot.md); `@1c2c/cli` ≥ 0.2.0).
+- [ ] Indexed scripts (`scripts/README.md`) for db, supabase, governance, i18n, security.
+- [ ] Shared packages (`packages/*`) with contract READMEs.
+- [ ] `assets/` or explicit branding policy if multi-surface with shared identity.
 
-## E. Política pública
+## E. Public policy
 
-- [ ] Ejemplos y capturas cumplen [PUBLIC_REPO_POLICY.md](../security/PUBLIC_REPO_POLICY.md).
+- [ ] Examples and screenshots comply with [PUBLIC_REPO_POLICY.md](../security/PUBLIC_REPO_POLICY.md).
 
-## Definición rápida de “conforme”
+## Quick definition of “conformant”
 
-`active_surfaces` ↔ filesystem ↔ CI paths ↔ Sentry ↔ PORTFOLIO, y cadena docs producto → features → ops sin enlaces rotos críticos.
+`active_surfaces` ↔ filesystem ↔ CI paths ↔ Sentry ↔ PORTFOLIO, and product docs → features → ops chain without broken critical links.

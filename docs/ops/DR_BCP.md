@@ -1,59 +1,59 @@
 # DR / BCP — octc-platform
 
-Disaster Recovery y Business Continuity Plan **para la plataforma**. Este documento cubre la pérdida total o parcial de los activos normativos y de infraestructura crítica controlada por `octc-platform`. Cada producto mantiene su propio DR para sus datos.
+Disaster Recovery and Business Continuity Plan **for the platform**. This document covers total or partial loss of normative assets and critical infrastructure controlled by `octc-platform`. Each product maintains its own DR for product data.
 
-## Activos críticos
+## Critical assets
 
-| activo | dueño | criticidad | repositorio | RTO | RPO |
+| Asset | Owner | Criticality | Repository | RTO | RPO |
 |--------|-------|------------|-------------|-----|-----|
-| Repos GitHub bajo la org | @1click2control | crítica | github.com/<org>/* | 4h | 24h |
-| Configuración Sentry org | @1click2control | crítica | export JSON mensual | 24h | 30d |
-| Secretos OIDC y vault | @1click2control | crítica | gestor de secretos | 4h | 24h |
-| `@1c2c/*` publicados en npm | @1click2control | alta | npmjs.com | 24h | 0 (inmutable) |
-| REGISTRY + ADRs (política pública) | @1click2control | alta | repo `octc-platform` | 1h | 0 (git) |
-| PORTFOLIO (inventario repos privados) | @1click2control | alta | repo `octc-platform-internal` | 1h | 0 (git) |
-| Dominios DNS | @1click2control | alta | registrador externo | 12h | 24h |
+| GitHub repos under the org | @1click2control | critical | github.com/<org>/* | 4h | 24h |
+| Sentry org configuration | @1click2control | critical | monthly JSON export | 24h | 30d |
+| OIDC secrets and vault | @1click2control | critical | secrets manager | 4h | 24h |
+| `@1c2c/*` published on npm | @1click2control | high | npmjs.com | 24h | 0 (immutable) |
+| REGISTRY + ADRs (public policy) | @1click2control | high | `octc-platform` repo | 1h | 0 (git) |
+| PORTFOLIO (private repo inventory) | @1click2control | high | `octc-platform-internal` repo | 1h | 0 (git) |
+| DNS domains | @1click2control | high | external registrar | 12h | 24h |
 
-## Niveles de incidente
+## Incident classes
 
-- **Clase A**: pérdida de acceso o integridad a un activo crítico (repo borrado, org Sentry comprometida, paquete malicioso publicado).
-- **Clase B**: pérdida parcial pero recuperable < 24h (CI caída, secretos rotados, alerta de seguridad activa).
-- **Clase C**: degradación operativa (alertas FinOps, errores de release).
+- **Class A**: loss of access or integrity to a critical asset (deleted repo, compromised Sentry org, malicious published package).
+- **Class B**: partial but recoverable loss < 24h (CI down, rotated secrets, active security alert).
+- **Class C**: operational degradation (FinOps alerts, release errors).
 
-## Procedimientos
+## Procedures
 
 ### Backup
 
-- **Repos**: clonado mirror semanal a almacenamiento externo (S3/Cloudflare R2 cifrado).
-- **Sentry**: export semanal de configuración por proyecto (alerts, members, retention) vía API.
-- **REGISTRY (política) + ADRs**: tag mensual `snapshots/<YYYY>-<MM>` en `octc-platform`.
-- **PORTFOLIO (inventario)**: mismo esquema de snapshot en `octc-platform-internal` (no en este repo público).
-- **Secretos**: backup cifrado mensual + rotación trimestral.
-- **Package mirror**: snapshot semanal de `@1c2c/*` en almacenamiento de respaldo (vía `npm pack`).
+- **Repos**: weekly mirror clone to external encrypted storage (S3/Cloudflare R2).
+- **Sentry**: weekly export of per-project configuration (alerts, members, retention) via API.
+- **REGISTRY (policy) + ADRs**: monthly tag `snapshots/<YYYY>-<MM>` on `octc-platform`.
+- **PORTFOLIO (inventory)**: same snapshot scheme on `octc-platform-internal` (not in this public repo).
+- **Secrets**: monthly encrypted backup + quarterly rotation.
+- **Package mirror**: weekly snapshot of `@1c2c/*` to backup storage (via `npm pack`).
 
-### Restauración
+### Restoration
 
-1. Identificar clase y activos afectados.
-2. Activar canal `#ops-incidents`.
-3. Ejecutar runbook ([PLATFORM_RUNBOOK.md](PLATFORM_RUNBOOK.md)).
-4. Comunicar timeline y RTO esperado.
-5. Post-mortem en ≤ 7 días.
+1. Identify class and affected assets.
+2. Activate `#ops-incidents` channel.
+3. Run playbook ([PLATFORM_RUNBOOK.md](PLATFORM_RUNBOOK.md)).
+4. Communicate timeline and expected RTO.
+5. Post-mortem within ≤ 7 days.
 
 ### Drills
 
-- Drill **semestral** simulando clase A (repo borrado, secretos comprometidos).
-- Resultado documentado en `docs/audit/HISTORY.md` con `last_drill_days`.
+- **Semi-annual** drill simulating class A (deleted repo, compromised secrets).
+- Result documented in `docs/audit/HISTORY.md` with `last_drill_days`.
 
-## Comunicación
+## Communication
 
-- Clase A → `#ops-incidents` + email a stakeholders en ≤ 30 min.
-- Clase B → `#ops-incidents` en ≤ 2h.
-- Clase C → `#ops` con seguimiento normal.
+- Class A → `#ops-incidents` + stakeholder email within ≤ 30 min.
+- Class B → `#ops-incidents` within ≤ 2h.
+- Class C → `#ops` with normal follow-up.
 
-## Indicadores
+## Indicators
 
-- `last_drill_days`: días desde el último drill exitoso.
-- `backup_freshness_hours`: edad del backup más reciente para cada activo.
-- `restore_test_pass_rate`: % de drills donde se cumplió el RTO.
+- `last_drill_days`: days since last successful drill.
+- `backup_freshness_hours`: age of latest backup per asset.
+- `restore_test_pass_rate`: % of drills meeting RTO.
 
-Reportados en [PLATFORM_SCORECARD](../metrics/PLATFORM_SCORECARD.md).
+Reported in [PLATFORM_SCORECARD](../metrics/PLATFORM_SCORECARD.md).

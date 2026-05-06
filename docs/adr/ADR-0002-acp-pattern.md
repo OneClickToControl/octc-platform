@@ -1,44 +1,44 @@
-# ADR-0002: Patrón Agent Capability Provider (ACP)
+# ADR-0002: Agent Capability Provider (ACP) pattern
 
-- **Estado**: accepted
-- **Fecha**: 2026-04-29
+- **Status**: accepted
+- **Date**: 2026-04-29
 - **Tags**: agents, governance, platform
 
-## Contexto
+## Context
 
-OneClickToControl LLC tiene múltiples agentes IA (coding, ops, client, eval) que se ejecutan en runtimes distintos (Cursor, Claude Code/Desktop, OpenClaw, Codex, posible Paperclip). Necesitamos:
+OneClickToControl LLC has multiple AI agents (coding, ops, client, eval) running on different runtimes (Cursor, Claude Code/Desktop, OpenClaw, Codex, possible Paperclip). We need:
 
-- Catálogo único de capacidades (skills, MCP, tools).
-- Política única de seguridad y telemetría agéntica.
-- Sin SSOT distribuido en cada runtime.
+- Single catalog of capabilities (skills, MCP, tools).
+- Single security and agent telemetry policy.
+- No SSOT scattered across every runtime.
 
-## Decisión
+## Decision
 
-Adoptamos el patrón **Agent Capability Provider (ACP)**:
+We adopt the **Agent Capability Provider (ACP)** pattern:
 
-- Cada repo que provee skills/MCP/tools a agentes es un **ACP**.
-- Cada ACP publica un `agents/<acp-id>/manifest.json` validado por `schemas/octc-agent-provider.manifest.v1.json`.
-- ACPs se registran en `docs/agents/REGISTRY.md`.
-- Tiers L0–L4 ([CONFORMANCE](../agents/CONFORMANCE.md)) clasifican madurez.
-- Plantillas, observabilidad, FinOps y allowlists son normativas en `octc-platform`.
+- Each repo that provides skills/MCP/tools to agents is an **ACP**.
+- Each ACP publishes `agents/<acp-id>/manifest.json` validated by `schemas/octc-agent-provider.manifest.v1.json`.
+- ACPs are registered in `docs/agents/REGISTRY.md`.
+- Tiers L0–L4 ([CONFORMANCE](../agents/CONFORMANCE.md)) classify maturity.
+- Templates, observability, FinOps, and allowlists are normative in `octc-platform`.
 
-## Consecuencias
+## Consequences
 
-### Positivas
-- Capacidades reutilizables sin duplicar código.
-- Política única auditada (CONFORMANCE).
-- Soporte natural a multi-runtime con `octc-sync` (planeado).
+### Positive
+- Reusable capabilities without duplicating code.
+- Single auditable policy (CONFORMANCE).
+- Natural multi-runtime support with planned `octc-sync`.
 
-### Negativas
-- Carga de gobernanza (cada ACP debe mantener manifest, allowlist, telemetría).
-- Curva de adopción para repos pequeños (mitigada con tier L0).
+### Negative
+- Governance load (each ACP must maintain manifest, allowlist, telemetry).
+- Adoption curve for small repos (mitigated with tier L0).
 
-## Alternativas consideradas
+## Alternatives considered
 
-- **Sin abstracción** (cada repo declara sus skills ad hoc): descartado por imposibilidad de auditoría.
-- **Plataforma como mono-ACP centralizado**: descartado, no escala con la heterogeneidad de productos.
+- **No abstraction** (each repo declares skills ad hoc): rejected — not auditable.
+- **Platform as single centralized ACP**: rejected — does not scale with product heterogeneity.
 
-## Notas y referencias
+## Notes and references
 
 - [REGISTRY](../agents/REGISTRY.md).
 - [CONFORMANCE](../agents/CONFORMANCE.md).

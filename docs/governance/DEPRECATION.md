@@ -1,33 +1,33 @@
 # Deprecation policy
 
-Cómo se deprecan paquetes `@1c2c/*`, plantillas, ACPs e integraciones.
+How `@1c2c/*` packages, templates, ACPs, and integrations are deprecated.
 
-## Paquetes `@1c2c/*`
+## `@1c2c/*` packages
 
-1. RFC con justificación y plan de migración.
-2. Major release con `console.warn` (o equivalente) en la API a remover.
-3. Mínimo 6 meses de soporte con parches críticos.
-4. Major siguiente: remover.
-5. Tag final `vX.Y.Z-final` y entrada en este archivo.
+1. RFC with rationale and migration plan.
+2. Major release with `console.warn` (or equivalent) on APIs to be removed.
+3. Minimum 6 months of support with critical patches.
+4. Next major: remove.
+5. Final tag `vX.Y.Z-final` and entry in this file.
 
-## Plantillas (`@1c2c/agent-templates`)
+## Templates (`@1c2c/agent-templates`)
 
-- Cambios major exigen herramienta de migración (`octc-templates migrate`) o instrucciones explícitas en CHANGELOG.
-- Repos consumidores tienen 90 días para adoptar; antes de eso pasan a alerta del SCORECARD.
+- Major changes require a migration tool (`octc-templates migrate`) or explicit CHANGELOG instructions.
+- Consumers have 90 days to adopt; before that they move to SCORECARD alert.
 
 ## ACPs
 
-- Un ACP se puede archivar tras 90 días sin uso y con confirmación en REGISTRY.
-- Sus manifests permanecen versionados; el código pasa a `archived/`.
+- An ACP may be archived after 90 days without use and REGISTRY confirmation.
+- Manifests stay versioned; code moves under `archived/`.
 
-## Integraciones (CATALOG)
+## Integrations (CATALOG)
 
-- Eliminar de CATALOG con nota en [HISTORY.md](../audit/HISTORY.md) y migración documentada.
+- Remove from CATALOG with a note in [HISTORY.md](../audit/HISTORY.md) and documented migration.
 
-## Registro
+## Register
 
-Cada deprecación abre una entrada con fecha, tipo, ámbito y enlace al RFC/ADR correspondiente.
+Each deprecation gets a dated entry with type, scope, and link to the RFC/ADR.
 
-| fecha | item | tipo | enlace |
+| date | item | type | link |
 |-------|------|------|--------|
 |       |      |      |        |

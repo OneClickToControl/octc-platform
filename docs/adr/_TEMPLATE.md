@@ -1,28 +1,28 @@
-# ADR-XXXX: <título>
+# ADR-XXXX: <title>
 
-- **Estado**: proposed | accepted | deprecated | superseded
-- **Fecha**: YYYY-MM-DD
+- **Status**: proposed | accepted | deprecated | superseded
+- **Date**: YYYY-MM-DD
 - **Tags**: tag1, tag2
 
-## Contexto
+## Context
 
-Qué problema o necesidad estamos resolviendo. Restricciones y supuestos.
+What problem or need we are solving. Constraints and assumptions.
 
-## Decisión
+## Decision
 
-Qué decidimos hacer.
+What we decided to do.
 
-## Consecuencias
+## Consequences
 
-- Positivas.
-- Negativas.
-- Neutras.
+- Positive.
+- Negative.
+- Neutral.
 
-## Alternativas consideradas
+## Alternatives considered
 
-- Alternativa A — por qué se descartó.
-- Alternativa B — por qué se descartó.
+- Alternative A — why rejected.
+- Alternative B — why rejected.
 
-## Notas y referencias
+## Notes and references
 
-- Enlaces a RFCs, PRs, documentación externa.
+- Links to RFCs, PRs, external documentation.

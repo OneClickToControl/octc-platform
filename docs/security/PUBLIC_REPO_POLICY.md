@@ -1,63 +1,63 @@
 # Public repo policy — `octc-platform`
 
-> **Hard rule:** `octc-platform` es un repo **público**. Todo lo que se commitea aquí queda visible en internet, archivos y commits incluidos. La separación con [`octc-platform-internal`](https://github.com/OneClickToControl/octc-platform-internal) es intencional y se enforza por CI.
+> **Hard rule:** `octc-platform` is a **public** repo. Everything committed here is visible on the internet, including files and commits. Separation from [`octc-platform-internal`](https://github.com/OneClickToControl/octc-platform-internal) is intentional and enforced by CI.
 
-## Qué SÍ va en este repo
+## What **does** belong in this repo
 
-- Paquetes compartibles `@1c2c/*` (`packages/*`).
+- Shareable `@1c2c/*` packages (`packages/*`).
 - Schemas (`schemas/*`).
-- Plantillas neutras (`templates/agents/`, `templates/observability/sentry/`, `templates/governance/`, `templates/governance/privacy-guard/` para adoptar el stack anti-fugas al publicar un repo).
-- Políticas, ADRs, RFCs, runbooks **genéricos** (no atados a clientes ni proyectos puntuales).
-- Workflows CI, configuración de releases, lockfiles.
+- Neutral templates (`templates/agents/`, `templates/observability/sentry/`, `templates/governance/`, `templates/governance/privacy-guard/` to adopt the anti-leak stack when publishing a repo).
+- Policies, ADRs, RFCs, **generic** runbooks (not tied to customers or one-off projects).
+- CI workflows, release configuration, lockfiles.
 - Onboarding, contributing, code of conduct.
 
-## Qué NO va en este repo (cero excepciones)
+## What **does not** belong in this repo (zero exceptions)
 
-| Categoría | Ejemplos | Dónde va |
+| Category | Examples | Where it goes |
 |---|---|---|
-| **Inventarios de productos / clientes** | `PORTFOLIO.md`, listados de repos privados, mapas de clientes, "MVP X", "donante maduro" | `octc-platform-internal/docs/PORTFOLIO.md` |
-| **Identificadores Sentry de la org** | `o45109...`, DSNs concretos, nombres de organización Sentry, ingest URLs, project IDs | `octc-platform-internal/docs/observability/SENTRY_PROJECTS.md` |
-| **Hallazgos de auditoría / postmortems** | `AUDIT-*.md` con hallazgos abiertos, RCAs concretos | `octc-platform-internal/docs/audit/*` |
-| **Identidades máquina / humanas** | tokens, API keys, cookies, sessionIds, npm tokens, GitHub PATs, OAuth secrets, `.env*`, `*.pem`, `*.key` | GitHub Secrets / Vault |
-| **Contratos comerciales y financieros** | pricing real, ARR, contratos, GTM, leads | `octc-platform-internal` o repo de negocio |
-| **PII** | emails personales (más allá de `ops@oneclicktocontrol.com` en commits), teléfonos, direcciones | nunca al repo (ni público ni privado) |
-| **Datos productivos** | dumps, logs reales, snapshots de BD, eventos Sentry crudos | almacenamiento productivo correspondiente |
-| **Nombres de productos no anunciados** | features bajo NDA, nombres internos de proyectos en sigilo | `octc-platform-internal` hasta announcement |
-| **Nombres geográficos / de cliente sensibles** | mercados específicos no anunciados, nombres de clientes | `octc-platform-internal` |
+| **Product / customer inventories** | `PORTFOLIO.md`, lists of private repos, customer maps, “MVP X”, etc. | `octc-platform-internal/docs/PORTFOLIO.md` |
+| **Org Sentry identifiers** | `o45109…`, concrete DSNs, Sentry org names, ingest URLs, project IDs | `octc-platform-internal/docs/observability/SENTRY_PROJECTS.md` |
+| **Audit findings / postmortems** | `AUDIT-*.md` with open findings, concrete RCAs | `octc-platform-internal/docs/audit/*` |
+| **Machine / human identities** | tokens, API keys, cookies, session IDs, npm tokens, GitHub PATs, OAuth secrets, `.env*`, `*.pem`, `*.key` | GitHub Secrets / Vault |
+| **Commercial and financial contracts** | real pricing, ARR, contracts, GTM, leads | `octc-platform-internal` or business repo |
+| **PII** | personal emails (beyond `ops@oneclicktocontrol.com` in commits), phones, addresses | never in any repo |
+| **Production data** | dumps, real logs, DB snapshots, raw Sentry events | corresponding production storage |
+| **Unannounced product names** | NDA features, stealth project internal names | `octc-platform-internal` until announcement |
+| **Sensitive geographic / customer names** | unannounced markets, customer names | `octc-platform-internal` |
 
-## Referencias a repos privados (regla específica)
+## References to private repos (specific rule)
 
-- **No enumerar slugs ni nombres de repositorios privados de la organización** en documentación de este repo (README, ADRs, ejemplos de adopción, tablas de ejemplo).
-- **Scripts Sentry** (`setup-sentry-projects.sh`, `setup-sentry-alerts.sh`): la tabla `team|proyecto|plataforma` vive en `scripts/sentry-org-projects.spec` (**gitignored**), generada o copiada desde runbooks internos; en el repo público solo existe [`scripts/sentry-org-projects.spec.example`](../../scripts/sentry-org-projects.spec.example) sin slugs de producto.
-- Los **patrones técnicos** que detectan identificadores en historia/docs viven **solo** en la cadena de privacy guard: `.gitleaks.toml`, `scripts/precommit-privacy-check.sh` y la plantilla equivalente bajo `templates/governance/privacy-guard/`. Esos archivos deben **mantenerse alineados** entre sí.
-- Cada vez que exista un **nuevo repositorio privado** cuyo nombre no deba aparecer en público, actualiza esos tres artefactos **antes** de mencionar el proyecto en cualquier otro sitio.
-- Usa referencias genéricas en prosa (`<product-repo-privado>`, `<acp-id>`, etc.) cuando necesites ilustrar sin nombrar.
-- La historia git ya publicada no se reescribe por defecto; las **nuevas** referencias indebidas deben ser bloqueadas por CI.
+- **Do not enumerate slugs or names of private org repos** in this repo’s documentation (README, ADRs, adoption examples, sample tables).
+- **Sentry scripts** (`setup-sentry-projects.sh`, `setup-sentry-alerts.sh`): the `team|project|platform` table lives in `scripts/sentry-org-projects.spec` (**gitignored**), generated or copied from internal runbooks; the public repo only has [`scripts/sentry-org-projects.spec.example`](../../scripts/sentry-org-projects.spec.example) without product slugs.
+- **Technical patterns** that detect identifiers in history/docs live **only** in the privacy-guard chain: `.gitleaks.toml`, `scripts/precommit-privacy-check.sh`, and the equivalent template under `templates/governance/privacy-guard/`. Keep those files **aligned** with each other.
+- Whenever there is a **new private repo** whose name must not appear in public, update those three artifacts **before** mentioning the project elsewhere.
+- Use generic references in prose (`<private-product-repo>`, `<acp-id>`, etc.) when illustrating without naming.
+- Published git history is not rewritten by default; **new** improper references must be blocked by CI.
 
-> El handle `1click2control` es público (GitHub del owner) y puede aparecer en `CODEOWNERS`, runbooks y onboarding.
+> The handle `1click2control` is public (GitHub owner) and may appear in `CODEOWNERS`, runbooks, and onboarding.
 
-## Stack de defensa (en este orden, todas obligatorias)
+## Defense stack (in this order; all mandatory)
 
-1. **Esta policy** + entrenamiento de quien commitea.
-2. **Pre-commit hook local**: `scripts/precommit-privacy-check.sh` (regex de denylist). Instalable con `pnpm run install-hooks`.
-3. **CI workflow `privacy-guard.yml`** (status check **bloqueante** del branch protection):
-   - `gitleaks` con reglas custom en `.gitleaks.toml`.
-   - `denylist-regex` vía `precommit-privacy-check.sh --staged-mode=tree`.
-   - `denylist-paths`: bloquea `**/*.private.*`, `**/INTERNAL_*`, `**/SECRETS*`, `*.env*` (excepto `.env.example`).
-4. **CODEOWNERS**: cualquier cambio en `.gitleaks.toml`, `.github/workflows/privacy-guard.yml`, `docs/security/PUBLIC_REPO_POLICY.md` requiere aprobación de `@1click2control`.
-5. **Branch protection** en `main`: PRs obligatorios, `privacy-guard` debe pasar, no force-push, no eliminar branch.
-6. **PR template**: checklist explícito anti-fuga marcado obligatorio.
+1. **This policy** + training for committers.
+2. **Local pre-commit hook**: `scripts/precommit-privacy-check.sh` (denylist regex). Install with `pnpm run install-hooks`.
+3. **CI workflow `privacy-guard.yml`** (branch protection **blocking** status check):
+   - `gitleaks` with custom rules in `.gitleaks.toml`.
+   - `denylist-regex` via `precommit-privacy-check.sh --staged-mode=tree`.
+   - `denylist-paths`: block `**/*.private.*`, `**/INTERNAL_*`, `**/SECRETS*`, `*.env*` (except `.env.example`).
+4. **CODEOWNERS**: changes to `.gitleaks.toml`, `.github/workflows/privacy-guard.yml`, `docs/security/PUBLIC_REPO_POLICY.md` require `@1click2control` approval.
+5. **Branch protection** on `main`: PRs required, `privacy-guard` must pass, no force-push, no branch deletion.
+6. **PR template**: explicit anti-leak checklist marked mandatory.
 
-## Si un secreto se filtra (incidente)
+## If a secret leaks (incident)
 
-1. **No lo borres con un commit nuevo**. Está en la historia pública.
-2. Rotar inmediatamente el secreto / DSN / token / credencial.
-3. Solicitar a GitHub purge de cache (`gh api -X POST /repos/{owner}/{repo}/cache-purge` no existe; abrir support request si crítico).
-4. Re-escribir historia con `git filter-repo --invert-paths --path <archivo>` y force-push (requiere coordinación porque rompe SHAs públicos). **IMPORTANTE**: si usas `--replace-text`, excluye los archivos del privacy guard (`.gitleaks.toml`, `scripts/precommit-privacy-check.sh`, plantillas bajo `templates/governance/privacy-guard/`) o quedarán mutilados; usa `--path-glob` con exclusiones o restaura los archivos manualmente después.
-5. Asumir compromiso: el secreto ya pudo ser indexado (Wayback, scrapers, etc.). La rotación es no-negociable.
-6. Documentar incidente en `octc-platform-internal/docs/audit/INCIDENT-YYYY-MM-DD.md`.
+1. **Do not “fix” it with a new commit**. It is in public history.
+2. Rotate the secret / DSN / token / credential immediately.
+3. Request GitHub cache purge (no simple `gh api` for this; open a support request if critical).
+4. Rewrite history with `git filter-repo --invert-paths --path <file>` and force-push (requires coordination; breaks public SHAs). **IMPORTANT**: if you use `--replace-text`, exclude privacy-guard files (`.gitleaks.toml`, `scripts/precommit-privacy-check.sh`, templates under `templates/governance/privacy-guard/`) or they will be mangled; use `--path-glob` with exclusions or restore files manually afterward.
+5. Assume compromise: the secret may already be indexed (Wayback, scrapers, etc.). Rotation is non-negotiable.
+6. Document the incident in `octc-platform-internal/docs/audit/INCIDENT-YYYY-MM-DD.md`.
 
-## Cadencia
+## Cadence
 
-- **Trimestral**: `1click2control` revisa esta policy y la **lista técnica** en `.gitleaks.toml` / `precommit-privacy-check.sh` frente a nuevos repos privados o renombres.
-- **Cada nuevo repo privado relevante**: actualizar los tres artefactos técnicos antes de documentarlo en otros repos públicos.
+- **Quarterly**: `1click2control` reviews this policy and the **technical list** in `.gitleaks.toml` / `precommit-privacy-check.sh` against new or renamed private repos.
+- **Each relevant new private repo**: update the three technical artifacts before documenting it in other public repos.

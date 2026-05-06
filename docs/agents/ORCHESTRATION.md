@@ -1,22 +1,22 @@
 # Agent orchestration
 
-Política de orquestación multi-agente para octc-platform.
+Multi-agent orchestration policy for octc-platform.
 
-## Principios
+## Principles
 
-- **Plataforma normativa, runtime opcional.** El SSOT de plantillas y políticas es `octc-platform`. Un orquestador (Paperclip, Inngest, Temporal, Cloudflare Workflows…) es **runtime de ejecución**, nunca SSOT.
-- **Trazabilidad obligatoria.** Cualquier orquestador debe emitir spans/breadcrumbs hacia el proyecto Sentry adecuado (ver [AGENT_TELEMETRY.md](../observability/AGENT_TELEMETRY.md)) y respetar el `tools_allowlist_ref` del ACP.
-- **Presupuesto por agente.** Cada agente que ejecuta un orquestador declara presupuesto LLM (ver [LLM_COSTS.md](../finops/LLM_COSTS.md)).
+- **Normative platform, optional runtime.** Template and policy SSOT is `octc-platform`. An orchestrator (Paperclip, Inngest, Temporal, Cloudflare Workflows, …) is an **execution runtime**, never SSOT.
+- **Mandatory traceability.** Any orchestrator must emit spans/breadcrumbs to the right Sentry project (see [AGENT_TELEMETRY.md](../observability/AGENT_TELEMETRY.md)) and respect the ACP `tools_allowlist_ref`.
+- **Per-agent budget.** Every agent run under an orchestrator declares an LLM budget (see [LLM_COSTS.md](../finops/LLM_COSTS.md)).
 
-## Paperclip (declarativo + evaluación)
+## Paperclip (declarative + evaluation)
 
-- **Repo declarativo:** [`octc-paperclip`](https://github.com/OneClickToControl/octc-paperclip) — empresas, políticas, plantillas DE/OP, validación CI (**sin runtime obligatorio** en el estado actual).
-- **Perfil producto (health):** el ACP del dominio health mantiene el perfil de runtime *Paperclip* en su documentación de agentes (`docs/runtime-profiles/` en ese repo; slug en inventario **PORTFOLIO** org interno).
-- **Decisión de hito** (binario, CLI, solo YAML): backlog org **P3-7** / RFC interno; hasta entonces esta sección documenta **límites** (Paperclip no es SSOT de plantillas Cursor/CLAUDE).
+- **Declarative repo [`octc-paperclip`](https://github.com/OneClickToControl/octc-paperclip):** organization entities, policies, ED/OP templates, CI validation (**no mandatory runtime** in its current state).
+- **Product profile (health):** the health-domain ACP maintains the *Paperclip* runtime profile in its agent docs (`docs/runtime-profiles/` in that repo; slug in internal **PORTFOLIO** inventory).
+- **Milestone decision** (binary, CLI, YAML-only): org backlog **P3-7** / internal RFC; until then this section documents **limits** (Paperclip is not SSOT for Cursor/CLAUDE templates).
 
-## Reglas para cualquier orquestador
+## Rules for any orchestrator
 
-1. Identidad del agente vinculada al ACP (manifest id).
-2. Heartbeats y resultados publicados en canal Slack `#ops-agents`.
-3. Errores y costes reportados al proyecto Sentry del ACP/producto.
-4. Ningún orquestador ejecuta tools fuera del allowlist del ACP.
+1. Agent identity bound to the ACP (manifest id).
+2. Heartbeats and results posted to Slack `#ops-agents`.
+3. Errors and costs reported to the ACP/product Sentry project.
+4. No orchestrator runs tools outside the ACP allowlist.

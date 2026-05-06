@@ -1,61 +1,61 @@
 # Platform runbook
 
-Procedimientos paso a paso para operaciones críticas de `octc-platform`.
+Step-by-step procedures for critical `octc-platform` operations.
 
 ## On-call
 
-- Owner principal: @1click2control.
-- Escalado: pendiente al crecer el equipo.
-- Canal: `#ops-incidents`.
+- Primary owner: @1click2control.
+- Escalation: TBD as the team grows.
+- Channel: `#ops-incidents`.
 
-## Procedimientos
+## Procedures
 
-### Repo borrado o comprometido
+### Deleted or compromised repo
 
-1. Verificar mirror más reciente.
-2. Re-crear repo desde mirror.
-3. Restaurar branch protection y CODEOWNERS.
-4. Forzar rotación de tokens y revisar webhooks.
-5. Post-mortem en `docs/audit/HISTORY.md`.
+1. Verify latest mirror.
+2. Re-create repo from mirror.
+3. Restore branch protection and CODEOWNERS.
+4. Force token rotation and review webhooks.
+5. Post-mortem in `docs/audit/HISTORY.md`.
 
 ### Secret leak
 
-1. Rotar inmediatamente el secreto en gestor.
-2. Revocar tokens vivos en proveedor (npm, Sentry, Vercel, etc.).
-3. Revisar logs de acceso 30 días previos.
-4. Notificar `#security`.
+1. Rotate the secret immediately in the secrets manager.
+2. Revoke live tokens at providers (npm, Sentry, Vercel, etc.).
+3. Review access logs for the prior 30 days.
+4. Notify `#security`.
 5. Post-mortem.
 
-### Paquete `@1c2c/*` malicioso publicado
+### Malicious `@1c2c/*` package published
 
-1. `npm deprecate @1c2c/<pkg>@<version> "<motivo>"`.
-2. Si crítico: `npm unpublish` (dentro de las 72h permitidas).
-3. Publicar parche con bump de versión.
-4. Aviso en `#release` + `#security`.
-5. Auditoría de cómo se publicó (OIDC, identidades).
+1. `npm deprecate @1c2c/<pkg>@<version> "<reason>"`.
+2. If critical: `npm unpublish` (within allowed 72h window).
+3. Publish patch with version bump.
+4. Announce in `#release` + `#security`.
+5. Audit how it was published (OIDC, identities).
 
-### Sentry org comprometida
+### Compromised Sentry org
 
-1. Pausar ingestión de eventos sensibles (cambiar DSNs en producción).
-2. Auditar miembros y rotar tokens.
-3. Restaurar configuración desde backup.
-4. Reanudar ingestión por proyecto verificado.
+1. Pause ingestion of sensitive events (change DSNs in production).
+2. Audit members and rotate tokens.
+3. Restore configuration from backup.
+4. Resume ingestion per verified project.
 
-### Alertas FinOps LLM > umbral
+### LLM FinOps alerts above threshold
 
-1. Identificar agente y producto.
-2. Pausar ejecución (orquestador o feature flag).
-3. Auditar prompts y bucles.
-4. Ajustar presupuesto o modelo.
+1. Identify agent and product.
+2. Pause execution (orchestrator or feature flag).
+3. Audit prompts and loops.
+4. Adjust budget or model.
 
-### Caída de CI `verify.yml`
+### `verify.yml` CI outage
 
-1. Replicar localmente.
-2. Si es flaky en una action, considerar pin alternativo o cache invalidation.
-3. Si es regression real, abrir issue y bloquear merges.
+1. Reproduce locally.
+2. If flaky on one action, consider alternate pin or cache invalidation.
+3. If a real regression, open an issue and block merges.
 
-## Checklists periódicos
+## Periodic checklists
 
-- **Semanal**: revisar dependabot, alertas Sentry, KPIs FinOps.
-- **Mensual**: verificar backup mirror, exportar configuración Sentry, snapshot PORTFOLIO.
-- **Trimestral**: drill DR, auditoría visible, revisión `tools_allowlist_ref` L4.
+- **Weekly**: review Dependabot, Sentry alerts, FinOps KPIs.
+- **Monthly**: verify mirror backup, export Sentry config, PORTFOLIO snapshot.
+- **Quarterly**: DR drill, visible audit, L4 `tools_allowlist_ref` review.

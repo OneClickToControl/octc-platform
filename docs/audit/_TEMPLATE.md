@@ -1,28 +1,28 @@
-# AUDIT YYYY-Qn — <título corto>
+# AUDIT YYYY-Qn — <short title>
 
-Auditoría trimestral de `octc-platform` siguiendo el esqueleto del Apéndice C del plan fundacional.
+Quarterly audit of `octc-platform` following the foundational plan Appendix C skeleton.
 
-## Alcance
+## Scope
 
-- Áreas cubiertas en este trimestre.
-- Repos auditados.
+- Areas covered this quarter.
+- Repos audited.
 
-## Hallazgos
+## Findings
 
-| id | severidad | hallazgo | acción | owner | fecha |
+| id | severity | finding | action | owner | date |
 |----|-----------|----------|--------|-------|-------|
 | H-Qn-001 |  |  |  |  |  |
 
-## Resumen
+## Summary
 
-- 3–5 bullets con el estado general.
+- 3–5 bullets on overall status.
 
-## Acciones cerradas en el trimestre
+## Actions closed in the quarter
 
-| id | resolución | PR/ADR |
+| id | resolution | PR/ADR |
 |----|------------|--------|
 |    |            |        |
 
-## Próxima auditoría
+## Next audit
 
-- Trimestre objetivo + foco principal.
+- Target quarter + main focus.

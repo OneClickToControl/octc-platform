@@ -1,5 +1,5 @@
-# Sincroniza contrato monorepo → octc-platform-internal (PORTFOLIO).
-# Secret org/repo: OCTC_PORTFOLIO_DISPATCH_TOKEN. Lógica en octc-platform (callable).
+# Sync monorepo contract → octc-platform-internal (PORTFOLIO).
+# Org/repo secret: OCTC_PORTFOLIO_DISPATCH_TOKEN. Logic lives in octc-platform (callable).
 name: OCTC portfolio dispatch
 
 on:

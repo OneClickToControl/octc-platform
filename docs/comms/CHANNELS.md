@@ -1,34 +1,34 @@
 # Channels
 
-Canales internos oficiales para OneClickToControl LLC. Toda comunicación operativa pasa por estos canales; conversaciones puntuales en otros medios no son consideradas decisiones.
+Official internal channels for OneClickToControl LLC. Operational communication goes through these channels; ad-hoc conversations elsewhere are not considered decisions.
 
-## Slack (o sustituto declarado)
+## Slack (or declared substitute)
 
-| canal | propósito | suscriptores |
+| channel | purpose | subscribers |
 |-------|-----------|--------------|
-| `#general` | Anuncios al equipo. | toda la org |
-| `#ops` | Operación diaria, incidentes nivel C. | owners de productos |
-| `#ops-incidents` | Incidentes nivel A/B (ver [DR_BCP.md](../ops/DR_BCP.md)). | on-call |
-| `#ops-agents` | Heartbeats y alertas de agentes IA. | owners de ACPs |
-| `#ops-finops` | Alertas de coste LLM y FinOps. | owners de productos + finanzas |
-| `#release` | Anuncios de releases `@1c2c/*` y de productos. | toda la org |
-| `#platform` | Discusión de plataforma, ADRs, RFCs. | mantenedores de plataforma |
-| `#security` | Alertas de seguridad y supply chain. | mantenedores + on-call |
+| `#general` | Team announcements. | whole org |
+| `#ops` | Daily ops, class C incidents. | product owners |
+| `#ops-incidents` | Class A/B incidents (see [DR_BCP.md](../ops/DR_BCP.md)). | on-call |
+| `#ops-agents` | AI agent heartbeats and alerts. | ACP owners |
+| `#ops-finops` | LLM cost and FinOps alerts. | product owners + finance |
+| `#release` | `@1c2c/*` and product releases. | whole org |
+| `#platform` | Platform discussion, ADRs, RFCs. | platform maintainers |
+| `#security` | Security and supply-chain alerts. | maintainers + on-call |
 
 ## GitHub
 
-- Discusiones técnicas vinculantes: PRs y RFCs en `octc-platform/discussions`.
-- Tickets operativos: issues en el repo afectado.
+- Binding technical discussion: PRs and RFCs in `octc-platform/discussions`.
+- Operational tickets: issues in the affected repo.
 
-## Otras herramientas
+## Other tools
 
-- **Linear/Jira/Trello**: planificación de productos. Linkear desde issues GitHub.
-- **Notion/Wiki**: solo material no normativo (notas, brainstorms). La normativa vive en los repos.
-- **Email**: comunicación con terceros y formal externa.
+- **Linear/Jira/Trello**: product planning. Link from GitHub issues.
+- **Notion/Wiki**: non-normative material only (notes, brainstorms). Normative content lives in repos.
+- **Email**: third parties and formal external communication.
 
-## Cadencia
+## Cadence
 
-- Standup async diario en `#general` (opcional).
-- Weekly review viernes: cierre de tickets y SCORECARD.
-- Monthly: release notes plataforma en `#release`.
-- Quarterly: revisión del plan + auditoría visible.
+- Optional daily async standup in `#general`.
+- Weekly review Friday: ticket closure and SCORECARD.
+- Monthly: platform release notes in `#release`.
+- Quarterly: plan review + visible audit.

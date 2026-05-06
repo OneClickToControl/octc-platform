@@ -1,30 +1,30 @@
-# Carril `*-workspace` OCTC
+# OCTC `*-workspace` lane
 
-Repos con sufijo **`*-workspace`** guardan **identidad, memoria, notas, canales de trabajo y procedimientos de restore/bootstrap**. No son monorepos de producto ni portan el contrato de superficies OCTC.
+Repositories with the **`*-workspace`** suffix hold **identity, memory, notes, working channels, and restore/bootstrap procedures**. They are not product monorepos and do not carry the OCTC surface contract.
 
-## Familia de repos (resumen)
+## Repository families (summary)
 
-| Carril | Contrato / automatización principal |
-|--------|-------------------------------------|
-| **`*-app`** | `.octc/monorepo.yaml`, `octc verify monorepo`, `octc add surface`, `octc sync surface`, portfolio dispatch desde el monorepo. Ver [REFERENCE_PRODUCT_MONOREPO](REFERENCE_PRODUCT_MONOREPO.md). |
-| **`*-agents`** | Manifest ACP (`agents/<id>/manifest.json`), `octc sync agents` como baseline habitual, validación schema, dispatch ACP → registry interno. Ver [ADR-0002 — ACP](../adr/ADR-0002-acp-pattern.md). |
-| **`*-workspace`** | Sin `/.octc/monorepo.yaml`. Punteros a la verdad canónica en `*-agents`; **no** sustituir normativa agéntica con copias locales largas sin PR en `*-agents`. |
+| Lane | Contract / primary automation |
+|------|------------------------------|
+| **`*-app`** | `.octc/monorepo.yaml`, `octc verify monorepo`, `octc add surface`, `octc sync surface`, portfolio dispatch from the monorepo. See [REFERENCE_PRODUCT_MONOREPO](REFERENCE_PRODUCT_MONOREPO.md). |
+| **`*-agents`** | ACP manifest (`agents/<id>/manifest.json`), `octc sync agents` as the usual baseline, schema validation, ACP dispatch → internal registry. See [ADR-0002 — ACP](../adr/ADR-0002-acp-pattern.md). |
+| **`*-workspace`** | No `/.octc/monorepo.yaml`. Pointers to canonical truth in `*-agents`; **do not** replace agent policy with long local copies without a PR in `*-agents`. |
 
-Articulación con el monorepo legible por máquina: [ADR-0003](../adr/ADR-0003-monorepo-cli-machine-ssot.md).
+Machine-readable articulation with the monorepo: [ADR-0003](../adr/ADR-0003-monorepo-cli-machine-ssot.md).
 
-## Uso de `@1c2c/cli` (`octc`) en `*-workspace`
+## Using `@1c2c/cli` (`octc`) in `*-workspace`
 
-- **`octc verify monorepo`**, **`octc add surface`**, **`octc sync surface`**, y **`octc portfolio suggest`** están pensados para repos **`*-app`** con `.octc/monorepo.yaml`. **No los uses** en un repo workspace; no añadas `monorepo.yaml` solo para “pasar” verify.
-- **`octc sync agents`** y **`octc sync governance`** pueden ser **opcionales** si el producto decide adoptar `package.json`, `@1c2c/cli` y un pin de plantillas documentado en PORTFOLIO (mismo patrón que otros repos). Muchos workspaces operan solo con markdown y scripts **sin** npm; es una **excección válida** si PORTFOLIO lo dice explícitamente.
-- **`octc agents init|verify|sync`** sin `verify monorepo`: mismo alcance que arriba — solo si hay adopción consciente de agent-templates.
+- **`octc verify monorepo`**, **`octc add surface`**, **`octc sync surface`**, and **`octc portfolio suggest`** target **`*-app`** repos with `.octc/monorepo.yaml`. **Do not** use them in a workspace repo; do not add `monorepo.yaml` just to pass verify.
+- **`octc sync agents`** and **`octc sync governance`** may be **optional** if the product adopts `package.json`, `@1c2c/cli`, and a templates pin documented in PORTFOLIO (same pattern as other repos). Many workspaces run markdown and scripts **without** npm; that is a **valid exception** when PORTFOLIO states it explicitly.
+- **`octc agents init|verify|sync`** without `verify monorepo`: same scope as above — only with conscious adoption of agent-templates.
 
-## Plantilla y runbook (organización)
+## Template and org runbook
 
-El **contrato** de límites vive en este repo mediante el workflow reusable [**`octc-workspace-verify-callable.yml`**](../../.github/workflows/octc-workspace-verify-callable.yml). El árbol de plantilla (`README`, markdown raíz, **wrapper** `octc-workspace-verify.yml` en `.github/workflows/`) y el runbook de alta siguen en el repo **privado** [`octc-platform-internal`](https://github.com/OneClickToControl/octc-platform-internal) (`templates/workspace-repo/`, `docs/runbooks/NEW_WORKSPACE_REPO.md`). Los miembros de OneClickToControl siguen el runbook interno para bootstrap.
+The **contract** of limits lives in this repo via the reusable workflow [**`octc-workspace-verify-callable.yml`**](../../.github/workflows/octc-workspace-verify-callable.yml). The template tree (`README`, root markdown, **`octc-workspace-verify.yml` wrapper** under `.github/workflows/`) and the bootstrap runbook live in the **private** [`octc-platform-internal`](https://github.com/OneClickToControl/octc-platform-internal) repo (`templates/workspace-repo/`, `docs/runbooks/NEW_WORKSPACE_REPO.md`). OneClickToControl members follow the internal runbook for bootstrap.
 
-### Consumir el callable (recomendado)
+### Using the callable (recommended)
 
-En el repo `*-workspace`, el workflow `octc-workspace-verify.yml` debe delegar en el callable con **el mismo commit SHA** en `uses:` y en `tooling_ref` (un solo pin; ver `scripts/print-workspace-verify-callable-pin.sh` en `octc-platform`):
+In the `*-workspace` repo, `octc-workspace-verify.yml` should delegate to the callable with the **same commit SHA** in `uses:` and `tooling_ref` (single pin; see `scripts/print-workspace-verify-callable-pin.sh` in `octc-platform`):
 
 ```yaml
 jobs:
@@ -36,98 +36,97 @@ jobs:
       tooling_ref: <SHA_OCTC_PLATFORM>
 ```
 
-Sustituye `<SHA_OCTC_PLATFORM>` por el commit de `octc-platform` que incorpora la versión de reglas y el script de guardrails que quieres fijar. Subir solo `@main` es válido en prototipo; en repos bajo control org se prefiere SHA para evitar drift sorpresa.
+Replace `<SHA_OCTC_PLATFORM>` with the `octc-platform` commit that carries the rules and guardrail script version you want to pin. `@main` only is fine for prototypes; org-controlled repos should prefer a SHA to avoid surprise drift.
 
-**Obtener el pin recomendado (CLI):** con [`gh`](https://cli.github.com/) autenticado, desde un clone de `octc-platform`:
+**Recommended pin (CLI):** with authenticated [`gh`](https://cli.github.com/), from a clone of `octc-platform`:
 
 ```bash
 ./scripts/print-workspace-verify-callable-pin.sh
 ```
 
-El script devuelve el último commit de la rama indicada (`main` por defecto) que **tocó** `octc-workspace-verify-callable.yml` — suele ser el pin más ajustado tras un cambio de reglas. El ejemplo incluye `with: tooling_ref:` igual al mismo SHA.
+The script prints the latest commit on the chosen branch (`main` by default) that **touched** `octc-workspace-verify-callable.yml` — usually the tightest pin after a rules change. The example uses the same SHA for `with: tooling_ref:`.
 
-## `octc init workspace` (CLI pública)
+## `octc init workspace` (public CLI)
 
-[`@1c2c/cli`](https://github.com/OneClickToControl/octc-platform/tree/main/packages/cli) incluye **`octc init workspace <dir>`**: materializa la misma forma de árbol que la plantilla pública en `packages/cli/templates/workspace` (**paridad** con `octc-platform-internal` `templates/workspace-repo/` — un cambio debe reflejarse en ambos).
+[`@1c2c/cli`](https://github.com/OneClickToControl/octc-platform/tree/main/packages/cli) includes **`octc init workspace <dir>`**: materializes the same tree shape as the public template in `packages/cli/templates/workspace` (**parity** with `octc-platform-internal` `templates/workspace-repo/` — a change should be reflected in both).
 
-Solo escribe archivos en disco; **no** crea repos GitHub, rulesets ni filas PORTFOLIO. Usa `--pin <SHA>` para sustituir `__OCTC_WORKSPACE_VERIFY_PIN__` en el wrapper; `--template-dir` apunta a un clon internal para comprobar paridad.
+It only writes files on disk; it **does not** create GitHub repos, rulesets, or `PORTFOLIO` rows. Use `--pin <SHA>` to substitute `__OCTC_WORKSPACE_VERIFY_PIN__` in the wrapper; `--template-dir` may point at an internal clone for parity checks.
 
-## `octc init app` (scaffold carril *-app*, opcional)
+## `octc init app` (optional `*-app` scaffold)
 
-**`octc init app <dir>`** materializa el contrato **`templates/product`** (paridad con `templates/product-repo` internal). Es un **scaffold público-seguro** (archivos listos para un futuro `*-app`); **no** sustituye el runbook org de alta de repo. Ver README del paquete CLI.
+**`octc init app <dir>`** materializes the **`templates/product`** contract (parity with internal `templates/product-repo`). It is a **public-safe scaffold** (files ready for a future `*-app`); it **does not** replace the org repo onboarding runbook. See the CLI package README.
 
 <a id="octc-workspace-root-markdown"></a>
 
-## Markdown en la raíz: invariante del CI vs convención de plantilla
+## Root Markdown: CI invariant vs template convention
 
-El callable **v2** exige que existan, en la **raíz del repo**, estos nombres exactos:
+Callable **v2** requires these **exact filenames** at the **repository root**:
 
 `README.md`, `AGENTS.md`, `CLAUDE.md`, `IDENTITY.md`, `MEMORY.md`, `SOUL.md`, `USER.md`, `TOOLS.md`, `HEARTBEAT.md`
 
-- **Invariante OCTC (hoy):** la **presencia** de esos archivos y nombres (salvo exclusiones **opt-in** declaradas en `.octc/workspace-guardrails.yaml`, v2 — subset acotado en código). El verify **no** dicta longitud ni estructura interna del markdown.
-- **Convención de plantilla** (`octc-platform-internal` / `templates/workspace-repo/` y espejo en CLI): el **contenido inicial** de cada archivo es **ejemplo** para bootstrap; cada familia de producto puede adaptar el texto dentro de cada archivo siempre que no rompa otras reglas v2 (p. ej. no convertir el repo en carril `*-app`).
-- Las omisiones de nombres de la lista **solo** son válidas vía `.octc/workspace-guardrails.yaml` (`exceptions.skip_required_root_markdown.files`) dentro del **allowlist** permitido por plataforma — no por bypass local no parseado.
+- **OCTC invariant (today):** **presence** of those files and names (except **opt-in** exclusions declared in `.octc/workspace-guardrails.yaml`, v2 — a bounded subset in code). Verify does **not** dictate markdown length or internal structure.
+- **Template convention** (`octc-platform-internal` / `templates/workspace-repo/` and CLI mirror): initial content is **bootstrap example**; each product family may adapt text inside each file as long as other v2 rules are not broken (e.g. do not turn the repo into an `*-app` lane).
+- Skipping names from the list is only valid via `.octc/workspace-guardrails.yaml` (`exceptions.skip_required_root_markdown.files`) within the platform **allowlist** — not via unparsed local bypass.
 
-## Relación con adopción de plantillas
+## Relationship to template adoption
 
-[ADOPTION.md](../agents/ADOPTION.md) describe la adopción estándar de `@1c2c/agent-templates` en repos que **sí** fijan pin y CI `octc-agents verify`. Los `*-workspace` **no** están obligados a ese flujo; si mezclan las dos cosas, documenta en PORTFOLIO si hay pin o excepción.
+[ADOPTION.md](../agents/ADOPTION.md) describes standard adoption of `@1c2c/agent-templates` in repos that **do** pin templates and run `octc-agents` verify. `*-workspace` repos **are not** required to follow that flow; if you mix both, document PORTFOLIO pin or exception.
 
-## `octc-workspace-verify`: alcance **v2** (implementación: callable en `octc-platform`)
+## `octc-workspace-verify`: **v2** scope (implementation: callable in `octc-platform`)
 
-El job **OCTC workspace verify** evoluciona en fases; la implementación canónica está en [`.github/workflows/octc-workspace-verify-callable.yml`](../../.github/workflows/octc-workspace-verify-callable.yml).
+The **OCTC workspace verify** job evolves in phases; the canonical implementation is [`.github/workflows/octc-workspace-verify-callable.yml`](../../.github/workflows/octc-workspace-verify-callable.yml).
 
-**v1 (base)**
+**v1 (baseline)**
 
-- Si existe `/.octc/monorepo.yaml` → fallo CI.
-- Prohibir patrones de *-app* en YAML bajo `.github/` (`octc-portfolio-dispatch-callable`, `octc:verify:monorepo`, `octc verify monorepo`), excluyendo el archivo local **`octc-workspace-verify.yml`** para no autoflagar el wrapper de verify.
+- If `/.octc/monorepo.yaml` exists → CI failure.
+- Reject `*-app` YAML patterns under `.github/` (`octc-portfolio-dispatch-callable`, `octc:verify:monorepo`, `octc verify monorepo`), excluding the local **`octc-workspace-verify.yml`** wrapper so verify does not self-flag.
 
-**v2 (fase actual)**
+**v2 (current phase)**
 
-- Escaneo recursivo de **todos** los `*.yml` y `*.yaml` bajo `.github/` con la misma exclusión **`octc-workspace-verify.yml`**.
-- Raíz: prohibir `pnpm-workspace.yaml` y `turbo.json` (señal fuerte de monorepo *-app*).
-- Prohibir workflows con nombre fijo típico de producto: `.github/workflows/octc-agents.yml`, `octc-portfolio-dispatch.yml`.
-- Prohibir `.octc/agents/manifest.schema.json` en un workspace “puro” (copia típica desde *-agents* / *-app*).
-- Prohibir árbol `agents/**/manifest.json` (manifests ACP solo en *-agents*).
-- Si existe `package.json` en raíz, no debe contener referencias literales a `octc:verify:monorepo` ni `octc verify monorepo` (workspaces que adopten solo `octc sync agents` siguen siendo posibles sin esas cadenas).
+- Recursive scan of **all** `*.yml` and `*.yaml` under `.github/` with the same **`octc-workspace-verify.yml`** exclusion.
+- Root: forbid `pnpm-workspace.yaml` and `turbo.json` (strong `*-app` signal).
+- Forbid workflows with typical product names: `.github/workflows/octc-agents.yml`, `octc-portfolio-dispatch.yml`.
+- Forbid `.octc/agents/manifest.schema.json` in a “pure” workspace (typical copy from `*-agents` / `*-app`).
+- Forbid `agents/**/manifest.json` tree (ACP manifests belong in `*-agents`).
+- If root `package.json` exists, it must not contain literal strings `octc:verify:monorepo` or `octc verify monorepo` (workspaces that adopt only `octc sync agents` may still omit those strings).
 
-**Qué sigue fuera del alcance de v2**
+**Out of scope for v2**
 
-- No inspecciona lockfiles, dependencias transitivas ni `package.json` sin esas cadenas pero con scripts de *-app* genéricos.
-- No valida contenido de `notes/` ni copia humana de snippets en markdown.
+- No lockfile or transitive dependency inspection, nor generic `*-app` scripts in `package.json` without those strings.
+- Does not validate `notes/` content or human snippets pasted in markdown.
 
-## `.octc/workspace-guardrails.yaml` (schema v1, aplicado en CI)
+## `.octc/workspace-guardrails.yaml` (v1 schema, enforced in CI)
 
-Archivo **opcional** en el repo workspace. Si **no** existe, rigen los defaults estrictos del callable (lista completa de markdown raíz, sin checks opcionales).
+Optional file in the workspace repo. If **missing**, callable defaults apply (full root markdown list, no optional checks).
 
-Si existe, debe declarar `schema_version: 1` y el verificador (Ruby en `scripts/workspace-guardrails-verify.rb`) aplica **solo** lo soportado en código:
+If present, it must declare `schema_version: 1` and the verifier (Ruby in `scripts/workspace-guardrails-verify.rb`) only enforces what code supports:
 
-| Clave | Efecto |
-|-------|--------|
-| `meta.owner` / `meta.reason` | Obligatorios si hay excepciones con efecto o `optional_checks` no vacío. |
-| `exceptions.skip_required_root_markdown.files` | Subconjunto permitido (p. ej. `HEARTBEAT.md`, `USER.md`, `TOOLS.md`); nunca relajar carril *-app*. |
-| `optional_checks.require_package_json_scripts` | Si hay `package.json`, exige claves en `scripts`. |
-| `optional_checks.expect_agent_templates_range` | Si hay `package.json`, comprueba `devDependencies['@1c2c/agent-templates']` vs rango `^` / `~` / exacto (subset npm). |
+| Key | Effect |
+|-----|--------|
+| `meta.owner` / `meta.reason` | Required when exceptions have effect or `optional_checks` is non-empty. |
+| `exceptions.skip_required_root_markdown.files` | Allowed subset (e.g. `HEARTBEAT.md`, `USER.md`, `TOOLS.md`); never relaxes the `*-app` lane. |
+| `optional_checks.require_package_json_scripts` | If `package.json` exists, requires keys in `scripts`. |
+| `optional_checks.expect_agent_templates_range` | If `package.json` exists, checks `devDependencies['@1c2c/agent-templates']` vs `^` / `~` / exact range (npm subset). |
 
-**No** hay “disable all”, comodines globales ni excepciones de monorepo/app en este archivo. Claves desconocidas → fallo CI.
+There is no “disable all”, global globs, or monorepo/app exceptions in this file. Unknown keys → CI failure.
 
-## Evolución (histórico fases 3–4)
+## Evolution (historical phases 3–4)
 
-**Fase 3 — Contrato explícito y reuso**
+**Phase 3 — explicit contract and reuse**
 
-- Workflow reusable con `tooling_ref` + segunda copia de `octc-platform` para scripts versionados.
-- **Implementado:** `.octc/workspace-guardrails.yaml` v1 parseado en CI; `optional_checks` explícitos (sin motor de políticas genérico).
+- Reusable workflow with `tooling_ref` + second checkout of `octc-platform` for versioned scripts.
+- **Implemented:** `.octc/workspace-guardrails.yaml` v1 parsed in CI; explicit `optional_checks` (no generic policy engine).
 
-**Fase 4 — Materialización**
+**Phase 4 — materialization**
 
-- **Implementado en internal:** [`materialize-workspace-from-template.sh`](https://github.com/OneClickToControl/octc-platform-internal/blob/main/scripts/materialize-workspace-from-template.sh).
-- **Implementado en CLI:** `octc init workspace` (no registra PORTFOLIO ni crea repo GitHub).
+- **Implemented in internal:** [`materialize-workspace-from-template.sh`](https://github.com/OneClickToControl/octc-platform-internal/blob/main/scripts/materialize-workspace-from-template.sh).
+- **Implemented in CLI:** `octc init workspace` (does not register PORTFOLIO or create the GitHub repo).
 
+**Lane edges (today)**
 
-**Excepciones y bordes del carril (hoy)**
+- Any relaxation **not** covered by the v1 guardrails shape must go through a **PR on `octc-platform`** against the callable and Ruby script, **or** an explicit documented decision (ADR + PORTFOLIO) — a local YAML with invented keys is not enough (the verifier rejects unknown keys).
 
-- Cualquier relajación **no** cubierta por el shape v1 del guardrails **debe** ir por **PR en `octc-platform`** contra el callable y el script Ruby, **o** por decisión explícita documentada (ADR + PORTFOLIO) — no basta un YAML local con claves inventadas (el verificador rechaza claves desconocidas).
+## Links
 
-## Enlaces
-
-- Monorepo solo *-app*: [REFERENCE_PRODUCT_MONOREPO](REFERENCE_PRODUCT_MONOREPO.md)  
-- Sincronización runtime ACP (vision): [RUNTIME_SYNC](../agents/RUNTIME_SYNC.md)
+- Monorepo `*-app` only: [REFERENCE_PRODUCT_MONOREPO](REFERENCE_PRODUCT_MONOREPO.md)
+- ACP runtime sync (vision): [RUNTIME_SYNC](../agents/RUNTIME_SYNC.md)

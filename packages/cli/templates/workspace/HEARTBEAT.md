@@ -1,3 +1,3 @@
 # Heartbeat
 
-Señales periódicas de actividad o salud del workspace (opcional; p. ej. última revisión, foco actual).
+Periodic activity or health signals for the workspace (optional; e.g. last review, current focus).

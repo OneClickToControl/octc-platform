@@ -1,26 +1,26 @@
 # Agent eval policy
 
-Política mínima de evaluación continua para ACPs en tier L4.
+Minimum continuous evaluation policy for ACPs at tier L4.
 
-## Conjuntos
+## Sets
 
-- **Golden set:** 20–50 prompts representativos del dominio del ACP. Vive en `agents/<acp>/evals/golden/*.yaml` con `expected_*` chequeables.
-- **Adversarial set:** 10–30 prompts de jailbreak, fuga de PII, herramientas fuera de allowlist, contradicciones.
-- **Regression set:** todos los issues etiquetados `agent-regression` cerrados con prompt + esperado.
+- **Golden set:** 20–50 prompts representative of the ACP domain. Lives in `agents/<acp>/evals/golden/*.yaml` with checkable `expected_*`.
+- **Adversarial set:** 10–30 prompts for jailbreak, PII leakage, tools outside allowlist, contradictions.
+- **Regression set:** all issues labeled `agent-regression` closed with prompt + expected output.
 
-## Métricas
+## Metrics
 
-- `eval_pass_rate`: % de casos del golden set que pasan.
-- `adversarial_block_rate`: % de casos adversariales correctamente rechazados.
-- `tool_usage_compliance`: % de ejecuciones que respetan el allowlist.
+- `eval_pass_rate`: % of golden set cases that pass.
+- `adversarial_block_rate`: % of adversarial cases correctly rejected.
+- `tool_usage_compliance`: % of runs that respect the allowlist.
 
-## Frecuencia
+## Frequency
 
-- Cada PR a un repo de ACP L4: ejecuta un subconjunto rápido (smoke evals).
-- Diario en CI: golden + adversarial completos.
-- Trimestral: revisión humana del set y agregado al SCORECARD.
+- Every PR to an L4 ACP repo: run a fast subset (smoke evals).
+- Daily in CI: full golden + adversarial.
+- Quarterly: human review of the set and rollup to SCORECARD.
 
-## Bloqueos
+## Blocks
 
-- `eval_pass_rate` < 90% en main → release bloqueada.
-- `adversarial_block_rate` < 95% → degrada el tier a L3 hasta resolver.
+- `eval_pass_rate` < 90% on `main` → release blocked.
+- `adversarial_block_rate` < 95% → tier degrades to L3 until resolved.

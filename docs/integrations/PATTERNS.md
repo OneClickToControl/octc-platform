@@ -1,34 +1,34 @@
 # Integrations PATTERNS
 
-Patrones canónicos para integrar APIs/MCPs/webhooks de terceros. Cualquier integración del [CATALOG](CATALOG.md) debe seguir uno de estos patrones o documentar excepción.
+Canonical patterns for integrating third-party APIs/MCPs/webhooks. Every integration in the [CATALOG](CATALOG.md) must follow one of these patterns or document an exception.
 
-## Patrón A — API REST con retry y backoff
+## Pattern A — REST API with retry and backoff
 
-- Cliente versionado en `@1c2c/integrations-<provider>`.
-- Reintentos con jitter (`min 200ms`, `max 5s`, hasta 5).
-- Códigos 429/5xx reintentan; 4xx no.
-- Métricas de latencia y error rate enviadas a Sentry/proyecto del consumidor.
+- Versioned client in `@1c2c/integrations-<provider>`.
+- Retries with jitter (`min 200ms`, `max 5s`, up to 5).
+- 429/5xx retry; 4xx do not.
+- Latency and error rate metrics sent to Sentry / consumer project.
 
-## Patrón B — Webhook firmado
+## Pattern B — Signed webhook
 
-- Firma HMAC verificada antes de procesar.
-- Idempotencia por `event_id`; duplicados descartados con log.
-- Procesamiento async vía cola (Inngest, Workers, Cloudflare Queues, etc.).
+- HMAC signature verified before processing.
+- Idempotency by `event_id`; duplicates dropped with log.
+- Async processing via queue (Inngest, Workers, Cloudflare Queues, etc.).
 
-## Patrón C — Cron / scheduler
+## Pattern C — Cron / scheduler
 
-- Definido en infra-as-code (Vercel Cron, Cloudflare Workers Cron, etc.).
-- Heartbeat al orquestador o a Sentry Crons.
-- Failures abren issue automática y alertan al owner.
+- Defined in infra-as-code (Vercel Cron, Cloudflare Workers Cron, etc.).
+- Heartbeat to orchestrator or Sentry Crons.
+- Failures open automatic issue and alert owner.
 
-## Patrón D — MCP
+## Pattern D — MCP
 
-- Solo MCPs auditados; cualquier MCP nuevo entra al CATALOG primero.
-- Allowlist explícito en el ACP que lo consume.
-- PII scrubbing en logs hacia Sentry.
+- Audited MCPs only; any new MCP enters CATALOG first.
+- Explicit allowlist on the consuming ACP.
+- PII scrubbing in logs to Sentry.
 
-## Patrón E — SDK con OAuth
+## Pattern E — SDK with OAuth
 
-- Tokens en `secret_ref` (no en código).
-- Refresh handling centralizado.
-- Auditoría de scopes mínimos.
+- Tokens in `secret_ref` (not in code).
+- Centralized refresh handling.
+- Audit minimum scopes.

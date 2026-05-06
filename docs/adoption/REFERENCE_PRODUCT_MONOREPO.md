@@ -1,135 +1,135 @@
-# Patrón de monorepo de producto (referencia)
+# Product monorepo pattern (reference)
 
-Contrato legible por humanos y agentes para repos que **materializan** un producto digital: varias superficies de ejecución, datos, calidad y trazabilidad desde contexto de negocio hasta código.
+Human- and agent-readable contract for repos that **materialize** a digital product: multiple execution surfaces, data, quality, and traceability from business context to code.
 
-No sustituye ADRs ni PORTFOLIO: **los define y los enlaza**.
+This does not replace ADRs or PORTFOLIO: **it defines them and links to them**.
 
-## Objetivos
+## Goals
 
-1. Declarar **`active_surfaces`** y **dónde viven** en el filesystem (`docs/architecture.md` o equivalente).
-2. Mantener **trazabilidad** brand → estrategia → producto → features → arquitectura → ops → auditorías.
-3. Evitar **drift** entre documentación del repo, **CI/observabilidad** y **PORTFOLIO** interno al cambiar composición.
-4. Permitir **nuevos productos** arrancando desde plantillas y checklist, no desde memoria tribal.
+1. Declare **`active_surfaces`** and **where they live** in the filesystem (`docs/architecture.md` or equivalent).
+2. Keep **traceability** brand → strategy → product → features → architecture → ops → audits.
+3. Avoid **drift** among repo docs, **CI/observability**, and **internal `PORTFOLIO`** when composition changes.
+4. Let **new products** start from templates and checklists, not tribal memory.
 
-## Superficies canónicas (`active_surfaces`)
+## Canonical surfaces (`active_surfaces`)
 
-**Alcance OCTC (CLI `octc verify` / `octc add|sync surface`):** estas definiciones y plantillas versionadas en **`@1c2c/cli`** aplican a repositorios de **aplicación de producto** con convención **`*-app`** (monorepo que entrega web, datos, mobile, etc.). Repos **`*-agents`** (ACP, skills, plantillas de agente) y **`*-workspace`** (runtime/notas u orquestación paralela) tienen **gobierno aparte**: no incluyas aquí rutas, jobs o entregables destinados a esos repos sin un plan explícito, para no mezclar el SSOT del app producto.
+**OCTC scope (`@1c2c/cli` `octc verify` / `octc add|sync surface`):** these definitions and versioned templates in **`@1c2c/cli`** apply to **product application** repos named **`*-app`** (monorepos delivering web, data, mobile, etc.). **` *-agents`** repos (ACP, skills, agent templates) and **` *-workspace`** repos (runtime/notes or parallel orchestration) have **separate governance**: do not place paths, jobs, or deliverables meant for those repos here without an explicit plan, or you will mix the product `*-app` SSOT.
 
-**Fuente máquina-legible del vocabulario y globs por defecto:** [`packages/cli/lib/constants.mjs`](https://github.com/OneClickToControl/octc-platform/blob/main/packages/cli/lib/constants.mjs) (`ALLOWED_SURFACES`, `DEFAULT_PATH_GLOBS`). La tabla siguiente debe mantenerse alineada con ese archivo y con **`.octc/monorepo.yaml`** en cada `*-app`.
+**Machine-readable vocabulary and default globs:** [`packages/cli/lib/constants.mjs`](https://github.com/OneClickToControl/octc-platform/blob/main/packages/cli/lib/constants.mjs) (`ALLOWED_SURFACES`, `DEFAULT_PATH_GLOBS`). Keep the table below aligned with that file and **`.octc/monorepo.yaml`** in each `*-app`.
 
-| Superficie | Rol | Directorios típicos | Notas |
-|------------|-----|---------------------|--------|
-| `landing` | Sitio público / idea / waitlist | Rutas o app segmentada en `apps/web`, o `apps/landing` | Primera superficie de despliegue frecuente junto con `docs/`. |
-| `web` | Aplicación de producto (auth, datos de usuario) | `apps/web` | Upgrade **WebSocket en el mismo** Next suele ser `web`; proceso separado → `api`. |
-| `mobile` | Cliente móvil | `apps/mobile` | Paridad UX documentada en `docs/design/`. |
-| `ml` | Inferencia / modelo servido | `apps/ml-service`, `services/ml`, … | Contrato HTTP/documentado; despliegue propio (contenedor, PaaS). |
-| `api` | Frontera programática **fuera de** `supabase/` | `apps/api`, worker, MCP remoto, gRPC, WS dedicado | Incluye REST, SSE, gRPC, servidor MCP (HTTP/SSE). No cubre Edge Functions en `supabase/functions`. |
-| `chat` | UI o backend conversacional | Rutas, `apps/chat-web`, servicio | Políticas agénticas OCTC cuando aplica. |
-| `data` | Plataforma de datos Supabase | `supabase/` completo | Migraciones, RLS, **`functions/` (Edge Functions)**, seeds, CLI. |
+| Surface | Role | Typical directories | Notes |
+|---------|------|---------------------|-------|
+| `landing` | Public site / idea / waitlist | Paths or segmented app in `apps/web`, or `apps/landing` | Often the first deployment surface together with `docs/`. |
+| `web` | Product app (auth, user data) | `apps/web` | Next.js WebSocket upgrades usually stay `web`; separate process → `api`. |
+| `mobile` | Mobile client | `apps/mobile` | UX parity documented in `docs/design/`. |
+| `ml` | Served inference / model | `apps/ml-service`, `services/ml`, … | HTTP contract documented; own deploy (container, PaaS). |
+| `api` | Programmatic boundary **outside** `supabase/` | `apps/api`, worker, remote MCP, gRPC, dedicated WS | REST, SSE, gRPC, MCP server (HTTP/SSE). Excludes Edge Functions in `supabase/functions`. |
+| `chat` | Conversational UI or backend | Routes, `apps/chat-web`, service | OCTC agent policies when applicable. |
+| `data` | Supabase data platform | full `supabase/` tree | Migrations, RLS, **`functions/` (Edge Functions)**, seeds, CLI. |
 
-**Edge Functions** en `supabase/functions` → **`data`**. Solo usar **`api`** si existe **otra** frontera programática desplegada fuera de ese árbol.
+**Edge Functions** under `supabase/functions` are **`data`**. Use **`api`** only if another programmatic boundary is deployed **outside** that tree.
 
-**`docs/`** no es superficie de despliegue: es **capa transversal** (precede y alimenta decisiones).
+**`docs/`** is not a deploy surface: it is a **cross-cutting** layer (precedes and informs decisions).
 
-### Matriz maquinable (paridad con `@1c2c/cli`)
+### Machine matrix (parity with `@1c2c/cli`)
 
-| Superficie | Rol (resumen) | Globs por defecto en CLI si omites `paths` |
-|------------|---------------|---------------------------------------------|
-| `landing` | Sitio público / waitlist | `apps/landing/**`, `apps/web/**` |
-| `web` | App de producto | `apps/web/**` |
-| `mobile` | Cliente móvil | `apps/mobile/**` |
-| `ml` | Inferencia servida | `apps/ml-service/**`, `services/ml/**` |
-| `api` | Frontera fuera de `supabase/` | `apps/api/**`, `apps/chat_api/**`, `services/api/**` |
-| `chat` | UI/backend conversacional | `apps/chat-web/**`, `apps/chat/**` |
-| `data` | Supabase | *(exige directorio `supabase/`; no usa globs default en `verify`)* |
+| Surface | Role (summary) | Default CLI globs when `paths` omitted |
+|---------|----------------|----------------------------------------|
+| `landing` | Public / waitlist | `apps/landing/**`, `apps/web/**` |
+| `web` | Product app | `apps/web/**` |
+| `mobile` | Mobile client | `apps/mobile/**` |
+| `ml` | Served inference | `apps/ml-service/**`, `services/ml/**` |
+| `api` | Boundary outside `supabase/` | `apps/api/**`, `apps/chat_api/**`, `services/api/**` |
+| `chat` | Conversational UI/backend | `apps/chat-web/**`, `apps/chat/**` |
+| `data` | Supabase | *(requires `supabase/` directory; `verify` does not use default globs)* |
 
-Si el repo tiene **`packages/`** con workspaces compartidos y declaras superficies consumidoras (`≠ data`), **`octc verify monorepo`** exige un glob que cubra `packages/**` en **`paths.<superficie>`** para cada consumidor (ver CHANGELOG `@1c2c/cli`).
+If the repo has **`packages/`** shared workspaces and declares consumer surfaces (`≠ data`), **`octc verify monorepo`** requires a glob covering `packages/**` in **`paths.<surface>`** for each consumer (see `@1c2c/cli` CHANGELOG).
 
-### Formato máquina-legible (opcional, roadmap CLI)
+### Machine-readable format (optional, CLI roadmap)
 
-Para **`octc verify monorepo`** (`@1c2c/cli` ≥ 0.2.0); **`octc add surface`** y **`octc sync surface`** desde **0.3.0**: crear `.octc/monorepo.yaml` desde la plantilla [`templates/monorepo/monorepo.yaml.example`](https://github.com/OneClickToControl/octc-platform/blob/main/templates/monorepo/monorepo.yaml.example); debe reflejar la misma tabla que la documentación en prosa. Dirección y esquema: [ADR-0003](../adr/ADR-0003-monorepo-cli-machine-ssot.md) (**accepted**).
+For **`octc verify monorepo`** (`@1c2c/cli` ≥ 0.2.0); **`octc add surface`** and **`octc sync surface`** from **0.3.0**: create `.octc/monorepo.yaml` from [`templates/monorepo/monorepo.yaml.example`](https://github.com/OneClickToControl/octc-platform/blob/main/templates/monorepo/monorepo.yaml.example); it must mirror the same table as this prose. Direction and schema: [ADR-0003](../adr/ADR-0003-monorepo-cli-machine-ssot.md) (**accepted**).
 
-## Trazabilidad (cadena mínima)
+## Traceability (minimum chain)
 
 ```text
 brand | market | research | strategy
-    → decisions (ADR) / docs/memory u órgano equivalente
-    → product (PRD, roadmap, backlog, contratos de sync con issue tracker si aplica)
-    → docs/features ↔ código (apps, supabase, packages)
+    → decisions (ADR) / docs/memory or equivalent organ
+    → product (PRD, roadmap, backlog, sync contracts with issue tracker if any)
+    → docs/features ↔ code (apps, supabase, packages)
     → docs/architecture + docs/ops + ops/ (runbooks)
-    → docs/audits (cierre o deuda explícita)
+    → docs/audits (closure or explicit debt)
 ```
 
-Reglas:
+Rules:
 
-- Cambio de **alcance** de producto → actualizar roadmap/backlog **y** enlazar feature/architecture en el mismo ciclo.
-- Nada de **datos sensibles** ni nombres internos de clientes en repos públicos: [`PUBLIC_REPO_POLICY`](../security/PUBLIC_REPO_POLICY.md).
+- **Scope** change → update roadmap/backlog **and** link feature/architecture in the same cycle.
+- No **sensitive data** or internal customer names in public repos: [`PUBLIC_REPO_POLICY`](../security/PUBLIC_REPO_POLICY.md).
 
-## Matriz CI (por superficie y coste)
+## CI matrix (by surface and cost)
 
-Patrón **repos multi-superficie** (referencia interna validada en monorepos producto de la org):
+**Multi-surface repo** pattern (reference validated on org product monorepos):
 
-| Patrón | Qué cubre | Notas |
-|--------|-----------|--------|
-| **CI principal con `paths` / filtros** | Solo construye/prueba lo tocado (mobile, web, ml, validación RLS, etc.) | Documentar en el workflow qué rutas disparan cada job; `workflow_dispatch` puede ejecutar todo. |
-| **CI “solo docs”** | En repos que omiten markdown en el CI pesado: workflow paralelo para enlaces MD, estilo, gobernanza ligera | Evita regresiones de documentación sin minutos de build. |
-| **Agentes OCTC** | Workflow acotado a `AGENTS.md`, `CLAUDE.md`, `.octc/**`, lockfile | `pnpm run octc:agents:verify` (o equivalente). |
-| **Calidad web** | Lint, tests unitarios, **e2e** (p. ej. Playwright) cuando el producto lo exige | Acotar secretos de entorno CI en ops. |
-| **Calidad mobile** | `analyze`, tests; opcional **goldens** con job explícito de actualización | Umbral de cobertura si aplica — documentar número y política en backlog o ADR; **pin de SDK** (p. ej. FVM/`.fvmrc`) recomendado para CI estable. |
-| **Calidad `ml`** | Linter Python, tests, build de imagen | Dockerfile y variables de runtime documentadas en `docs/ops`. |
-| **`data` / RLS** | Tests que ejercen políticas; regeneración de tipos cliente alineada con migraciones | Job dedicado o integrado; rutas `supabase/**` + tests RLS en web si aplica. |
+| Pattern | What it covers | Notes |
+|---------|----------------|-------|
+| **Primary CI with `paths` filters** | Only build/test what changed (mobile, web, ml, RLS validation, etc.) | Document per workflow which paths trigger each job; `workflow_dispatch` can run everything. |
+| **Docs-only CI** | When heavy CI skips markdown: parallel workflow for MD links, style, light governance | Catches doc regressions without long builds. |
+| **OCTC agents** | Workflow scoped to `AGENTS.md`, `CLAUDE.md`, `.octc/**`, lockfile | `pnpm run octc:agents:verify` (or equivalent). |
+| **Web quality** | Lint, unit tests, **e2e** (e.g. Playwright) when required | Scope CI env secrets in ops docs. |
+| **Mobile quality** | `analyze`, tests; optional **goldens** with explicit update job | Coverage threshold if applicable — document number and policy in backlog or ADR; **SDK pin** (e.g. FVM/`.fvmrc`) recommended for stable CI. |
+| **`ml` quality** | Python linter, tests, image build | Dockerfile and runtime env documented in `docs/ops`. |
+| **`data` / RLS** | Tests exercising policies; regenerated client types aligned with migrations | Dedicated job or integrated; `supabase/**` paths + RLS tests in web when applicable. |
 
-La matriz exacta es **SSOT del repo** (comentario en `.github/workflows/*.y` + párrafo en `docs/architecture.md`).
+The exact matrix is **repo SSOT** (comments in `.github/workflows/*.y` + paragraph in `docs/architecture.md`).
 
-## Observabilidad
+## Observability
 
-- Proyectos Sentry: patrón `octc-<producto>-<surface>` con `surface ∈ {landing, web, mobile, ml, api, chat, …}`.
-- Ver [OBSERVABILITY.md](../observability/OBSERVABILITY.md) y plantillas en `templates/observability/`.
+- Sentry projects: pattern `octc-<product>-<surface>` with `surface ∈ {landing, web, mobile, ml, api, chat, …}`.
+- See [OBSERVABILITY.md](../observability/OBSERVABILITY.md) and templates under `templates/observability/`.
 
-## Alta y baja de superficie
+## Adding and removing a surface
 
-**Alta:** código + fila en tabla de arquitectura + `docs/ops` + jobs CI con `paths` + proyecto de observabilidad + entrada en PORTFOLIO (`repo_surfaces`) en la misma ventana que el cambio estructural.
+**Add:** code + architecture table row + `docs/ops` + CI `paths` jobs + observability project + `PORTFOLIO` (`repo_surfaces`) entry in the same window as the structural change.
 
-**Baja:** ADR si rompe contratos; retirar apps y tareas turbo/workflow huérfanas; deprecar proyectos Sentry; sin filas fantasma en `active_surfaces`.
+**Remove:** ADR if contracts break; remove apps and orphan turbo/workflow tasks; deprecate Sentry projects; no phantom rows in `active_surfaces`.
 
-**Auditoría:** comparación trimestral (o en release) PORTFOLIO ↔ `docs/architecture.md`.
+**Audit:** quarterly (or on release) compare `PORTFOLIO` ↔ `docs/architecture.md`.
 
-## Inventario de aristas — paridad “monorepo potente”
+## Edge inventory — “capable monorepo” parity
 
-Lista de capacidades que ya aparecen en **repos producto de referencia** (multi-app + datos + automatización). Sirven para no olvidar huecos al lanzar un **producto nuevo**; marcar N/A con justificación en el repo concreto.
+Capabilities already present in **reference product repos** (multi-app + data + automation). Use so new products do not miss gaps; mark N/A with justification per repo.
 
-| Arista | Ubicación típica | Superficie / capa | En checklist |
-|--------|------------------|-------------------|--------------|
-| Monorepo (Turborepo/npm/pnpm, engines) | raíz, `turbo.json` | transversal | ✓ |
-| Husky / lint-staged | raíz | transversal | ✓ |
-| Paquetes compartidos (tipos, SDK) | `packages/*` | transversal | ✓ |
-| Activos de marca compartidos | `assets/` | transversal | ✓ |
-| Scripts: DB local/remoto, verificación cloud | `scripts/db`, `scripts/supabase` | `data` + dev | ✓ |
-| Scripts: gobernanza (enlaces MD, estilo, reglas repo) | `scripts/governance` | transversal | ✓ |
-| Scripts: i18n (cadenas hardcodeadas) | `scripts/i18n` | `web` + `mobile` | ✓ |
-| Scripts: seguridad (p. ej. escaneo secretos) | `scripts/security` | transversal | ✓ |
-| Scripts: integración issue tracker / proyecto (V2, sync estado) | `scripts/github` u homólogo | producto | ✓ |
-| Scripts: deploy helpers (p. ej. paso ignorado por docs-only) | `scripts/vercel` o similar | `web` / CI | ✓ |
-| Labs o experimentación documentada | `scripts/labs`, `docs/features/labs.md` | opcional | ✓ |
-| Runbooks operador en raíz | `ops/` | operación | ✓ |
-| Documentación de ops en árbol docs | `docs/ops/` | operación | ✓ |
-| Diccionario de datos | `docs/db/` | `data` | ✓ |
-| Mapas de arquitectura vivos | `docs/architecture/` | transversal | ✓ |
-| ADRs / memoria decisión | `docs/memory`, `docs/decisions` o `docs/adr` | producto | ✓ |
-| Auditorías y trabajo pendiente explícito | `docs/audits`, ítems enlazados | calidad | ✓ |
-| Contrato backlog ↔ issues | `docs/product/` (+ doc de sync si aplica) | producto | ✓ |
-| `@1c2c/*` + `octc sync agents` / verify | `package.json`, workflows | adopción plataforma | ✓ |
-| Archivo(s) de agente canónicos | `AGENTS.md`, `CLAUDE.md` | adopción plataforma | ✓ |
-| Workflows auxiliares (p. ej. actualización de goldens, archivo de docs, sync estado proyecto) | `.github/workflows/*` | calidad / producto / gobernanza | ✓ (N/A si no aplica) |
+| Edge | Typical location | Surface / layer | On checklist |
+|------|------------------|-----------------|--------------|
+| Monorepo (Turborepo/npm/pnpm, engines) | root, `turbo.json` | cross-cutting | ✓ |
+| Husky / lint-staged | root | cross-cutting | ✓ |
+| Shared packages (types, SDK) | `packages/*` | cross-cutting | ✓ |
+| Shared brand assets | `assets/` | cross-cutting | ✓ |
+| Scripts: local/remote DB, cloud checks | `scripts/db`, `scripts/supabase` | `data` + dev | ✓ |
+| Scripts: governance (MD links, style, repo rules) | `scripts/governance` | cross-cutting | ✓ |
+| Scripts: i18n (hard-coded strings) | `scripts/i18n` | `web` + `mobile` | ✓ |
+| Scripts: security (e.g. secret scan) | `scripts/security` | cross-cutting | ✓ |
+| Scripts: issue tracker / project integration | `scripts/github` or equivalent | product | ✓ |
+| Scripts: deploy helpers (e.g. step skipped for docs-only) | `scripts/vercel` or similar | `web` / CI | ✓ |
+| Documented labs | `scripts/labs`, `docs/features/labs.md` | optional | ✓ |
+| Operator runbooks at root | `ops/` | operations | ✓ |
+| Ops docs under `docs/` | `docs/ops/` | operations | ✓ |
+| Data dictionary | `docs/db/` | `data` | ✓ |
+| Living architecture maps | `docs/architecture/` | cross-cutting | ✓ |
+| ADRs / decision memory | `docs/memory`, `docs/decisions` or `docs/adr` | product | ✓ |
+| Audits and explicit debt | `docs/audits`, linked items | quality | ✓ |
+| Backlog ↔ issues contract | `docs/product/` (+ sync doc if any) | product | ✓ |
+| `@1c2c/*` + `octc sync agents` / verify | `package.json`, workflows | platform adoption | ✓ |
+| Canonical agent files | `AGENTS.md`, `CLAUDE.md` | platform adoption | ✓ |
+| Auxiliary workflows (goldens, docs archival, project sync) | `.github/workflows/*` | quality / product / governance | ✓ (N/A if not used) |
 | Edge Functions | `supabase/functions` | `data` | ✓ |
-| Ruta handlers Next / BFF ligero | `apps/web/app/api` | `web` (salvo proceso aparte → `api`) | ✓ |
-| Cliente externo multi-plataforma + paridad | `docs/design/` | `mobile` + `web` | ✓ |
+| Next API / light BFF routes | `apps/web/app/api` | `web` (unless separate process → `api`) | ✓ |
+| External multi-platform client + parity | `docs/design/` | `mobile` + `web` | ✓ |
 
-Cualquier repo nuevo puede **subsetear** esta lista; lo no negociable es **declararlo** (README de architecture + checklist) y **PORTFOLIO** alineado.
+Any new repo may **subset** this list; non-negotiable is to **declare** it (architecture README + checklist) and keep **PORTFOLIO** aligned.
 
-## Enlaces
+## Links
 
-- [REPO_ARCHETYPES.md](REPO_ARCHETYPES.md) — atajos de composición.
-- [MONOREPO_CONFORMANCE_CHECKLIST.md](MONOREPO_CONFORMANCE_CHECKLIST.md) — verificación práctica.
-- [DOCUMENTATION_TREE.md](DOCUMENTATION_TREE.md) — árbol mínimo y extensiones.
-- [GOLDEN_PATH.md](GOLDEN_PATH.md) — orden de adopción.
+- [REPO_ARCHETYPES.md](REPO_ARCHETYPES.md) — composition shortcuts.
+- [MONOREPO_CONFORMANCE_CHECKLIST.md](MONOREPO_CONFORMANCE_CHECKLIST.md) — practical verification.
+- [DOCUMENTATION_TREE.md](DOCUMENTATION_TREE.md) — minimal tree and extensions.
+- [GOLDEN_PATH.md](GOLDEN_PATH.md) — adoption order.

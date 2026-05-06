@@ -1,55 +1,55 @@
 # Contributing
 
-Gracias por contribuir a `octc-platform`. Este repo es la SSOT de la plataforma; los cambios afectan a todos los productos. Sigue estas reglas.
+Thank you for contributing to `octc-platform`. This repository is the platform SSOT; changes affect every product. Follow these rules.
 
-## Antes de empezar
+## Before you start
 
-1. Lee [PLATFORM_TOUR](docs/onboarding/PLATFORM_TOUR.md) (30 min).
-2. Verifica acceso SSO + 2FA según [IDENTITY_ACCESS](docs/governance/IDENTITY_ACCESS.md).
-3. Identifica si tu cambio es **normativo** (plantillas, schemas, políticas) o **infra** (workflows, scripts).
+1. Read [PLATFORM_TOUR](docs/onboarding/PLATFORM_TOUR.md) (30 minutes).
+2. Confirm SSO + 2FA access per [IDENTITY_ACCESS](docs/governance/IDENTITY_ACCESS.md).
+3. Decide whether your change is **normative** (templates, schemas, policies) or **infra** (workflows, scripts).
 
-## Tipos de cambio
+## Types of change
 
-- **Trivial** (typo, redacción menor): PR directo. Aprobado por CODEOWNERS.
-- **Sustantivo** (nueva sección, nueva regla, cambio de plantilla minor): PR con descripción detallada y referencia a `docs/comms/RELEASE_NOTES_TEMPLATE.md`.
-- **Estructural** (nuevo paquete, cambio breaking, política nueva): **RFC primero** ([template](docs/comms/RFC_TEMPLATE.md)) → **ADR** ([template](docs/adr/_TEMPLATE.md)) → PR final.
+- **Trivial** (typo, minor copy edit): Open a PR directly. Approved by CODEOWNERS.
+- **Substantive** (new section, new rule, minor template change): PR with a detailed description and a reference to `docs/comms/RELEASE_NOTES_TEMPLATE.md`.
+- **Structural** (new package, breaking change, new policy): **RFC first** ([template](docs/comms/RFC_TEMPLATE.md)) → **ADR** ([template](docs/adr/_TEMPLATE.md)) → final PR.
 
-## Branch + commit
+## Branch and commit
 
-- Branch: `feat/...`, `fix/...`, `chore/...`, `docs/...`.
+- Branch name: `feat/...`, `fix/...`, `chore/...`, `docs/...`.
 - Commits: Conventional Commits (`feat:`, `fix:`, `chore:`, `docs:`, `refactor:`).
-- Tag de área cuando aplique: `feat(observability): ...`, `chore(packages): ...`.
+- Scope tag when helpful: `feat(observability): ...`, `chore(packages): ...`.
 
-## PR
+## Pull requests
 
-- Usa la plantilla en [templates/governance/PULL_REQUEST_TEMPLATE.md](templates/governance/PULL_REQUEST_TEMPLATE.md). Se aplica automáticamente cuando se copia a `.github/PULL_REQUEST_TEMPLATE.md` (paso de mantenimiento).
-- Marca todos los checkboxes aplicables.
-- Vincula RFC/ADR si los hay.
-- Espera CI verde (sobre todo `verify.yml` + `privacy-guard.yml`; revisa `.github/workflows/` si añades workflows nuevos).
+- Use the template at [templates/governance/PULL_REQUEST_TEMPLATE.md](templates/governance/PULL_REQUEST_TEMPLATE.md). It applies automatically once copied to `.github/PULL_REQUEST_TEMPLATE.md` (maintenance step).
+- Check every applicable checkbox in the template.
+- Link RFCs/ADRs when relevant.
+- Wait for green CI (especially `verify.yml` + `privacy-guard.yml`; review `.github/workflows/` if you add workflows).
 
-## Revisión
+## Review
 
-- 1 aprobación + CODEOWNERS si toca rutas listadas en `CODEOWNERS`.
-- Cambios en `templates/agents/`, `schemas/`, `packages/`, `docs/security/`, `docs/observability/`, `docs/finops/`: doble revisión.
+- One approval + CODEOWNERS when paths listed in `CODEOWNERS` are touched.
+- Changes under `templates/agents/`, `schemas/`, `packages/`, `docs/security/`, `docs/observability/`, `docs/finops/`: double review.
 
-## Estilo
+## Style
 
-- Idioma y matriz por repo: [DOCUMENTATION_STANDARDS.md](docs/governance/DOCUMENTATION_STANDARDS.md) y [docs/i18n/POLICY.md](docs/i18n/POLICY.md) (**este** repo público apunta a **inglés** para narrativa nueva).
-- Markdown: títulos en mayúscula inicial estilo oración (Sentence case). Tablas con headers explicativos.
-- Diagramas: Mermaid. Mantener etiquetas cortas y sin caracteres especiales.
+- Language and repo matrix: [DOCUMENTATION_STANDARDS.md](docs/governance/DOCUMENTATION_STANDARDS.md) and [docs/i18n/POLICY.md](docs/i18n/POLICY.md) (this **public** repo targets **English** for narrative docs).
+- Markdown: sentence case headings. Tables use clear headers.
+- Diagrams: Mermaid. Keep labels short and ASCII where possible.
 
 ## Releases
 
-- Cambios en `packages/` siguen [POLICY](docs/packages/POLICY.md) y el camino **real** de CI/npm en [RELEASE_RUNBOOK](docs/packages/RELEASE_RUNBOOK.md) (PR de versión Changesets, política de `main`, OIDC).
-- Cambios solo en `docs/` no requieren tag de release pero pueden mencionarse en release notes mensuales.
+- Changes in `packages/` follow [POLICY](docs/packages/POLICY.md) and the **actual** CI/npm path in [RELEASE_RUNBOOK](docs/packages/RELEASE_RUNBOOK.md) (Changesets version PR, `main` policy, OIDC).
+- Docs-only changes do not need a release tag but may appear in monthly release notes.
 
-## Antipatrones
+## Anti-patterns
 
-- Editar bloques `<!-- octc:base -->` en plantillas sin RFC.
-- Saltarse `verify.yml` con `[skip ci]` en main.
-- Introducir dependencias nuevas sin RFC.
-- Commits con secretos: si ocurre, rotar inmediatamente y abrir incidente.
+- Editing `<!-- octc:base -->` template blocks without an RFC.
+- Using `[skip ci]` on `main` to bypass `verify.yml`.
+- Introducing new dependencies without an RFC.
+- Committing secrets: rotate immediately and open an incident if it happens.
 
-## Dudas
+## Questions
 
-Pregunta en `#platform`. Si bloquea tu trabajo, escala al canal `#ops`.
+Ask in `#platform`. If you are blocked, escalate to `#ops`.

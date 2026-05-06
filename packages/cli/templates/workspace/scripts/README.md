@@ -1,3 +1,3 @@
 # Scripts
 
-Scripts personales o de operación para este workspace. No sustituyen pipelines del repo `*-app` ni la política en `*-agents`.
+Personal or operational scripts for this workspace. They do not replace `*-app` pipelines or policy in `*-agents`.

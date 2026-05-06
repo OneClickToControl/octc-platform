@@ -1,46 +1,46 @@
 # PR — octc-platform
 
-> Plantilla canónica de PR para `octc-platform` y para cualquier repo que la copie a `.github/PULL_REQUEST_TEMPLATE.md`.
+> Canonical PR template for `octc-platform` and for any repo that copies it to `.github/PULL_REQUEST_TEMPLATE.md`.
 
-## Tipo de cambio
+## Change type
 
-- [ ] Trivial (typo, redacción, ejemplo)
-- [ ] Sustantivo (nueva sección, nueva regla, plantilla minor)
-- [ ] Estructural (paquete nuevo, breaking, política nueva — requiere RFC + ADR)
-- [ ] Cambio en plantilla `<!-- octc:base -->` (requiere RFC + ADR)
-- [ ] Cambio en `schemas/` (requiere RFC + ADR + verificación AJV)
-- [ ] Cambio en seguridad/observabilidad/finops (requiere doble revisión)
+- [ ] Trivial (typo, copy edit, example)
+- [ ] Substantive (new section, new rule, minor template tweak)
+- [ ] Structural (new package, breaking change, new policy — requires RFC + ADR)
+- [ ] Change to `<!-- octc:base -->` template (requires RFC + ADR)
+- [ ] Change to `schemas/` (requires RFC + ADR + AJV check)
+- [ ] Change in security / observability / finops (requires double review)
 
-## Resumen
+## Summary
 
-<!-- Una o dos frases sobre qué hace este PR. -->
+<!-- One or two sentences describing what this PR does. -->
 
-## Motivación
+## Motivation
 
-<!-- Por qué importa. Issue, RFC o ticket relacionado. -->
+<!-- Why it matters. Related issue, RFC, or ticket. -->
 
-## Cambios
+## Changes
 
-<!-- Lista corta de archivos/áreas tocadas. -->
+<!-- Short list of files / areas touched. -->
 
-## Riesgos y mitigaciones
+## Risks and mitigations
 
-<!-- Riesgos del cambio y cómo se mitigan. -->
+<!-- Risks introduced and how they are mitigated. -->
 
 ## Checklist
 
-- [ ] CI verde (`verify.yml`)
-- [ ] Cambios documentados (CHANGELOG / docs)
-- [ ] Si toca plantillas: marcadores `<!-- octc:base -->` intactos
-- [ ] Si toca paquetes: bump SemVer correcto + Changeset
-- [ ] Si toca observabilidad/security: PII scrubbing intacto
-- [ ] Si introduce nueva integración: añadida a [CATALOG](../../docs/integrations/CATALOG.md)
-- [ ] CODEOWNERS aprobaron rutas que requieren su review
+- [ ] CI is green (`verify.yml`)
+- [ ] Changes documented (CHANGELOG / docs)
+- [ ] If templates changed: `<!-- octc:base -->` markers intact
+- [ ] If packages changed: correct SemVer bump + Changeset
+- [ ] If observability / security touched: PII scrubbing intact
+- [ ] If a new integration is introduced: added to [CATALOG](../../docs/integrations/CATALOG.md)
+- [ ] CODEOWNERS approved paths that require their review
 
-## RFC / ADR vinculados
+## Linked RFC / ADR
 
-<!-- Enlaces a RFC en discussion/issue y ADR en docs/adr/. -->
+<!-- Links to RFC discussion/issue and ADR under docs/adr/. -->
 
-## Notas de despliegue
+## Deployment notes
 
-<!-- Si requiere acción coordinada en repos consumidores, listarla aquí. -->
+<!-- If consumers need coordinated action, list it here. -->

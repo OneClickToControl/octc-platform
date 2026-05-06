@@ -1,5 +1,5 @@
-# Workflow reutilizable: envía repository_dispatch a octc-platform-internal.
-# Llamar desde cada *-app con secrets: inherit (p. ej. secret org OCTC_PORTFOLIO_DISPATCH_TOKEN).
+# Reusable workflow: sends repository_dispatch to octc-platform-internal.
+# Call from each *-app with secrets: inherit (e.g. org secret OCTC_PORTFOLIO_DISPATCH_TOKEN).
 name: OCTC portfolio dispatch (callable)
 
 on:

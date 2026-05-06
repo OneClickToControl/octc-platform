@@ -1,57 +1,57 @@
 # Agent templates adoption
 
-Cómo cada repo (producto o ACP) adopta y mantiene actualizadas las plantillas `CLAUDE.md`, `.cursor/rules/`, `AGENTS.md` provistas por `@1c2c/agent-templates`.
+How each repo (product or ACP) adopts and keeps updated the `CLAUDE.md`, `.cursor/rules/`, and `AGENTS.md` templates from `@1c2c/agent-templates`.
 
-Los repos **`*-workspace`** (memoria, identidad, notas) **no** están obligados a este flujo de pin/CI; el carril y los límites del CLI están en **[WORKSPACE_LANE.md](../adoption/WORKSPACE_LANE.md)**.
+**`*-workspace`** repos (memory, identity, notes) are **not** required to follow this pin/CI flow; lane and CLI limits are in **[WORKSPACE_LANE.md](../adoption/WORKSPACE_LANE.md)**.
 
-## Versionado de `@1c2c/agent-templates`
+## `@1c2c/agent-templates` versioning
 
-- Sigue **SemVer estricto** (ver [POLICY.md](../packages/POLICY.md#versionado-de-1c2cagent-templates-caso-especial)).
-- **Major:** cambios incompatibles en estructura de plantilla, secciones eliminadas o renombradas.
-- **Minor:** secciones nuevas o reglas adicionales no breaking.
-- **Patch:** correcciones, redacción, ejemplos.
-- Cada release minor/major abre una issue en repos con `agent_templates_pin` desactualizado. SLAs definidos en POLICY.
+- Follow **strict SemVer** (see the **Special case: `@1c2c/agent-templates` versioning** section in [POLICY.md](../packages/POLICY.md)).
+- **Major:** incompatible template structure, removed or renamed sections.
+- **Minor:** new sections or additional non-breaking rules.
+- **Patch:** fixes, wording, examples.
+- Each minor/major release opens an issue in repos with an outdated `agent_templates_pin`. SLAs are defined in POLICY.
 
-## Adopción
+## Adoption
 
-1. El repo declara la versión consumida en su `package.json` y la fija como `agent_templates_pin` en el **PORTFOLIO** del companion privado (ver enlace en [PORTFOLIO.md](../PORTFOLIO.md)).
-2. Las plantillas se aplican con la CLI del paquete (ver Quickstart abajo) que regenera los archivos base, manteniendo los marcadores `<!-- octc:user -->` para extensiones locales.
-3. Las extensiones locales **nunca** alteran el contenido entre marcadores `<!-- octc:base -->` y `<!-- octc:end-base -->`.
+1. The repo declares the consumed version in `package.json` and pins it as `agent_templates_pin` in the private companion **PORTFOLIO** (link in [PORTFOLIO.md](../PORTFOLIO.md)).
+2. Apply templates with the package CLI (Quickstart below), which regenerates base files while keeping `<!-- octc:user -->` markers for local extensions.
+3. Local extensions **never** change content between `<!-- octc:base -->` and `<!-- octc:end-base -->`.
 
-## Quickstart vía CLI
+## Quickstart via CLI
 
-### Entrada unificada (recomendado): `@1c2c/cli`
+### Unified entry point (recommended): `@1c2c/cli`
 
-El paquete **`@1c2c/cli`** expone el binario `octc` y delega en `octc-agents` para agentes; además incluye comandos de monorepo (`octc verify monorepo`, `octc sync surface`, …) según [ADR-0003](../adr/ADR-0003-monorepo-cli-machine-ssot.md). Visión **ACP→runtime** en [RUNTIME_SYNC](RUNTIME_SYNC.md).
+The **`@1c2c/cli`** package exposes the `octc` binary and delegates to `octc-agents` for agents; it also includes monorepo commands (`octc verify monorepo`, `octc sync surface`, …) per [ADR-0003](../adr/ADR-0003-monorepo-cli-machine-ssot.md). **ACP→runtime** overview: [RUNTIME_SYNC](RUNTIME_SYNC.md).
 
 ```bash
 pnpm add -D @1c2c/cli @1c2c/agent-templates
 
-# Sincronizar plantillas (equivale a octc-agents sync)
+# Sync templates (same as octc-agents sync)
 npx @1c2c/cli sync agents
 
-# Atajos equivalentes a octc-agents
+# Shortcuts equivalent to octc-agents
 npx @1c2c/cli agents init
 npx @1c2c/cli agents verify
 npx @1c2c/cli agents sync
 ```
 
-### Solo `octc-agents` (`@1c2c/agent-templates`)
+### `octc-agents` only (`@1c2c/agent-templates`)
 
-La ruta histórica sigue siendo válida:
+The historical path remains valid:
 
 ```bash
-# scaffold inicial en el repo destino
+# initial scaffold in target repo
 npx @1c2c/agent-templates init
 
-# verificación de drift en CI o local (exit 1 si hay drift)
+# drift check in CI or local (exit 1 on drift)
 npx @1c2c/agent-templates verify
 
-# sync hacia el canónico, preservando bloques <!-- octc:user --> locales
+# sync to canonical, preserving local <!-- octc:user --> blocks
 npx @1c2c/agent-templates sync
 ```
 
-Archivos generados por `init`:
+Files produced by `init`:
 
 ```
 <repo>/CLAUDE.md
@@ -61,15 +61,15 @@ Archivos generados por `init`:
 <repo>/.octc/agents/manifest.schema.json
 ```
 
-`sync` solo reescribe el bloque entre `<!-- octc:base ... -->` y `<!-- octc:end-base -->`; cualquier contenido bajo `<!-- octc:user -->` se conserva.
+`sync` only rewrites the block between `<!-- octc:base ... -->` and `<!-- octc:end-base -->`; anything under `<!-- octc:user -->` is preserved.
 
-## Mantenimiento
+## Maintenance
 
-- En **CI** (tras `install` y verificación de firmas), ejecuta `octc-agents verify` o el script `pnpm run octc:agents:verify` / `npm run octc:agents:verify` para fallar el build si el repo tiene *drift* respecto al pin de `@1c2c/agent-templates`.
-- Cada release minor/major del paquete dispara una **issue** automática en cada repo con `agent_templates_pin` desactualizado.
-- El owner del repo tiene **30 días** para actualizar (mayor) o **90 días** (menor) antes de aparecer en alerta del SCORECARD.
+- In **CI** (after `install` and signature verification), run `octc-agents verify` or `pnpm run octc:agents:verify` / `npm run octc:agents:verify` to fail the build on *drift* vs the `@1c2c/agent-templates` pin.
+- Each minor/major package release opens an **automatic issue** in repos with an outdated `agent_templates_pin`.
+- Repo owners have **30 days** to update (major) or **90 days** (minor) before a SCORECARD alert.
 
-## Compatibilidad
+## Compatibility
 
-- Una versión major se mantiene con parches durante al menos 6 meses tras el lanzamiento de la siguiente major.
-- Las plantillas viejas se eliminan del registro tras un periodo de gracia y entrada en [docs/governance/DEPRECATION.md](../governance/DEPRECATION.md).
+- A major version receives patches for at least 6 months after the next major ships.
+- Old templates are removed from the catalog after a grace period and entry in [docs/governance/DEPRECATION.md](../governance/DEPRECATION.md).

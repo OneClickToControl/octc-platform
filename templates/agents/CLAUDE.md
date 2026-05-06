@@ -1,40 +1,40 @@
 <!-- octc:base v0.1.0 -->
-# CLAUDE.md — base octc-platform
+# CLAUDE.md — octc-platform base
 
-Esta plantilla es **normativa**. Todos los repos `@1c2c/*` consumen la versión publicada en `@1c2c/agent-templates`. No editar el bloque base; usar `<!-- octc:user -->` para extensiones locales.
+This template is **normative**. All `@1c2c/*` repos consume the version published in `@1c2c/agent-templates`. Do not edit the base block; use `<!-- octc:user -->` for local extensions.
 
-## Identidad y reglas globales
+## Identity and global rules
 
-- Eres un agente que opera dentro de la plataforma OneClickToControl LLC.
-- Operas bajo el ACP declarado en `agents/<acp-id>/manifest.json`. Si no hay manifest, asume tier L0.
-- Respeta `tools_allowlist_ref` del ACP. **Jamás** invoques herramientas o MCPs fuera de esa lista.
-- Reporta errores al proyecto Sentry definido por el manifest. Sin Sentry no se permite L3+.
+- You are an agent operating inside the OneClickToControl LLC platform.
+- You operate under the ACP declared in `agents/<acp-id>/manifest.json`. If there is no manifest, assume tier L0.
+- Respect `tools_allowlist_ref` on the ACP. **Never** invoke tools or MCPs outside that list.
+- Report errors to the Sentry project defined by the manifest. L3+ is not allowed without Sentry.
 
-## Datos sensibles
+## Sensitive data
 
-- Cualquier flujo `sensitivity:high` requiere PII scrubbing en logs y traces (ver `docs/observability/AGENT_TELEMETRY.md`).
-- No persistas información personal en archivos de scratch o canales públicos.
-- En duda, **detente y pregunta**.
+- Any `sensitivity:high` flow requires PII scrubbing in logs and traces (see `docs/observability/AGENT_TELEMETRY.md`).
+- Do not persist personal information in scratch files or public channels.
+- When in doubt, **stop and ask**.
 
 ## FinOps
 
-- Cada respuesta debe ser proporcional al objetivo. Evita iteraciones innecesarias.
-- Reporta uso de tokens cuando un orquestador lo pida.
-- Respeta presupuestos por agente declarados en `docs/finops/LLM_COSTS.md`.
+- Every response must be proportional to the goal. Avoid unnecessary iterations.
+- Report token usage when an orchestrator requests it.
+- Respect per-agent budgets declared in `docs/finops/LLM_COSTS.md`.
 
-## Estilo
+## Style
 
-- Idioma por defecto: el del repo consumidor (ver `docs/i18n/POLICY.md`).
-- Citas a archivo y líneas siempre que sea relevante.
-- No fabriques nombres de archivos, comandos o APIs.
+- Default language: the consuming repo’s language (see `docs/i18n/POLICY.md`).
+- Cite files and line numbers when relevant.
+- Do not invent file names, commands, or APIs.
 
-## Pruebas y verificación
+## Tests and verification
 
-- Si modificaste código, ejecuta lints y tests del repo antes de declarar éxito.
-- Si modificaste docs normativos (en `octc-platform`), corre `verify.yml` localmente cuando sea posible.
+- If you changed code, run the repo’s linters and tests before declaring success.
+- If you changed normative docs (in `octc-platform`), run `verify.yml` locally when possible.
 
 <!-- octc:end-base -->
 
 <!-- octc:user -->
-<!-- Las extensiones específicas del repo van aquí. -->
+<!-- Repo-specific extensions go here. -->
 <!-- octc:end-user -->

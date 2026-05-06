@@ -1,5 +1,5 @@
-# Referencia: copiar a .github/workflows/verify.yml (ajusta ramas, Node y scripts).
-# Documentación: templates/governance/ci/README.md
+# Reference: copy to .github/workflows/verify.yml (adjust branches, Node, scripts).
+# Docs: templates/governance/ci/README.md
 name: verify
 
 on:
@@ -40,7 +40,7 @@ jobs:
         run: pnpm install --frozen-lockfile
         # npm-only: npm ci
 
-      # Consumidores de @1c2c/*: validar firmas en el árbol resuelto (ver docs/security/SUPPLY_CHAIN.md).
+      # @1c2c/* consumers: verify signatures on the resolved tree (see docs/security/SUPPLY_CHAIN.md).
       - name: Verify registry signatures (incl. @1c2c/* provenance)
         run: pnpm dlx audit-signatures || npm audit signatures
 

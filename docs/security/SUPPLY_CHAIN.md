@@ -1,60 +1,60 @@
 # Supply chain
 
-Cadena de confianza de software para OneClickToControl LLC. Cubre paquetes `@1c2c/*`, productos consumidores, source maps y dependencias.
+Software trust chain for OneClickToControl LLC. Covers `@1c2c/*` packages, consuming products, source maps, and dependencies.
 
-## Identidad y secretos
+## Identity and secrets
 
-- **OIDC en GitHub Actions** para publicar en npm y para subir source maps a Sentry. Ningún token long-lived persistido.
-- Secretos en gestor centralizado (GitHub Encrypted Secrets / Doppler / Vault según repo). Rotación trimestral mínima.
-- SSO + 2FA enforced (ver [IDENTITY_ACCESS.md](../governance/IDENTITY_ACCESS.md)).
-- **Procedimiento exacto de rotación** por sistema en el runbook privado [`octc-platform-internal/docs/runbooks/CRED_ROTATION.md`](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/runbooks/CRED_ROTATION.md) (access-restricted).
+- **OIDC in GitHub Actions** for npm publishing and for uploading source maps to Sentry. No long-lived token persisted.
+- Secrets in a central manager (GitHub Encrypted Secrets / Doppler / Vault per repo). Minimum quarterly rotation.
+- SSO + 2FA enforced (see [IDENTITY_ACCESS.md](../governance/IDENTITY_ACCESS.md)).
+- **Exact rotation procedure** per system in the private runbook [`octc-platform-internal/docs/runbooks/CRED_ROTATION.md`](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/runbooks/CRED_ROTATION.md) (access-restricted).
 
-## Publicación de paquetes `@1c2c/*`
+## Publishing `@1c2c/*` packages
 
-- **OIDC Trusted Publishers de npm** activado por paquete: GitHub Actions intercambia un OIDC token efímero por un token de publicación `npm`. **Ningún `NPM_TOKEN` persistido** en GitHub Secrets ni en `.npmrc` del runner.
-- Workflow `.github/workflows/release.yml` declara `permissions: id-token: write` y usa Node 24 + `npm install -g npm@latest` para garantizar npm CLI ≥ 11.5.1 (mínimo OIDC).
-- Cada `npm publish` desde `release.yml` corre con `--provenance` (vía `NPM_CONFIG_PROVENANCE=true`), generando attestation SLSA v1 firmada por Sigstore.
-- Provenance verificable por consumidores con `npm audit signatures` o `pnpm audit signatures`.
-- **Nota de alcance:** la política de cadena de suministro puede mencionar tags firmados y SBOM (`syft`) en GitHub Releases; **el workflow `release.yml` actual no ejecuta generación de SBOM ni `sentry-cli` para paquetes `@1c2c/*`**. Los tags que crea Changesets/npm tras `changeset publish` son los habituales del flujo publicado; cualquier endurecimiento adicional debe reflejarse explícitamente en el workflow y en [RELEASE_RUNBOOK.md](../packages/RELEASE_RUNBOOK.md).
+- **npm OIDC Trusted Publishers** enabled per package: GitHub Actions exchanges an ephemeral OIDC token for an npm publish token. **No persisted `NPM_TOKEN`** in GitHub Secrets or on the runner `.npmrc`.
+- Workflow `.github/workflows/release.yml` declares `permissions: id-token: write` and uses Node 24 + `npm install -g npm@latest` to ensure npm CLI ≥ 11.5.1 (OIDC minimum).
+- Every `npm publish` from `release.yml` runs with `--provenance` (via `NPM_CONFIG_PROVENANCE=true`), producing a Sigstore-signed SLSA v1 attestation.
+- Consumers verify provenance with `npm audit signatures` or `pnpm audit signatures`.
+- **Scope note:** supply-chain policy may mention signed tags and SBOM (`syft`) on GitHub Releases; **the current `release.yml` does not run SBOM generation or `sentry-cli` for `@1c2c/*` packages**. Tags created by Changesets/npm after `changeset publish` follow the published flow; any hardening must be reflected explicitly in the workflow and in [RELEASE_RUNBOOK.md](../packages/RELEASE_RUNBOOK.md).
 
-### Configuración del Trusted Publisher (uno por paquete)
+### Trusted Publisher configuration (one per package)
 
-En [https://www.npmjs.com/package/@1c2c/<pkg>/access](https://www.npmjs.com/package/) → "Publishing access" → "Add trusted publisher":
+At [https://www.npmjs.com/package/@1c2c/<pkg>/access](https://www.npmjs.com/package/) → "Publishing access" → "Add trusted publisher":
 
-| Campo | Valor |
+| Field | Value |
 |---|---|
 | Publisher | GitHub Actions |
 | Organization or user | `OneClickToControl` |
 | Repository | `octc-platform` |
 | Workflow filename | `release.yml` |
-| Environment name | (vacío) |
+| Environment name | (empty) |
 
-> **Antes del primer `npm publish` de un paquete nuevo bajo `@1c2c/*`:** hay que añadir el Trusted Publisher **en ese paquete concreto** en la UI de npm. Los paquetes ya existentes (`@1c2c/tsconfig`, `@1c2c/eslint-config`, …) no heredan la config: si falta, el registry responde `E404 Not Found` en el `PUT` (es en la práctica un *permission denied* de OIDC). Después de registrar el publisher, vuelve a ejecutar `release.yml` (por ejemplo **Run workflow** en Actions o un commit vacío en `main`).
+> **Before the first `npm publish` of a new package under `@1c2c/*`:** add the Trusted Publisher **for that specific package** in the npm UI. Existing packages (`@1c2c/tsconfig`, `@1c2c/eslint-config`, …) do not inherit config; if missing, the registry returns `E404 Not Found` on `PUT` (effectively OIDC *permission denied*). After registering the publisher, re-run `release.yml` (e.g. **Run workflow** in Actions or an empty commit to `main`).
 
-> Si en algún momento mueves el job a un environment protegido (recomendado para releases major), añade el nombre del environment en el campo correspondiente y exígelo también en `release.yml` con `environment: <name>`.
+> If you later move the job to a protected environment (recommended for major releases), add the environment name in the UI field and enforce it in `release.yml` with `environment: <name>`.
 
-### Por qué OIDC y no PAT/granular tokens
+### Why OIDC instead of PAT/granular tokens
 
-- Sin secret persistido → no hay nada que filtrar ni rotar manualmente.
-- El attestation OIDC liga el publish al **commit SHA + workflow + repo + actor** del runner, lo que hace imposible publicar fuera del workflow.
-- npm rechaza intentos de publicación que no traen un OIDC matching → fail-closed por defecto.
+- No persisted secret → nothing to leak or rotate manually.
+- OIDC attestation ties publish to **commit SHA + workflow + repo + actor** on the runner, making out-of-workflow publish impossible.
+- npm rejects publishes without a matching OIDC token → fail-closed by default.
 
 ## Provenance consumer-side
 
-Cualquier producto que consuma `@1c2c/*` ejecuta en CI:
+Any product consuming `@1c2c/*` runs in CI:
 
 ```bash
 pnpm install --frozen-lockfile
 pnpm dlx audit-signatures || npm audit signatures
 ```
 
-Si la verificación falla, el build se corta. Esto se valida automáticamente desde `verify.yml` cuando el repo se registra en PORTFOLIO con tier ≥ L1.
+If verification fails, the build stops. This is validated automatically from `verify.yml` when the repo is registered in PORTFOLIO with tier ≥ L1.
 
-**Plantilla reutilizable** para consumidores: [`templates/governance/ci/`](../../templates/governance/ci/README.md) (workflow de referencia con actions pinneadas y paso de firmas).
+**Reusable template** for consumers: [`templates/governance/ci/`](../../templates/governance/ci/README.md) (reference workflow with pinned actions and a signature step).
 
 ## Source maps {#source-maps}
 
-- En cada release (web/python/mobile) se ejecuta:
+- On each release (web/python/mobile):
   ```bash
   sentry-cli releases new "$SENTRY_RELEASE"
   sentry-cli releases set-commits "$SENTRY_RELEASE" --auto
@@ -62,38 +62,38 @@ Si la verificación falla, el build se corta. Esto se valida automáticamente de
   sentry-cli sourcemaps upload --release "$SENTRY_RELEASE" <build-dir>
   sentry-cli releases finalize "$SENTRY_RELEASE"
   ```
-- El valor de **`release`** debe ser **idéntico** en CI (subida de mapas) y en runtime (`NEXT_PUBLIC_SENTRY_RELEASE` / `SENTRY_RELEASE`). Para apps web en Git: `{SENTRY_PROJECT}@{COMMIT_SHA}` — [OBSERVABILITY.md](../observability/OBSERVABILITY.md#releases-y-source-maps).
-- En GitHub Actions suele usarse [`getsentry/action-release`](https://github.com/getsentry/action-release) con **Organization Auth Token** en secrets hasta que la org complete la confianza OIDC documentada en Sentry; el input `finalize` (por defecto `true`) equivale a `sentry-cli releases finalize`.
-- Autenticación vía token de organización u OIDC cuando esté configurado en la org (sin DSN en el repo para subir artefactos).
-- Para Flutter usar `sentry-cli upload-dif` en lugar de sourcemaps.
+- The **`release`** value must be **identical** in CI (map upload) and at runtime (`NEXT_PUBLIC_SENTRY_RELEASE` / `SENTRY_RELEASE`). For web apps in Git: `{SENTRY_PROJECT}@{COMMIT_SHA}` — [OBSERVABILITY.md](../observability/OBSERVABILITY.md#releases-and-source-maps).
+- GitHub Actions often uses [`getsentry/action-release`](https://github.com/getsentry/action-release) with an **Organization Auth Token** in secrets until the org completes the OIDC trust documented for Sentry; the `finalize` input (default `true`) matches `sentry-cli releases finalize`.
+- Authentication via org token or OIDC when configured (no DSN in the repo for artifact upload).
+- For Flutter use `sentry-cli upload-dif` instead of sourcemaps.
 
-## Dependencias
+## Dependencies
 
-- **Dependabot** o **Renovate** activado en cada repo (PRs automáticos semanales para minors/patches).
-- Major upgrades exigen RFC.
-- Lockfile commiteado en main (sin excepciones).
-- `pnpm` con `overrides` y `auditLevel=high` mínimo en `verify.yml`.
+- **Dependabot** or **Renovate** enabled on every repo (weekly PRs for minors/patches).
+- Major upgrades require an RFC.
+- Lockfile committed on `main` (no exceptions).
+- `pnpm` with `overrides` and minimum `auditLevel=high` in `verify.yml`.
 
 ## GitHub Actions
 
-- **Pinning**: usar `actions/checkout@<sha>` por SHA (40 chars) con comentario `# vX.Y.Z` para legibilidad. Dependabot bumpea automáticamente.
-- **Node runtime**: todas las actions deben soportar Node 24 (Node 20 deprecado por GitHub en Sep 2026, Node 22 LTS aceptable para jobs no críticos).
-- **Permissions**: `permissions: contents: read` por defecto, sub-jobs y workflows que escriben (release, PR-creation) declaran scopes adicionales explícitos.
-- **OIDC**: para npm y Sentry.
-- **Secret scanning** activado en todos los repos.
+- **Pinning**: use `actions/checkout@<sha>` with full SHA (40 chars) and comment `# vX.Y.Z` for readability. Dependabot bumps automatically.
+- **Node runtime**: all actions should support Node 24 (GitHub deprecates Node 20 in Sep 2026; Node 22 LTS acceptable for non-critical jobs).
+- **Permissions**: `permissions: contents: read` by default; sub-jobs and workflows that write (release, PR creation) declare additional scopes explicitly.
+- **OIDC**: for npm and Sentry.
+- **Secret scanning** enabled on all repos.
 
-## Auditoría
+## Audit
 
-- Revisión trimestral de `tools_allowlist_ref` por ACP en tier L4.
-- Revisión semestral del CATALOG y de las dependencias críticas.
-- Hallazgos se registran en [docs/audit/HISTORY.md](../audit/HISTORY.md).
+- Quarterly review of `tools_allowlist_ref` per L4 ACP.
+- Semi-annual review of CATALOG and critical dependencies.
+- Findings recorded in [docs/audit/HISTORY.md](../audit/HISTORY.md).
 
 ## Build reproducibility
 
-- Builds de producción con commit SHA inmutable.
-- Imágenes Docker (cuando aplique) con digests pinneados.
+- Production builds with immutable commit SHA.
+- Docker images (where applicable) with pinned digests.
 
-## Respuesta a incidentes
+## Incident response
 
-- Si se detecta dependencia comprometida: [DR_BCP.md](../ops/DR_BCP.md) clase A.
-- Vulnerabilidades reportadas: ver `SECURITY.md` (planeado en cada repo).
+- Compromised dependency detected: [DR_BCP.md](../ops/DR_BCP.md) class A.
+- Reported vulnerabilities: see `SECURITY.md` (planned per repo).

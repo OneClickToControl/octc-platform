@@ -1,3 +1,3 @@
-# Identidad
+# Identity
 
-Describe rol, contexto estable y preferencias del operador o del workspace (sin datos secretos en claro si el repo no es privado).
+Describe the operator’s or workspace’s role, stable context, and preferences (no secrets in cleartext if the repo is not private).

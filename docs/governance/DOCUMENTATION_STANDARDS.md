@@ -6,7 +6,7 @@ This file summarizes how we keep docs **consistent**, **accurate**, and **hard t
 
 | Repository | Primary narrative language |
 |------------|----------------------------|
-| **octc-platform** (public) | **English** for README, onboarding, and ADRs — *migration in progress* from older Spanish pages. |
+| **octc-platform** (public) | **English** for README, onboarding, ADRs, adoption docs, and public templates. |
 | **octc-paperclip** | **Spanish** for owner-facing narrative; **English** for technical YAML, adapter contracts, agent templates (see Paperclip README). |
 | **octc-platform-internal**, **octc-platform-workspace**, **octc-platform-agents** (private) | **Spanish** for README and runbooks unless a doc explicitly targets an English-only audience. |
 

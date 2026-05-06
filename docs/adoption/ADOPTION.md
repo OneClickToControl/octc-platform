@@ -1,25 +1,25 @@
 # Adoption
 
-Cómo se mide y promueve la adopción de octc-platform en los repos de la org.
+How adoption of octc-platform is measured and promoted across org repos.
 
-## Señales
+## Signals
 
-- `agent_templates_pin` actualizado (≤ 1 minor de retraso).
-- `at1c2c_pin` actualizado (≤ 1 minor de retraso).
-- ACPs registrados con tier ≥ L1.
-- Sentry projects vivos con eventos las últimas 24h.
-- CODEOWNERS poblado con humanos reales.
+- `agent_templates_pin` updated (≤ 1 minor behind).
+- `at1c2c_pin` updated (≤ 1 minor behind).
+- ACPs registered with tier ≥ L1.
+- Sentry projects healthy with events in the last 24h.
+- CODEOWNERS populated with real humans.
 
-## Programa
+## Program
 
-- Cada trimestre la plataforma publica una **release notes** ([template](../comms/RELEASE_NOTES_TEMPLATE.md)) con cambios destacados y migraciones pendientes.
-- Repos con KPIs en rojo reciben **office hours** específicas y pair sessions.
-- Repos en verde 4 trimestres consecutivos figuran como “gold standard” en el SCORECARD.
+- Each quarter the platform publishes **release notes** ([template](../comms/RELEASE_NOTES_TEMPLATE.md)) with notable changes and pending migrations.
+- Repos with red KPIs get dedicated **office hours** and pair sessions.
+- Repos green for four consecutive quarters appear as “gold standard” on the SCORECARD.
 
-## Métricas
+## Metrics
 
-Se reportan en [PLATFORM_SCORECARD.md](../metrics/PLATFORM_SCORECARD.md).
+Reported in [PLATFORM_SCORECARD.md](../metrics/PLATFORM_SCORECARD.md).
 
-## Monorepos de producto
+## Product monorepos
 
-Repos con varias superficies (web, mobile, datos Supabase, ML, etc.) deben seguir el patrón [REFERENCE_PRODUCT_MONOREPO.md](REFERENCE_PRODUCT_MONOREPO.md), declarar `active_surfaces` en `docs/architecture.md` y usar [MONOREPO_CONFORMANCE_CHECKLIST.md](MONOREPO_CONFORMANCE_CHECKLIST.md) en cambios estructurales. Manifiesto máquina-legible y CLI: [ADR-0003](../adr/ADR-0003-monorepo-cli-machine-ssot.md); parity con inventario **PORTFOLIO** interno (sin token): [PORTFOLIO_BRIDGE.md](PORTFOLIO_BRIDGE.md). El camino de bootstrap sigue en [GOLDEN_PATH.md](GOLDEN_PATH.md).
+Repos with multiple surfaces (web, mobile, Supabase data, ML, etc.) must follow [REFERENCE_PRODUCT_MONOREPO.md](REFERENCE_PRODUCT_MONOREPO.md), declare `active_surfaces` in `docs/architecture.md`, and use [MONOREPO_CONFORMANCE_CHECKLIST.md](MONOREPO_CONFORMANCE_CHECKLIST.md) for structural changes. Machine-readable manifest and CLI: [ADR-0003](../adr/ADR-0003-monorepo-cli-machine-ssot.md); parity with internal **PORTFOLIO** (no token): [PORTFOLIO_BRIDGE.md](PORTFOLIO_BRIDGE.md). Bootstrap path: [GOLDEN_PATH.md](GOLDEN_PATH.md).
