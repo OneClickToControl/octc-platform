@@ -1,5 +1,5 @@
-# Referencia: copiar a .github/workflows/verify.yml (ajusta ramas, Node y scripts).
-# Documentación: templates/governance/ci/README.md
+# Reference: copy to .github/workflows/verify.yml (adjust branches, Node, scripts).
+# Docs: templates/governance/ci/README.md
 name: verify
 
 on:
