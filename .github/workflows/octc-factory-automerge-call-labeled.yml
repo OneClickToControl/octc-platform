@@ -1,4 +1,5 @@
 # Same contract as octc-platform-internal: only PRs labeled `octc/auto-merge` (mechanical lane).
+# Reusable uses org vars/secrets OCTC_RELEASE_MERGE_* when OCTC_RELEASE_MERGE_ENABLED=true (secrets: inherit).
 # Requires `octc-factory-automerge-reusable.yml` on `main` in octc-platform-internal before this succeeds at runtime.
 name: OCTC factory automerge (labeled)
 
