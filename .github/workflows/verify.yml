@@ -131,10 +131,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
+      # `packages/agent-templates/templates/` is synced from `templates/agents/`; relative links are
+      # authored for SSOT paths. Do not add that tree here (Lychee would mis-resolve ../../docs).
       - name: Lychee — broken relative links
         uses: lycheeverse/lychee-action@1d97d84f0bc547f7b25f4c2170d87d810dc2fb2c # v2
         with:
-          args: --no-progress --offline --include-fragments --max-concurrency 8 -c .lychee.toml 'docs/**/*.md' '*.md' 'templates/**/*.md' 'packages/cli/templates/**/*.md' 'packages/agent-templates/**/*.md'
+          args: --no-progress --offline --include-fragments --max-concurrency 8 -c .lychee.toml 'docs/**/*.md' '*.md' 'templates/**/*.md' 'packages/cli/templates/**/*.md'
           fail: true
 
   templates:
