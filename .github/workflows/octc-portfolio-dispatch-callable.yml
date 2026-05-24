@@ -36,6 +36,7 @@ jobs:
         run: |
           python3 << 'PY'
           import json, os, re, urllib.request
+          from pathlib import Path
           import yaml
 
           owner = os.environ["OWNER"]
@@ -55,11 +56,16 @@ jobs:
           if not surfaces:
               surfaces = ",".join(doc.get("active_surfaces") or [])
 
-          with open("package.json") as f:
-              pkg = json.load(f)
-          ver = (pkg.get("devDependencies") or {}).get("@1c2c/cli", "")
-          m = re.search(r"([\d.]+)", ver)
-          pin = m.group(1) if m else ver
+          pin = ""
+          pkg_path = Path("package.json")
+          if pkg_path.is_file():
+              with pkg_path.open(encoding="utf-8") as f:
+                  pkg = json.load(f)
+              ver = (pkg.get("devDependencies") or {}).get("@1c2c/cli", "")
+              m = re.search(r"([\d.]+)", ver)
+              pin = m.group(1) if m else ver
+          else:
+              print("skip package.json (docs-first / sin monorepo npm); octc_cli_pin vacío")
 
           payload = {
               "repository": repo_short,
