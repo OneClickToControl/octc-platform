@@ -1,0 +1,18 @@
+{
+  "name": "__PRODUCT__-agents",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Canonical agent artifacts and ACP manifest for __PRODUCT__. OCTC: @1c2c/cli + @1c2c/agent-templates. Replace __PRODUCT__ in name with your product slug before first publish.",
+  "scripts": {
+    "octc:agents:verify": "octc agents verify",
+    "octc:agents:sync": "octc sync agents"
+  },
+  "devDependencies": {
+    "@1c2c/agent-templates": "^0.1.0",
+    "@1c2c/cli": "^0.3.0"
+  },
+  "packageManager": "pnpm@10.28.2",
+  "engines": {
+    "node": ">=20"
+  }
+}

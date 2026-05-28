@@ -29,7 +29,7 @@ export function readManifestRelativePaths(templateRoot) {
  */
 function walkFiles(dir, base, acc) {
   for (const name of readdirSync(dir)) {
-    if (name === ".octc-manifest.txt") continue;
+    if (name === ".octc-manifest.txt" || name === "node_modules") continue;
     const p = join(dir, name);
     if (statSync(p).isDirectory()) walkFiles(p, base, acc);
     else acc.push(p);

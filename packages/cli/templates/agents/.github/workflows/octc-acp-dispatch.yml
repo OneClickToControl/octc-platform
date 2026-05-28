@@ -1,0 +1,24 @@
+# ACP metadata → octc-platform-internal (registry JSON via PR).
+# Secrets: OCTC_ACP_DISPATCH_TOKEN (preferred) or OCTC_PORTFOLIO_DISPATCH_TOKEN.
+# Pin the workflow @ ref to a commit of octc-platform that includes octc-acp-dispatch-callable.yml
+# (helper: clone octc-platform, run ./scripts/print-acp-dispatch-callable-pin.sh).
+name: OCTC ACP dispatch
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "agents/__PRODUCT__-acp/manifest.json"
+      - ".github/workflows/octc-acp-dispatch.yml"
+  workflow_dispatch: {}
+
+concurrency:
+  group: octc-dispatch-acp-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  dispatch:
+    uses: OneClickToControl/octc-platform/.github/workflows/octc-acp-dispatch-callable.yml@d23c4a769bc06f00c2908896a702849036b0b56e
+    with:
+      manifest_path: agents/__PRODUCT__-acp/manifest.json
+    secrets: inherit

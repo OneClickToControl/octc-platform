@@ -1,0 +1,17 @@
+{
+  "name": "octc-product-app",
+  "version": "0.0.0",
+  "private": true,
+  "description": "OCTC product — platform contract shell (@1c2c/cli)",
+  "scripts": {
+    "octc:verify:monorepo": "octc verify monorepo",
+    "octc:sync:governance": "octc sync governance --only ci"
+  },
+  "devDependencies": {
+    "@1c2c/cli": "^0.3.0"
+  },
+  "packageManager": "pnpm@10.28.2",
+  "engines": {
+    "node": ">=20"
+  }
+}
