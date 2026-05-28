@@ -9,8 +9,8 @@ importers:
   .:
     devDependencies:
       '@1c2c/cli':
-        specifier: ^0.3.0
-        version: 0.3.0
+        specifier: ^0.5.0
+        version: 0.5.0
 
 packages:
 
@@ -18,8 +18,8 @@ packages:
     resolution: {integrity: sha512-j/dvWEctv2+9tBUMGTbXHQCNx9+cus44Q/NpXbwcS7w1Kbw3lQgxRV5Js449zq8N8kShsamjMF6AhVe/14jMEA==}
     hasBin: true
 
-  '@1c2c/cli@0.3.0':
-    resolution: {integrity: sha512-693NdXjBEpfUgL94RZ2jnysLb3FYHYApQehFMiYY/dDLW17l7a8JGeFWMCd1adXRUqeGVqtjylyRtTtQWcFyxA==}
+  '@1c2c/cli@0.5.0':
+    resolution: {integrity: sha512-W8kUCuB3iO8SVxQtzLmdszJjrv7vQ0OcgSEl8yQlVoBJrKq9Xqb74U7Y13E5KJjd9hiOj8mbMk/jXer4hQwwlA==}
     hasBin: true
 
   '@nodelib/fs.scandir@2.1.5':
@@ -105,7 +105,7 @@ snapshots:
     dependencies:
       y: 0.3.2
 
-  '@1c2c/cli@0.3.0':
+  '@1c2c/cli@0.5.0':
     dependencies:
       '@1c2c/agent-templates': 0.1.0
       fast-glob: 3.3.3
