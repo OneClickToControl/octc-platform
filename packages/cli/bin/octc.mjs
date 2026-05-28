@@ -35,7 +35,8 @@ function usage() {
     "  octc sync surface <surface>|--all [--cwd <dir>] [--dry-run] [--force]",
     "  octc portfolio suggest [--cwd <dir>] [--repo <name>] [--cli-pin <x.y.z>]",
     "  octc init workspace <dir> [--force] [--pin <sha>] [--template-dir <path>]",
-    "  octc init app <dir> [--force] [--pin <ref>] [--template-dir <path>]",
+    "  octc init app <dir> [--force] [--pin <ref>] [--portfolio-pin <ref>] [--factory-oao-pin <ref>] [--template-dir <path>]",
+    "  octc init agents <dir> --product <slug> [--force] [--template-dir <path>]",
     "",
     "Repo lanes:",
     "  *-app: monorepo commands (verify monorepo, add/sync surface, portfolio suggest).",
@@ -88,6 +89,11 @@ async function main() {
   if (argv[0] === "init" && argv[1] === "app") {
     const { runInitApp } = await import("../lib/init-app.mjs");
     process.exit(runInitApp({ argv: argv.slice(2) }));
+  }
+
+  if (argv[0] === "init" && argv[1] === "agents") {
+    const { runInitAgents } = await import("../lib/init-agents.mjs");
+    process.exit(runInitAgents({ argv: argv.slice(2) }));
   }
 
   if (argv[0] === "sync" && argv[1] === "agents") {

@@ -1,0 +1,30 @@
+{
+  "id": "__PRODUCT__-acp",
+  "owning_product": "__PRODUCT__-product-line",
+  "repositories": ["OneClickToControl/__PRODUCT__-agents"],
+  "runtimes_supported": ["cursor", "claude-code", "openclaw", "http", "bash"],
+  "conformance_tier_target": "L2",
+  "sensitivity": "high",
+  "tools_allowlist_ref": "docs/agents/TOOLS_ALLOWLIST_L2.md",
+  "upstream_sources": [
+    {
+      "id": "octc-platform",
+      "kind": "registry",
+      "ref": "github.com/OneClickToControl/octc-platform"
+    }
+  ],
+  "downstream_deployments": [
+    {
+      "id": "__PRODUCT__-app",
+      "kind": "repo",
+      "ref": "OneClickToControl/__PRODUCT__-app"
+    },
+    {
+      "id": "__PRODUCT__-workspace",
+      "kind": "repo",
+      "ref": "OneClickToControl/__PRODUCT__-workspace"
+    }
+  ],
+  "version": "0.1.0",
+  "owner": "replace-me"
+}

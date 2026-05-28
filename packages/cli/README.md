@@ -44,10 +44,11 @@ npx @1c2c/cli agents init --force
 
 Monorepo YAML template: in the published repo [`templates/monorepo/monorepo.yaml.example`](https://github.com/OneClickToControl/octc-platform/blob/main/templates/monorepo/monorepo.yaml.example); copy to `.octc/monorepo.yaml` in your product repo.
 
-## `init workspace` / `init app`
+## `init workspace` / `init app` / `init agents`
 
-- **`octc init workspace <dir>`** — Materializes the standard **`*-workspace`** tree (parity with `octc-platform-internal` `templates/workspace-repo`). Options: `--force`, `--pin <SHA>` (same value in `uses:` and `tooling_ref` of the generated wrapper), `--template-dir <path>`. Does not create a GitHub repo or org configuration; see internal runbook.
-- **`octc init app <dir>`** — Scaffolds **`templates/product`**: **`*-app`** contract on disk (e.g. `.octc/monorepo.yaml`, portfolio dispatch workflow). **`--pin`** optional for the portfolio callable; defaults to `main` if the template uses a placeholder. Does not replace [NEW_PRODUCT_REPO](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/runbooks/NEW_PRODUCT_REPO.md) for rulesets/secrets.
+- **`octc init workspace <dir>`** — Materializes the standard **`*-workspace`** tree (`templates/workspace`). Options: `--force`, `--pin <SHA>` (same value in `uses:` and `tooling_ref`), `--template-dir`. No npm shell required. See [WORKSPACE_LANE](../../docs/adoption/WORKSPACE_LANE.md) and internal [FACTORY_LANE_CONTRACT](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/runbooks/FACTORY_LANE_CONTRACT.v1.md).
+- **`octc init app <dir>`** — **`*-app`** contract: `@1c2c/cli` shell, `.octc/monorepo.yaml`, portfolio + factory workflows, `octc-platform-verify` CI. Options: `--portfolio-pin`, `--factory-oao-pin`, `--pin` (shorthand for both). Does not replace org runbook [NEW_PRODUCT_REPO](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/runbooks/NEW_PRODUCT_REPO.md).
+- **`octc init agents <dir> --product <slug>`** — **`*-agents`**: `@1c2c/cli` + `@1c2c/agent-templates`, ACP manifest, `octc-agents` CI. See [NEW_AGENTS_REPO](https://github.com/OneClickToControl/octc-platform-internal/blob/main/docs/runbooks/NEW_AGENTS_REPO.md).
 
 ## Why this package?
 

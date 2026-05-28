@@ -1,0 +1,26 @@
+# Mechanical lane: add label `octc/auto-merge` after checks (and policy) allow merge.
+# Local `./` reusable — works for private product repos; octc-platform carries the same pair of files publicly.
+#
+# Org: install **octc-release-merge** on this repo (or org-wide). Vars/secrets OCTC_RELEASE_MERGE_*.
+name: OCTC factory automerge (labeled)
+
+on:
+  pull_request:
+    types: [labeled, synchronize, opened, reopened, ready_for_review]
+    branches: [main, master]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  merge:
+    if: |
+      github.event.pull_request.draft == false &&
+      contains(github.event.pull_request.labels.*.name, 'octc/auto-merge') &&
+      github.event.pull_request.head.repo.fork == false
+    uses: ./.github/workflows/octc-factory-automerge-reusable.yml
+    secrets: inherit
+    with:
+      pr-number: ${{ github.event.pull_request.number }}
+      merge-strategy: squash-when-green
