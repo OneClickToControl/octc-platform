@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "@1c2c/agent-templates": "^0.1.0",
-    "@1c2c/cli": "^0.3.0"
+    "@1c2c/cli": "^0.5.1"
   },
   "packageManager": "pnpm@10.28.2",
   "engines": {

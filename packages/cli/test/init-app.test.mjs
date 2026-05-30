@@ -23,7 +23,7 @@ describe("octc init app", () => {
       true,
     );
     const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-    expect(pkg.devDependencies["@1c2c/cli"]).toBe("^0.5.0");
+    expect(pkg.devDependencies["@1c2c/cli"]).toBe("^0.5.1");
     expect(pkg.packageManager).toBe("pnpm@9.12.3");
     const verify = readFileSync(
       join(root, ".github/workflows/octc-platform-verify.yml"),
