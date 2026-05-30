@@ -12,8 +12,8 @@ importers:
         specifier: ^0.1.0
         version: 0.1.0
       '@1c2c/cli':
-        specifier: ^0.3.0
-        version: 0.3.0
+        specifier: ^0.5.1
+        version: 0.5.1
 
 packages:
 
@@ -21,8 +21,8 @@ packages:
     resolution: {integrity: sha512-j/dvWEctv2+9tBUMGTbXHQCNx9+cus44Q/NpXbwcS7w1Kbw3lQgxRV5Js449zq8N8kShsamjMF6AhVe/14jMEA==}
     hasBin: true
 
-  '@1c2c/cli@0.3.0':
-    resolution: {integrity: sha512-693NdXjBEpfUgL94RZ2jnysLb3FYHYApQehFMiYY/dDLW17l7a8JGeFWMCd1adXRUqeGVqtjylyRtTtQWcFyxA==}
+  '@1c2c/cli@0.5.1':
+    resolution: {integrity: sha512-1EnKg9dJSjRMg7PnqA/3gaXNjqI1NX0DbMepXAmce144b/rl6+TxJNiN7hkCAPBhWSxVB/x4+mhhP6vOnc7vew==}
     hasBin: true
 
   '@nodelib/fs.scandir@2.1.5':
@@ -97,8 +97,8 @@ packages:
   y@0.3.2:
     resolution: {integrity: sha512-OJQTQuD3iqJqXzYKs2AgZqQrfPuTOjIFm3jvIc+2SxP6QSB5Ab9Ja9A5mWEDngjaJiEgsHbp2Q2RR/U2pTpTEw==}
 
-  yaml@2.8.4:
-    resolution: {integrity: sha512-ml/JPOj9fOQK8RNnWojA67GbZ0ApXAUlN2UQclwv2eVgTgn7O9gg9o7paZWKMp4g0H3nTLtS9LVzhkpOFIKzog==}
+  yaml@2.9.0:
+    resolution: {integrity: sha512-2AvhNX3mb8zd6Zy7INTtSpl1F15HW6Wnqj0srWlkKLcpYl/gMIMJiyuGq2KeI2YFxUPjdlB+3Lc10seMLtL4cA==}
     engines: {node: '>= 14.6'}
     hasBin: true
 
@@ -108,11 +108,11 @@ snapshots:
     dependencies:
       y: 0.3.2
 
-  '@1c2c/cli@0.3.0':
+  '@1c2c/cli@0.5.1':
     dependencies:
       '@1c2c/agent-templates': 0.1.0
       fast-glob: 3.3.3
-      yaml: 2.8.4
+      yaml: 2.9.0
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -181,4 +181,4 @@ snapshots:
 
   y@0.3.2: {}
 
-  yaml@2.8.4: {}
+  yaml@2.9.0: {}
