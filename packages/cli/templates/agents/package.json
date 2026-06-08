@@ -8,7 +8,7 @@
     "octc:agents:sync": "octc sync agents"
   },
   "devDependencies": {
-    "@1c2c/agent-templates": "^0.1.0",
+    "@1c2c/agent-templates": "^0.2.0",
     "@1c2c/cli": "^0.5.1"
   },
   "packageManager": "pnpm@10.28.2",

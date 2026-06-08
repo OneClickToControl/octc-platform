@@ -25,12 +25,12 @@
     "sync"
   ],
   "dependencies": {
-    "@1c2c/agent-templates": "^0.2.0",
+    "@1c2c/agent-templates": "workspace:^",
     "fast-glob": "^3.3.3",
     "yaml": "^2.9.0"
   },
   "devDependencies": {
-    "vitest": "^4.1.7"
+    "vitest": "^4.1.8"
   },
   "publishConfig": {
     "access": "public",
