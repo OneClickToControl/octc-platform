@@ -25,3 +25,15 @@ alwaysApply: true
 
 - If the task changes something under `octc-platform/`, require a PR with CODEOWNERS and, if structural, an ADR.
 - If it is product work, do not touch `@1c2c/*` except to pin versions.
+
+## Org factory (multi-repo `~/Projects`)
+
+Rules in **this repo** govern product work (PII, Sentry, RFC, `@1c2c/*` pins). When the task also crosses **org factory** scope, defer to the Cursor SSOT deployed at `~/Projects/.cursor` — do not duplicate those rules here.
+
+| Trigger | What to apply |
+| ------- | ------------- |
+| Bump `@1c2c/*` + PORTFOLIO | Merge train **MT-2** — `octc-platform-internal` runbook `OCTC_MERGE_TRAIN_CHECKLIST.md` |
+| Changes across `octc-*` repos, worker, MCP, cockpit | Merge train **MT-1** — `OCTC_MERGE_TRAINS.v1.md` in `octc-platform-internal` |
+| Unsure product vs org vs factory SSH | Org rule `octc-agent-scope-router` (via `~/Projects/.cursor`) |
+
+Pointers (private org repo paths on disk): `~/Projects/AGENTS.md`, template `octc-platform-internal/templates/cursor-projects/MANIFEST.v1.yaml`, install `octc-platform-internal/scripts/install-cursor-projects-config.sh`.
