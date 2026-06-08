@@ -1,5 +1,11 @@
 # @1c2c/agent-templates
 
+## 0.2.0
+
+### Minor Changes
+
+- eef6ae4: Add org-factory bridge section to Cursor `00-octc-base` (defer to `~/Projects/.cursor` SSOT and merge trains).
+
 ## 0.1.0
 
 ### Minor Changes

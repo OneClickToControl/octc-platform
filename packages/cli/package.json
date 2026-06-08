@@ -1,6 +1,6 @@
 {
   "name": "@1c2c/cli",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Unified OCTC CLI: octc sync agents, octc verify monorepo (ADR-0003), octc init workspace|app, octc add|sync surface, octc sync governance, octc portfolio suggest.",
   "license": "MIT",
   "type": "module",
@@ -25,7 +25,7 @@
     "sync"
   ],
   "dependencies": {
-    "@1c2c/agent-templates": "^0.1.0",
+    "@1c2c/agent-templates": "^0.2.0",
     "fast-glob": "^3.3.3",
     "yaml": "^2.9.0"
   },
