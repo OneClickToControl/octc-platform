@@ -1,5 +1,12 @@
 # @1c2c/cli
 
+## 0.5.2
+
+### Patch Changes
+
+- Updated dependencies [eef6ae4]
+  - @1c2c/agent-templates@0.2.0
+
 ## 0.5.1
 
 ### Patch Changes
