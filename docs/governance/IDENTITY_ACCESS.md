@@ -47,6 +47,7 @@ Identity and access policy across all platforms and SaaS connected to OneClickTo
 
 - **Quarterly**: review org members, remove inactive users, rotate tokens.
 - **Annual**: light pen-test / SaaS surface review.
+- **Operational close-out (H-Q2-004):** evidence table in private runbook `octc-platform-internal/docs/runbooks/AUDIT-2FA-SSO-PROVIDERS.md` — closed **2026-07-13** (owner attestation + GitHub API). This public table states policy; that runbook is the checklist evidence so docs cannot claim `enforced` without a closed operational record.
 
 ## Machine accounts
 
