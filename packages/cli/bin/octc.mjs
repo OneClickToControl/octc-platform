@@ -31,6 +31,7 @@ function usage() {
     "  octc sync governance [--only <all|doc-contract|ci>] [--cwd <dir>] [--dry-run]",
     "  octc agents init|verify|sync [...]     shorthand for octc-agents <cmd>",
     "  octc verify monorepo [--cwd <dir>]     lint .octc/monorepo.yaml vs filesystem",
+    "  octc verify copy [--cwd <dir>]         voz comercial: español LatAm sin jerga interna (.octc/copy-voice.yaml)",
     "  octc add surface <surface> [--cwd <dir>] [--dry-run] [--force]",
     "  octc sync surface <surface>|--all [--cwd <dir>] [--dry-run] [--force]",
     "  octc portfolio suggest [--cwd <dir>] [--repo <name>] [--cli-pin <x.y.z>]",
@@ -144,6 +145,11 @@ async function main() {
   if (argv[0] === "verify" && argv[1] === "monorepo") {
     const { runVerifyMonorepo } = await import("../lib/verify-monorepo.mjs");
     process.exit(runVerifyMonorepo({ argv: argv.slice(2) }));
+  }
+
+  if (argv[0] === "verify" && argv[1] === "copy") {
+    const { runVerifyCopy } = await import("../lib/verify-copy.mjs");
+    process.exit(runVerifyCopy({ argv: argv.slice(2) }));
   }
 
   console.error(`octc: unknown command "${argv[0]}"`);
